@@ -1,0 +1,11 @@
+{{ ansible_managed | comment }}
+/var/log/postgresql/*.log /var/log/postgresql/*.json /var/log/postgresql/*.csv {
+       weekly
+       rotate 10
+       copytruncate
+       delaycompress
+       compress
+       notifempty
+       missingok
+       su root root
+}

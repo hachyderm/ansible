@@ -1,0 +1,39 @@
+---
+name: Ansible Sanity
+
+on:
+  workflow_call:
+
+jobs:
+  define-versions:
+    runs-on: ubuntu-latest
+    outputs:
+      ansible-versions: ${{ steps.list-ansible-versions.outputs.ansible-versions }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: List Ansible versions
+        id: list-ansible-versions
+        run: |
+          ansible_versions=$(./.github/scripts/list_ansible_versions.py)
+          echo "ansible-versions=$ansible_versions" >> "$GITHUB_OUTPUT"
+
+  ansible-sanity:
+    runs-on: ubuntu-latest
+    needs:
+      - define-versions
+    name: "sanity-${{ matrix.ansible-version }}"
+    strategy:
+      fail-fast: false
+      matrix:
+        ansible-version: ${{ fromJson(needs.define-versions.outputs.ansible-versions) }}
+    if: needs.define-versions.outputs.ansible-versions != '[]' &&
+        needs.define-versions.outputs.ansible-versions != ''
+    steps:
+      - name: Perform sanity test with ansible-test
+        uses: ansible-community/ansible-test-gh-action@v1.17.0
+        with:
+          ansible-core-version: stable-${{ matrix.ansible-version }}
+          testing-type: sanity
+          ansible-core-github-repository-slug: ansible/ansible

@@ -1,0 +1,6 @@
+---
+collections:
+  - name: containers.podman
+    source: https://galaxy.ansible.com
+  - name: community.postgresql
+    source: https://galaxy.ansible.com

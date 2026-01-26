@@ -1,0 +1,17 @@
+---
+- name: Destroy container instances
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Remove containers
+      containers.podman.podman_container:
+        name: "{{ item }}"
+        state: absent
+      loop: "{{ groups['molecule'] }}"
+      failed_when: false
+
+    - name: Remove container network
+      containers.podman.podman_network:
+        name: molecule-postgresql-replication
+        state: absent
+      failed_when: false

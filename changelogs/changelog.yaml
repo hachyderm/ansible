@@ -1,0 +1,7 @@
+---
+releases:
+  0.0.1:
+    changes:
+      major_changes:
+        - Initial release
+    release_date: '2026-01-24'

@@ -1,0 +1,20 @@
+---
+- name: Create replication user on primary
+  when: postgresql_instance_role == 'primary'
+  block:
+    - name: Start service
+      ansible.builtin.include_tasks: start_service.yml
+
+    - name: Create replication user
+      community.postgresql.postgresql_user:
+        name: "{{ postgresql_replication_username }}"
+        password: "{{ postgresql_replication_password }}"
+        role_attr_flags: REPLICATION
+      environment:
+        PGUSER: postgres
+        PGPASSWORD: "{{ postgresql_superuser_password }}"
+        PGPORT: "{{ postgresql_port }}"
+
+- name: Create replication on replica
+  ansible.builtin.include_tasks: create_replication.yml
+  when: postgresql_instance_role == 'replica'

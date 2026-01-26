@@ -1,0 +1,20 @@
+---
+- name: Check requirements
+  ansible.builtin.assert:
+    that:
+      - ansible_facts['distribution'] == "Debian"
+
+- name: Install gnupg for the repository key
+  ansible.builtin.apt:
+    name: gnupg
+    update_cache: true
+
+- name: Install PGDG APT repository key
+  ansible.builtin.apt_key:
+    # Copied from https://www.postgresql.org/media/keys/ACCC4CF8.asc to protect against a supply-chain attack
+    data: "{{ lookup('file', 'ACCC4CF8.asc') }}"
+
+- name: Configure APT repository
+  ansible.builtin.apt_repository:
+    repo: "deb http://apt.postgresql.org/pub/repos/apt/ {{ ansible_distribution_release }}-pgdg main"
+    update_cache: true

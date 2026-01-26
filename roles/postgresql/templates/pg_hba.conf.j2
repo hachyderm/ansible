@@ -1,0 +1,8 @@
+{{ ansible_managed | comment }}
+{% for rule in postgresql_hba_rules %}
+{{ rule }}
+{% endfor %}
+{% if postgresql_manage_replication %}
+host replication {{ postgresql_replication_username }} {{ postgresql_replication_network }} scram-sha-256 # replication
+host postgres    {{ postgresql_replication_username }} {{ postgresql_replication_network }} scram-sha-256 # replication slot management
+{% endif %}

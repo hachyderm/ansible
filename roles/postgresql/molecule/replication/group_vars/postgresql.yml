@@ -1,0 +1,8 @@
+---
+postgresql_superuser_password: CHANGEME
+postgresql_manage_replication: true
+postgresql_listen_addresses:
+  - '*'
+postgresql_replication_username: repl
+postgresql_replication_password: CHANGEME
+postgresql_replication_network: all

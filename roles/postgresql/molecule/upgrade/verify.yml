@@ -1,0 +1,71 @@
+---
+- name: Verify
+  hosts: molecule
+  become: true
+
+  vars:
+    postgresql_version: 18
+    postgresql_upgrade_from_version: 15
+
+  environment:
+    PGUSER: postgres
+    PGPASSWORD: "{{ postgresql_superuser_password }}"
+    PGPORT: "{{ postgresql_port | default('5432') }}"
+
+  tasks:
+    - name: Check required packages are installed
+      ansible.builtin.package_facts:
+        manager: auto
+
+    - name: Verify new version of PostgreSQL is installed
+      ansible.builtin.assert:
+        that: "'postgresql-' + postgresql_version | string in ansible_facts.packages"
+        fail_msg: "postgresql-{{ postgresql_version | string }} package is not installed"
+
+    - name: Verify old version of PostgreSQL is removed
+      ansible.builtin.assert:
+        that: "'postgresql-' + postgresql_upgrade_from_version | string not in ansible_facts.packages"
+        fail_msg: "postgresql-{{ postgresql_upgrade_from_version | string }} package is installed"
+
+    - name: Verify service is up and running
+      ansible.builtin.command:
+        cmd: pg_isready
+      changed_when: false
+
+    - name: Check that data has been upgraded
+      community.postgresql.postgresql_query:
+        login_db: postgres
+        query: select id from upgrade limit 1
+      register: postgresql_upgrade_query
+
+    - name: Verify the upgraded data
+      ansible.builtin.assert:
+        that:
+          - postgresql_upgrade_query.rowcount == 1
+          - postgresql_upgrade_query.query_result[0].id == 1
+
+    - name: Insert data on primary
+      when: postgresql_instance_role | default("primary") == "primary"
+      community.postgresql.postgresql_query:
+        login_db: postgres
+        query: >-
+          begin;
+          create table if not exists replication (id smallint primary key);
+          insert into replication values (1) on conflict do nothing;
+          commit;
+
+    - name: Wait for data to be replicated
+      ansible.builtin.wait_for:
+        timeout: 1
+
+    - name: Check that data has been replicated
+      community.postgresql.postgresql_query:
+        login_db: postgres
+        query: select id from replication limit 1
+      register: postgresql_replication_query
+
+    - name: Verify the replicated data
+      ansible.builtin.assert:
+        that:
+          - postgresql_replication_query.rowcount == 1
+          - postgresql_replication_query.query_result[0].id == 1

@@ -1,0 +1,13 @@
+---
+- name: Verify
+  hosts: molecule
+  become: true
+  tasks:
+    - name: Stat source file
+      ansible.builtin.stat:
+        path: /etc/apt/sources.list.d/apt_postgresql_org_pub_repos_apt.list
+      register: pgdg_repository_source_file
+
+    - name: Ensure source file exists
+      ansible.builtin.assert:
+        that: pgdg_repository_source_file.stat.exists

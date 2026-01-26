@@ -1,0 +1,43 @@
+---
+name: Ansible CI
+on:
+  pull_request:
+    types:
+      - opened
+      - edited
+      - reopened
+      - synchronize
+      - labeled
+  workflow_dispatch:
+
+concurrency:
+  group: ansible-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  ANSIBLE_FORCE_COLOR: true
+  ANSIBLE_GALAXY_SERVER_GALAXY_URL: "https://galaxy.ansible.com"
+  ANSIBLE_GALAXY_SERVER_GALAXY_TIMEOUT: 120
+  ANSIBLE_GALAXY_SERVER_LIST: "galaxy"
+
+jobs:
+  ansible-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Ansible lint
+        uses: ansible/ansible-lint@v25.12.2
+        with:
+          requirements_file: requirements.yml
+
+  ansible-sanity:
+    needs:
+      - ansible-lint
+    uses: ./.github/workflows/ansible-sanity.yml
+
+  molecule:
+    needs:
+      - ansible-lint
+    uses: ./.github/workflows/molecule.yml

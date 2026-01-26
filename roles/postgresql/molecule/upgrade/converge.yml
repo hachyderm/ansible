@@ -1,0 +1,9 @@
+---
+- name: Converge
+  hosts: molecule
+  become: true
+  roles:
+    - postgresql
+  vars:
+    postgresql_version: 18
+    postgresql_upgrade_from_version: 15
