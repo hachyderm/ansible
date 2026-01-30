@@ -1,0 +1,92 @@
+---
+- name: Ensure versions are different
+  ansible.builtin.assert:
+    that: postgresql_upgrade_from_version < postgresql_version
+    fail_msg: >-
+      Previous version ({{ postgresql_upgrade_from_version }}) must be less than
+      version ({{ postgresql_version }})
+
+- name: Check if the cluster exists
+  ansible.builtin.stat:
+    path: "/var/lib/postgresql/{{ postgresql_version }}/main/PG_VERSION"
+  register: postgresql_cluster_version_file
+
+- name: Check if the previous cluster exists
+  ansible.builtin.stat:
+    path: "/var/lib/postgresql/{{ postgresql_upgrade_from_version }}/main/PG_VERSION"
+  register: postgresql_previous_cluster_version_file
+
+- name: Upgrade cluster on primary
+  when:
+    - not postgresql_cluster_version_file.stat.exists
+    - postgresql_previous_cluster_version_file.stat.exists
+    - postgresql_instance_role == 'primary'
+  block:
+    - name: Check pg_upgrade requirements
+      ansible.builtin.command:
+        cmd: >-
+          /usr/bin/pg_upgradecluster --check
+            --method=upgrade
+            --link
+            -v {{ postgresql_version }}
+            {{ postgresql_upgrade_from_version }}
+            {{ postgresql_cluster_name }}
+      changed_when: false
+      become: true
+
+    - name: Rename base configuration file
+      ansible.builtin.copy:
+        remote_src: true
+        src: "/etc/postgresql/{{ postgresql_upgrade_from_version }}/{{ postgresql_cluster_name }}/postgresql.base.conf"
+        dest: "/etc/postgresql/{{ postgresql_upgrade_from_version }}/{{ postgresql_cluster_name }}/postgresql.conf"
+        owner: postgres
+        group: postgres
+        mode: "0644"
+
+    - name: Add pg_hba.conf rule for pg_upgrade
+      ansible.builtin.lineinfile:
+        path: "/etc/postgresql/{{ postgresql_upgrade_from_version }}/{{ postgresql_cluster_name }}/pg_hba.conf"
+        line: "local all postgres trust"
+        insertbefore: BOF
+
+    - name: Reload current instance
+      ansible.builtin.service:
+        name: "postgresql@{{ postgresql_upgrade_from_version }}-{{ postgresql_cluster_name }}.service"
+        state: reloaded
+
+    - name: Perform pg_upgrade
+      ansible.builtin.command:
+        cmd: >-
+          /usr/bin/pg_upgradecluster
+            --method=upgrade
+            --link
+            -v {{ postgresql_version }}
+            {{ postgresql_upgrade_from_version }}
+            {{ postgresql_cluster_name }}
+      changed_when: true
+      become: true
+      notify: Analyze in stages
+
+  always:
+    - name: Remove pg_hba.conf rule for pg_upgrade
+      ansible.builtin.lineinfile:
+        path: "/etc/postgresql/{{ postgresql_version }}/{{ postgresql_cluster_name }}/pg_hba.conf"
+        regexp: "local all postgres trust"
+        state: absent
+
+- name: Remove previous cluster
+  when: postgresql_previous_cluster_version_file.stat.exists
+  block:
+    - name: Drop previous cluster
+      ansible.builtin.include_tasks: drop_cluster.yml
+      vars:
+        postgresql_cluster_version: "{{ postgresql_upgrade_from_version }}"
+      when: postgresql_upgrade_drop_cluster
+
+    - name: Remove previous packages
+      ansible.builtin.package:
+        state: absent
+        name:
+          - "postgresql-{{ postgresql_upgrade_from_version }}"
+          - "postgresql-client-{{ postgresql_upgrade_from_version }}"
+      when: postgresql_upgrade_remove_packages

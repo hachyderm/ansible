@@ -1,0 +1,45 @@
+---
+- name: Configure schedules services
+  ansible.builtin.template:
+    src: schedules/pgbackrest.service.j2
+    dest: "/etc/systemd/system/pgbackrest-{{ backup_type }}.service"
+    mode: "0644"
+    owner: root
+    group: root
+  loop: "{{ pgbackrest_schedules.keys() }}"
+  loop_control:
+    loop_var: backup_type
+  notify:
+    - Reload systemd
+
+- name: Manage schedules services
+  ansible.builtin.service:
+    name: "pgbackrest-{{ backup_type }}.service"
+    enabled: true
+  loop: "{{ pgbackrest_schedules.keys() }}"
+  loop_control:
+    loop_var: backup_type
+
+- name: Configure schedules timers
+  ansible.builtin.template:
+    src: schedules/pgbackrest.timer.j2
+    dest: "/etc/systemd/system/pgbackrest-{{ backup_type }}.timer"
+    mode: "0644"
+    owner: root
+    group: root
+  vars:
+    timer_settings: "{{ pgbackrest_schedules[backup_type] }}"
+  loop: "{{ pgbackrest_schedules.keys() }}"
+  loop_control:
+    loop_var: backup_type
+  notify:
+    - Reload systemd
+
+- name: Manage schedules timers
+  ansible.builtin.service:
+    name: "pgbackrest-{{ backup_type }}.timer"
+    enabled: true
+    state: started
+  loop: "{{ pgbackrest_schedules.keys() }}"
+  loop_control:
+    loop_var: backup_type

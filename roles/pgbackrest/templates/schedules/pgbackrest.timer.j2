@@ -1,0 +1,13 @@
+{{ ansible_managed | comment }}
+[Unit]
+Description=Schedule pgBackRest {{ backup_type }} backups
+PartOf=pgbackrest-{{ backup_type }}.service
+
+[Timer]
+Unit=pgbackrest-{{ backup_type }}.service
+{% for k, v in timer_settings.items() %}
+{{ k }}={{ v }}
+{% endfor %}
+
+[Install]
+WantedBy=timers.target

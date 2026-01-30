@@ -1,0 +1,37 @@
+{{ ansible_managed | comment }}
+[Unit]
+Description=Start pgBackRest {{ backup_type }} backup
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+Restart=on-failure
+RestartSec=600
+User={% if pgbackrest_role in ("server", "both") -%}
+{{ pgbackrest_server_user }}
+{% else -%}
+{{ pgbackrest_user }}
+{% endif %}
+{% if pgbackrest_notification_command is defined %}
+ExecStartPre={{ pgbackrest_notification_command }} pgBackRest '{{ pgbackrest_notification_message_start }}'
+{% endif %}
+{% if pgbackrest_stanzas %}
+{% for stanza in pgbackrest_stanzas.keys() %}
+{% for repository in pgbackrest_repositories %}
+ExecStart=/usr/bin/pgbackrest --stanza={{ stanza }} --type={{ backup_type }} --annotation=source="$(hostname) pgbackrest-{{ backup_type }}.service" --repo={{ loop.index }} backup
+{% endfor %}
+{% endfor %}
+{% else %}
+{% for stanza in pgbackrest_server_stanzas.keys() %}
+{% for repository in pgbackrest_server_repositories %}
+ExecStart=/usr/bin/pgbackrest --config /etc/pgbackrest-server/pgbackrest.conf --stanza={{ stanza }} --type={{ backup_type }} --annotation=source="$(hostname) pgbackrest-{{ backup_type }}.service" --repo={{ loop.index }} backup
+{% endfor %}
+{% endfor %}
+{% endif %}
+{% if pgbackrest_notification_command is defined %}
+ExecStartPost={{ pgbackrest_notification_command }} pgBackRest '{{ pgbackrest_notification_message_stop }}'
+{% endif %}
+
+[Install]
+WantedBy=multi-user.target

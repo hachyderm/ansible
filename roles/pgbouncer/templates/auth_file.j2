@@ -1,0 +1,6 @@
+{{ ansible_managed | comment(decoration="; ") }}
+{% if pgbouncer_auth_users %}
+{% for name, pass in pgbouncer_auth_users.items() %}
+"{{ name }}" "{{ pass }}"
+{% endfor %}
+{% endif %}

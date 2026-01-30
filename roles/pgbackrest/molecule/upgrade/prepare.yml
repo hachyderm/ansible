@@ -1,0 +1,145 @@
+---
+- name: Prepare
+  hosts: localhost
+
+  vars:
+    tmpdir: /tmp/molecule
+
+  tasks:
+    - name: Create tmpdir
+      ansible.builtin.file:
+        path: "{{ tmpdir }}"
+        state: directory
+        mode: "0755"
+
+    - name: Generate CA
+      ansible.builtin.command:
+        cmd: >-
+          openssl req -new -x509 -days 1 -nodes -out ca.crt -keyout ca.key -subj "/CN=ca"
+        chdir: "{{ tmpdir }}"
+        creates: "{{ tmpdir }}/ca.key"
+
+    - name: Generate CSR and keys
+      ansible.builtin.command:
+        cmd: >-
+          openssl req -new -nodes -out {{ item }}.csr -keyout {{ item }}.key -subj "/CN={{ item }}"
+        chdir: "{{ tmpdir }}"
+        creates: "{{ tmpdir }}/{{ item }}.csr"
+      loop:
+        - primary
+        - replica
+
+    - name: Generate certificates
+      ansible.builtin.command:
+        cmd: >-
+          openssl x509 -req -in {{ item }}.csr -days 1 -CA ca.crt -CAkey ca.key -CAcreateserial -out {{ item }}.crt
+        chdir: "{{ tmpdir }}"
+        creates: "{{ tmpdir }}/{{ item }}.crt"
+      loop:
+        - primary
+        - replica
+
+
+- name: Copy certificates
+  hosts: molecule
+  become: true
+
+  vars:
+    tmpdir: /tmp/molecule
+
+  tasks:
+    - name: Create TLS group
+      ansible.builtin.group:
+        name: tls
+
+    - name: Create TLS directory
+      ansible.builtin.file:
+        path: /etc/tls
+        state: directory
+        owner: root
+        group: tls
+        mode: "0755"
+
+    - name: Copy CA cert
+      ansible.builtin.copy:
+        src: "{{ tmpdir }}/ca.crt"
+        dest: /etc/tls/ca.crt
+        owner: root
+        group: tls
+        mode: "0644"
+
+
+- name: Copy certificates on primary
+  hosts: primary
+  become: true
+
+  vars:
+    tmpdir: /tmp/molecule
+
+  tasks:
+    - name: Copy certs
+      ansible.builtin.copy:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+        owner: root
+        group: tls
+        mode: "{{ item.mode }}"
+      loop:
+        - src: "{{ tmpdir }}/primary.crt"
+          dest: /etc/tls/primary.crt
+          mode: "0644"
+        - src: "{{ tmpdir }}/primary.key"
+          dest: /etc/tls/primary.key
+          mode: "0640"
+
+
+- name: Copy certificates on replica
+  hosts: replica
+  become: true
+
+  vars:
+    tmpdir: /tmp/molecule
+
+  tasks:
+    - name: Copy certs
+      ansible.builtin.copy:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+        owner: root
+        group: tls
+        mode: "{{ item.mode }}"
+      loop:
+        - src: "{{ tmpdir }}/replica.crt"
+          dest: /etc/tls/replica.crt
+          mode: "0644"
+        - src: "{{ tmpdir }}/replica.key"
+          dest: /etc/tls/replica.key
+          mode: "0640"
+
+
+- name: Install minimal pgBackRest and PostgreSQL
+  hosts: molecule
+  become: true
+  roles:
+    - pgbackrest
+    - postgresql
+  vars:
+    pgbackrest_full_install: false
+    postgresql_version: 15
+
+- name: Finalize pgBackRest configuration
+  hosts: molecule
+  become: true
+  roles:
+    - pgbackrest
+  vars:
+    postgresql_version: 15
+
+- name: Upgrade PostgreSQL
+  hosts: molecule
+  become: true
+  roles:
+    - postgresql
+  vars:
+    postgresql_upgrade_from_version: 15
+    postgresql_version: 18

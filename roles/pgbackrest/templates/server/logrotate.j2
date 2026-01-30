@@ -1,0 +1,11 @@
+{{ ansible_managed | comment }}
+/var/log/pgbackrest-server/*.log {
+    weekly
+    rotate 10
+    delaycompress
+    compress
+    notifempty
+    missingok
+    su root root
+    copytruncate
+}

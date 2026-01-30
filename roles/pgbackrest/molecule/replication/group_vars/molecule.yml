@@ -1,0 +1,28 @@
+---
+ansible_connection: containers.podman.podman
+container_image: docker.io/geerlingguy/docker-debian12-ansible:latest
+
+postgresql_version: 18
+postgresql_superuser_password: CHANGEME
+postgresql_listen_addresses:
+  - '*'
+postgresql_manage_replication: true
+postgresql_replication_username: repl
+postgresql_replication_password: CHANGEME
+postgresql_replication_network: all
+postgresql_manage_pgpass: true
+postgresql_archive_command: 'pgbackrest --stanza=main --log-level-console=warn archive-push %p'
+postgresql_restore_command: 'pgbackrest --stanza=main --log-level-console=warn archive-get %f "%p"'
+
+pgbackrest_agent_address: 0.0.0.0
+pgbackrest_agent_port: 8433
+pgbackrest_agent_allowed_users:
+  replica: main
+pgbackrest_agent_repositories:
+  - host: replica
+    port: 8432
+    user: pgbackrest
+    config: /etc/pgbackrest-server/pgbackrest.conf
+pgbackrest_agent_stanzas:
+  main:
+    - pg-path: "/var/lib/postgresql/{{ postgresql_version }}/main"

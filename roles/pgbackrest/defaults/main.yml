@@ -1,0 +1,56 @@
+---
+pgbackrest_role: standalone
+pgbackrest_settings: {}
+pgbackrest_schedules: {}
+pgbackrest_service_after: []
+# pgbackrest_notification_command:
+pgbackrest_notification_message_start: starting
+pgbackrest_notification_message_stop: done
+pgbackrest_full_install: true
+pgbackrest_additional_groups: []
+##############
+# STANDALONE #
+##############
+pgbackrest_user: postgres
+pgbackrest_group: postgres
+pgbackrest_repositories: []
+pgbackrest_stanzas: {}
+#########
+# AGENT #
+#########
+pgbackrest_agent_user: postgres
+pgbackrest_agent_group: postgres
+pgbackrest_agent_address: localhost
+pgbackrest_agent_port: 8432
+# pgbackrest_agent_tls_ca:
+pgbackrest_agent_tls_ca_file: /etc/pgbackrest/ca.crt
+# pgbackrest_agent_tls_cert:
+pgbackrest_agent_tls_cert_file: /etc/pgbackrest/server.crt
+# pgbackrest_agent_tls_key:
+pgbackrest_agent_tls_key_file: /etc/pgbackrest/server.key
+pgbackrest_agent_stanzas: {}
+pgbackrest_agent_allowed_users: {}
+pgbackrest_agent_repositories:
+  - host: localhost
+    port: 8432
+    user: pgbackrest
+    config: /etc/pgbackrest-server/pgbackrest.conf
+
+##########
+# SERVER #
+##########
+pgbackrest_server_user: pgbackrest
+pgbackrest_server_user_home: /var/lib/pgbackrest
+pgbackrest_server_group: pgbackrest
+pgbackrest_server_address: localhost
+pgbackrest_server_port: 8432
+# pgbackrest_server_tls_ca:
+pgbackrest_server_tls_ca_file: /etc/pgbackrest-server/ca.crt
+# pgbackrest_server_tls_cert:
+pgbackrest_server_tls_cert_file: /etc/pgbackrest-server/server.crt
+# pgbackrest_server_tls_key:
+pgbackrest_server_tls_key_file: /etc/pgbackrest-server/server.key
+pgbackrest_server_repositories: []
+pgbackrest_server_stanzas: {}
+pgbackrest_server_allowed_users: {}
+pgbackrest_server_lock_path: /tmp/pgbackrest-server

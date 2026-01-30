@@ -1,0 +1,27 @@
+---
+- name: Check variables
+  ansible.builtin.assert:
+    that:
+      - pgbackrest_config_file is defined # Path to the configuration file
+      - pgbackrest_command_user is defined # Name of the user to run the command
+      - pgbackrest_stanza_name is defined # Name of the stanza to look in the info
+
+- name: Gather stanza info
+  when: pgbackrest_stanza_info is not defined or pgbackrest_stanza_name not in pgbackrest_stanza_info
+  block:
+    - name: Gather stanza info
+      ansible.builtin.command:
+        cmd: >-
+          pgbackrest
+            --config {{ pgbackrest_config_file }}
+            --stanza {{ pgbackrest_stanza_name }}
+            --output=json
+            info
+      become: true
+      become_user: "{{ pgbackrest_command_user }}"
+      changed_when: false
+      register: pgbackrest_stanza_info
+
+    - name: Convert stanza info
+      ansible.builtin.set_fact:
+        pgbackrest_stanza_info: "{{ pgbackrest_stanza_info.stdout | from_json }}"

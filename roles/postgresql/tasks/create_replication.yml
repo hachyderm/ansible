@@ -1,0 +1,71 @@
+---
+- name: Stat automatic configuration
+  ansible.builtin.command:
+    cmd: >-
+      grep -qE '^primary_conninfo' {{ postgresql_data_directory }}/postgresql.auto.conf
+  register: postgresql_primary_conninfo_line
+  changed_when: false
+  failed_when: false
+
+- name: Initialize data directory with pg_basebackup
+  when: postgresql_primary_conninfo_line.rc != 0
+  block:
+    - name: Wait for primary to be up and running
+      environment:
+        PGUSER: "{{ postgresql_replication_username }}"
+        PGPASSWORD: "{{ postgresql_replication_password }}"
+      ansible.builtin.command:
+        cmd: "pg_isready -h {{ postgresql_primary_host }} -p {{ postgresql_primary_port }}"
+      register: postgresql_wait_for_primary
+      retries: 10
+      delay: 10
+      until: postgresql_wait_for_primary.rc == 0
+      changed_when: false
+
+    - name: Ensure service is stopped
+      ansible.builtin.include_tasks: stop_service.yml
+
+    - name: Remove data directory
+      ansible.builtin.file:
+        path: "{{ postgresql_data_directory }}"
+        state: absent
+
+    - name: Create data directory
+      ansible.builtin.file:
+        path: "{{ postgresql_data_directory }}"
+        state: directory
+        mode: "0700"
+        owner: postgres
+        group: postgres
+
+    - name: Delete replication slot
+      become: true
+      become_user: postgres
+      community.postgresql.postgresql_slot:
+        login_host: "{{ postgresql_primary_host }}"
+        login_port: "{{ postgresql_primary_port }}"
+        login_user: "{{ postgresql_replication_username }}"
+        login_password: "{{ postgresql_replication_password }}"
+        login_db: postgres
+        slot_name: "{{ postgresql_replication_slot_name | replace('-', '_') | replace('.', '_') }}"
+        state: absent
+
+    - name: Copy data directory
+      become: true
+      become_user: postgres
+      ansible.builtin.command:
+        cmd: >-
+          pg_basebackup
+            --pgdata={{ postgresql_data_directory }}
+            --write-recovery-conf
+            --create-slot
+            --slot={{ postgresql_replication_slot_name | replace('-', '_') | replace('.', '_') }}
+        creates: "{{ postgresql_data_directory }}/PG_VERSION"
+      environment:
+        PGHOST: "{{ postgresql_primary_host }}"
+        PGPORT: "{{ postgresql_primary_port }}"
+        PGUSER: "{{ postgresql_replication_username }}"
+        PGPASSWORD: "{{ postgresql_replication_password }}"
+
+- name: Ensure service is up and running
+  ansible.builtin.include_tasks: start_service.yml

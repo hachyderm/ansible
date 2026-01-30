@@ -1,0 +1,5 @@
+{{ ansible_managed | comment }}
+*:*:*:postgres:{{ postgresql_superuser_password }}
+{% if postgresql_manage_replication and postgresql_instance_role == 'replica' %}
+{{ postgresql_primary_host }}:{{ postgresql_primary_port }}:replication:{{ postgresql_replication_username }}:{{ postgresql_replication_password }}
+{% endif %}

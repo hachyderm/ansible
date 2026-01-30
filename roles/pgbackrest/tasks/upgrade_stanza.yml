@@ -1,0 +1,40 @@
+---
+- name: Check variables
+  ansible.builtin.assert:
+    that:
+      - pgbackrest_config_file is defined # Path to the configuration file
+      - pgbackrest_command_user is defined # Name of the user to run the command
+      - pgbackrest_stanza_name is defined # Name of the stanza to look in the info
+
+- name: Detect if stanza needs to be upgraded
+  ansible.builtin.command:
+    cmd: "pgbackrest --config {{ pgbackrest_config_file }} --stanza {{ pgbackrest_stanza_name }} check"
+  become: true
+  become_user: "{{ pgbackrest_command_user }}"
+  changed_when: false
+  ignore_errors: true
+  register: pgbackrest_check_stanza_command
+
+- name: Upgrade stanza
+  ansible.builtin.command:
+    cmd: >-
+      pgbackrest
+        --log-level-console=info
+        --config={{ pgbackrest_config_file }}
+        --stanza={{ pgbackrest_stanza_name }}
+          stanza-upgrade
+  when: >-
+    pgbackrest_check_stanza_command.rc != 0
+    and pgbackrest_check_stanza_command.stdout_lines
+      | regex_search('HINT: did an error occur during stanza-upgrade\?') is truthy
+  become: true
+  become_user: "{{ pgbackrest_command_user }}"
+  register: pgbackrest_stanza_upgrade_command
+  retries: 5
+  delay: 5
+  until: pgbackrest_stanza_upgrade_command.rc == 0
+  changed_when: >-
+    not (
+      pgbackrest_stanza_upgrade_command.stdout_lines
+        | regex_search("stanza '" + pgbackrest_stanza_name +"' on repo[0-9]+ is already up to date")
+    )

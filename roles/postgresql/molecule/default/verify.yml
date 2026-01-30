@@ -1,0 +1,22 @@
+---
+- name: Verify
+  hosts: molecule
+  become: true
+  tasks:
+    - name: Check required packages are installed
+      ansible.builtin.package_facts:
+        manager: auto
+
+    - name: Verify PostgreSQL is installed
+      ansible.builtin.assert:
+        that: "'postgresql-' + postgresql_version | string in ansible_facts.packages"
+        fail_msg: "postgresql-{{ postgresql_version | string }} package is not installed"
+
+    - name: Verify service is up and running
+      ansible.builtin.command:
+        cmd: pg_isready
+      environment:
+        PGUSER: postgres
+        PGPASSWORD: "{{ postgresql_superuser_password }}"
+        PGPORT: "{{ postgresql_port | default('5432') }}"
+      changed_when: false

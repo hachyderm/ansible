@@ -1,0 +1,43 @@
+---
+- name: Flush handlers
+  ansible.builtin.meta: flush_handlers
+
+- name: Create and upgrade standalone stanzas
+  when: pgbackrest_role == "standalone"
+  block:
+    - name: Create standalone stanzas
+      ansible.builtin.include_tasks: create_stanza.yml
+      loop: "{{ pgbackrest_stanzas.keys() }}"
+      loop_control:
+        loop_var: pgbackrest_stanza_name
+
+    - name: Upgrade standalone stanzas
+      ansible.builtin.include_tasks: upgrade_stanza.yml
+      loop: "{{ pgbackrest_stanzas.keys() }}"
+      loop_control:
+        loop_var: pgbackrest_stanza_name
+
+- name: Create and upgrade server stanzas
+  when: pgbackrest_role in ("server", "both")
+  block:
+    - name: Create server stanzas
+      ansible.builtin.include_tasks: create_stanza.yml
+      loop: "{{ pgbackrest_server_stanzas.keys() }}"
+      loop_control:
+        loop_var: pgbackrest_stanza_name
+
+    - name: Upgrade server stanzas
+      ansible.builtin.include_tasks: upgrade_stanza.yml
+      loop: "{{ pgbackrest_server_stanzas.keys() }}"
+      loop_control:
+        loop_var: pgbackrest_stanza_name
+
+- name: Check configuration
+  ansible.builtin.command:
+    cmd: "pgbackrest --config {{ pgbackrest_config_file }} check"
+  become: true
+  become_user: "{{ pgbackrest_command_user }}"
+  changed_when: false
+
+- name: Configure schedules
+  ansible.builtin.include_tasks: configure_schedules.yml

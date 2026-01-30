@@ -1,0 +1,23 @@
+---
+- name: Verify
+  hosts: molecule
+  become: true
+  tasks:
+    - name: Check required packages are installed
+      ansible.builtin.package_facts:
+        manager: auto
+
+    - name: Verify PgBouncer is installed
+      ansible.builtin.assert:
+        that: "'pgbouncer' in ansible_facts.packages"
+        fail_msg: "pgbouncer package is not installed"
+
+    - name: Verify service is up and running
+      ansible.builtin.command:
+        cmd: pg_isready
+      environment:
+        PGUSER: test
+        PGPASSWORD: test
+        PGHOSTADDR: 127.0.0.1
+        PGPORT: "{{ pgbouncer_listen_port | default('6432') }}"
+      changed_when: false

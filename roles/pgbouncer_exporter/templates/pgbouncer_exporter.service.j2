@@ -1,0 +1,22 @@
+{{ ansible_managed | comment }}
+
+[Unit]
+Description=Prometheus PgBouncer Exporter
+After=network-online.target
+
+[Service]
+Type=simple
+User={{ pgbouncer_exporter_user }}
+Group={{ pgbouncer_exporter_group }}
+EnvironmentFile=-/etc/default/pgbouncer_exporter
+ExecStart=/usr/local/bin/pgbouncer_exporter \
+    '--web.telemetry-path={{ pgbouncer_exporter_telemetry_path }}' \
+    '--web.listen-address=0.0.0.0:{{ pgbouncer_exporter_port }}'
+
+SyslogIdentifier=pgbouncer_exporter
+Restart=always
+RestartSec=1
+StartLimitInterval=0
+
+[Install]
+WantedBy=multi-user.target

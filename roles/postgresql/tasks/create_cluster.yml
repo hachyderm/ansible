@@ -1,0 +1,38 @@
+---
+- name: Check if cluster has been created
+  ansible.builtin.stat:
+    path: "/etc/postgresql/{{ postgresql_version }}/{{ postgresql_cluster_name }}"
+  register: postgresql_config_path_stat
+
+- name: Create cluster
+  when: not postgresql_config_path_stat.stat.exists
+  block:
+    - name: Create temporary file for superuser password
+      ansible.builtin.tempfile:
+        state: file
+      register: postgresql_pwfile
+
+    - name: Write superuser password into the temporary file
+      ansible.builtin.copy:
+        content: "{{ postgresql_superuser_password }}"
+        dest: "{{ postgresql_pwfile.path }}"
+        owner: postgres
+        group: postgres
+        mode: "0600"
+
+    - name: Create cluster and initialize data directory
+      ansible.builtin.command:
+        cmd: >-
+          pg_createcluster {{ postgresql_version }} {{ postgresql_cluster_name }}
+          -d {{ postgresql_data_directory }}
+          --
+          --username=postgres
+          --pwfile={{ postgresql_pwfile.path }}
+      register: postgresql_result
+      changed_when: postgresql_result.rc == 0
+
+  always:
+    - name: Remove temporary file for superuser password
+      ansible.builtin.file:
+        path: "{{ postgresql_pwfile.path }}"
+        state: absent

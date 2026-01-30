@@ -1,0 +1,50 @@
+---
+- name: Verify
+  hosts: molecule
+  become: true
+  tasks:
+    - name: Check required packages are installed
+      ansible.builtin.package_facts:
+        manager: auto
+
+    - name: Verify PostgreSQL is installed
+      ansible.builtin.assert:
+        that: "'postgresql-' + postgresql_version | string in ansible_facts.packages"
+        fail_msg: "postgresql-{{ postgresql_version | string }} package is not installed"
+
+    - name: Verify service is up and running
+      ansible.builtin.command:
+        cmd: pg_isready
+      environment: &environment
+        PGUSER: postgres
+        PGPASSWORD: "{{ postgresql_superuser_password }}"
+        PGPORT: "{{ postgresql_port | default('5432') }}"
+      changed_when: false
+
+    - name: Insert data on primary
+      community.postgresql.postgresql_query:
+        login_db: postgres
+        query: >-
+          begin;
+          create table if not exists test (id smallint primary key);
+          insert into test values (1) on conflict do nothing;
+          commit;
+      environment: *environment
+      when: postgresql_instance_role | default("primary") == "primary"
+
+    - name: Wait for data to be replicated
+      ansible.builtin.wait_for:
+        timeout: 1
+
+    - name: Check that data has been replicated
+      community.postgresql.postgresql_query:
+        login_db: postgres
+        query: select id from test limit 1
+      environment: *environment
+      register: postgresql_query
+
+    - name: Verify the replicated data
+      ansible.builtin.assert:
+        that:
+          - postgresql_query.rowcount == 1
+          - postgresql_query.query_result[0].id == 1

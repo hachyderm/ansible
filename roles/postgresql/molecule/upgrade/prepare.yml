@@ -1,0 +1,26 @@
+---
+- name: Prepare
+  hosts: molecule
+  become: true
+
+  vars:
+    postgresql_version: 15
+
+  tasks:
+    - name: Configure PostgreSQL
+      ansible.builtin.include_role:
+        name: postgresql
+
+    - name: Insert data on primary
+      when: postgresql_instance_role | default("primary") == "primary"
+      community.postgresql.postgresql_query:
+        login_db: postgres
+        query: >-
+          begin;
+          create table if not exists upgrade (id smallint primary key);
+          insert into upgrade values (1) on conflict do nothing;
+          commit;
+      environment:
+        PGUSER: postgres
+        PGPASSWORD: "{{ postgresql_superuser_password }}"
+        PGPORT: "{{ postgresql_port | default('5432') }}"

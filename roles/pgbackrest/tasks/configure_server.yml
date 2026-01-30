@@ -1,0 +1,108 @@
+---
+- name: Create server user
+  ansible.builtin.user:
+    name: "{{ pgbackrest_server_user }}"
+    shell: /bin/bash
+    password: "!"
+    home: "{{ pgbackrest_server_user_home }}"
+    create_home: true
+
+- name: Add server user to additional groups
+  ansible.builtin.user:
+    name: "{{ pgbackrest_server_user }}"
+    groups: "{{ pgbackrest_additional_groups }}"
+    append: true
+  when: pgbackrest_additional_groups | length > 0
+
+- name: Create server directories
+  ansible.builtin.file:
+    state: directory
+    path: "{{ item }}"
+    owner: "{{ pgbackrest_server_user }}"
+    group: "{{ pgbackrest_server_group }}"
+    mode: "0755"
+  loop:
+    - /etc/pgbackrest-server
+    - /var/log/pgbackrest-server
+    - /var/lib/pgbackrest
+
+- name: Create logrotate file
+  ansible.builtin.template:
+    src: server/logrotate.j2
+    dest: /etc/logrotate.d/pgbackrest-server
+    mode: "0644"
+    owner: root
+    group: root
+
+- name: Create server user environment
+  ansible.builtin.lineinfile:
+    path: "{{ pgbackrest_server_user_home }}/.bash_profile"
+    line: "export PGBACKREST_CONFIG_PATH=/etc/pgbackrest-server"
+    create: true
+    owner: "{{ pgbackrest_server_user }}"
+    group: "{{ pgbackrest_server_group }}"
+    mode: "0644"
+
+- name: Copy CA file for server
+  ansible.builtin.copy:
+    dest: "{{ pgbackrest_server_tls_ca_file }}"
+    owner: "{{ pgbackrest_server_user }}"
+    group: "{{ pgbackrest_server_group }}"
+    mode: "0644"
+    content: "{{ pgbackrest_server_tls_ca }}"
+  when: pgbackrest_server_tls_ca is defined
+  notify: Restart server
+
+- name: Copy cert file for server
+  ansible.builtin.copy:
+    dest: "{{ pgbackrest_server_tls_cert_file }}"
+    owner: "{{ pgbackrest_server_user }}"
+    group: "{{ pgbackrest_server_group }}"
+    mode: "0644"
+    content: "{{ pgbackrest_server_tls_cert }}"
+  when: pgbackrest_server_tls_cert is defined
+  notify: Restart server
+
+- name: Copy key file for server
+  ansible.builtin.copy:
+    dest: "{{ pgbackrest_server_tls_key_file }}"
+    owner: "{{ pgbackrest_server_user }}"
+    group: "{{ pgbackrest_server_group }}"
+    mode: "0600"
+    content: "{{ pgbackrest_server_tls_key }}"
+  when: pgbackrest_server_tls_key is defined
+  notify: Restart server
+  no_log: true
+
+- name: Create server configuration file
+  ansible.builtin.template:
+    src: server/pgbackrest.conf.j2
+    dest: /etc/pgbackrest-server/pgbackrest.conf
+    owner: "{{ pgbackrest_server_user }}"
+    group: "{{ pgbackrest_server_group }}"
+    mode: "0640"
+  notify: Restart server
+
+- name: Configure server service
+  ansible.builtin.template:
+    src: server/pgbackrest-server.service.j2
+    dest: /etc/systemd/system/pgbackrest-server.service
+    owner: root
+    group: root
+    mode: "0644"
+  notify:
+    - Reload systemd
+    - Restart server
+
+- name: Start server
+  ansible.builtin.service:
+    name: pgbackrest-server.service
+    state: started
+    enabled: true
+
+- name: Finish configuration
+  when: pgbackrest_full_install
+  ansible.builtin.include_tasks: finish_configuration.yml
+  vars:
+    pgbackrest_config_file: /etc/pgbackrest-server/pgbackrest.conf
+    pgbackrest_command_user: "{{ pgbackrest_server_user }}"

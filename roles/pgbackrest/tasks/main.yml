@@ -1,0 +1,37 @@
+---
+- name: Check requirements
+  ansible.builtin.assert:
+    that:
+      - ansible_facts['distribution'] == "Debian"
+      - pgbackrest_role in ("standalone", "server", "agent", "both")
+      - pgbackrest_server_port != pgbackrest_agent_port or pgbackrest_role != "both"
+      - (pgbackrest_role == "standalone" and pgbackrest_stanzas != {}) or (pgbackrest_role in ("agent", "both") and pgbackrest_agent_stanzas != {}) or
+        (pgbackrest_role in ("server", "both") and pgbackrest_server_stanzas != {})
+  delegate_to: localhost
+
+- name: Install required packages
+  ansible.builtin.package:
+    name:
+      - acl # required to create stanzas using an underprivileged user
+    update_cache: true
+
+- name: Install pgbackrest
+  ansible.builtin.package:
+    name: pgbackrest
+
+- name: Remove old configuration file
+  ansible.builtin.file:
+    path: /etc/pgbackrest.conf
+    state: absent
+
+- name: Configure agent
+  ansible.builtin.include_tasks: configure_agent.yml
+  when: pgbackrest_role in ("agent", "both")
+
+- name: Configure server
+  ansible.builtin.include_tasks: configure_server.yml
+  when: pgbackrest_role in ("server", "both")
+
+- name: Configure standalone
+  when: pgbackrest_role == "standalone"
+  ansible.builtin.include_tasks: configure_standalone.yml

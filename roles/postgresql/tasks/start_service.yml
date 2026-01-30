@@ -1,0 +1,5 @@
+---
+- name: Ensure service is up and running
+  ansible.builtin.service:
+    name: "postgresql@{{ postgresql_version }}-{{ postgresql_cluster_name }}.service"
+    state: started

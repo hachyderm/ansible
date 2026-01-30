@@ -1,0 +1,37 @@
+{{ ansible_managed | comment(decoration="; ") }}
+
+{% if pgbouncer_databases %}
+[databases]
+{% for name, settings in pgbouncer_databases.items() %}
+{{ name }} = {{ settings }}
+{% endfor %}
+{% endif %}
+
+{% if pgbouncer_users %}
+[users]
+{% for name, settings in pgbouncer_users.items() %}
+{{ name }} = {{ settings }}
+{% endfor %}
+{% endif %}
+
+[pgbouncer]
+logfile = {{ pgbouncer_logfile }}
+pidfile = {{ pgbouncer_pidfile }}
+listen_addr = {{ pgbouncer_listen_addr | join(",") }}
+listen_port = {{ pgbouncer_listen_port }}
+auth_type = {{ pgbouncer_auth_type }}
+auth_file = {{ pgbouncer_auth_file }}
+{% if pgbouncer_admin_users %}
+admin_users = {{ pgbouncer_admin_users | join(",") }}
+{% endif %}
+{% if pgbouncer_stats_users %}
+stats_users = {{ pgbouncer_stats_users | join(",") }}
+{% endif %}
+max_client_conn = {{ pgbouncer_max_client_conn }}
+default_pool_size = {{ pgbouncer_default_pool_size }}
+{% if pgbouncer_pool_mode is defined %}
+pool_mode = {{ pgbouncer_pool_mode }}
+{% endif %}
+{% if pgbouncer_ignore_startup_parameters %}
+ignore_startup_parameters = {{ pgbouncer_ignore_startup_parameters | join(",") }}
+{% endif %}

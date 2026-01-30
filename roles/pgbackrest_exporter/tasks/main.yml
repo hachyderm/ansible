@@ -1,0 +1,46 @@
+---
+- name: Check the version
+  ansible.builtin.command:
+    cmd: pgbackrest_exporter --version
+  changed_when: false
+  ignore_errors: true
+  register: pgbackrest_exporter_version_cmd
+
+- name: Install if the version differs
+  when: >-
+    pgbackrest_exporter_version_cmd.failed
+    or pgbackrest_exporter_version not in pgbackrest_exporter_version_cmd.stderr_lines[0]
+  ansible.builtin.include_tasks: install.yml
+
+- name: Create group
+  become: true
+  ansible.builtin.group:
+    name: "{{ pgbackrest_exporter_group }}"
+
+- name: Create user
+  become: true
+  ansible.builtin.user:
+    name: "{{ pgbackrest_exporter_user }}"
+    system: true
+    password: "!"
+    create_home: false
+    group: "{{ pgbackrest_exporter_group }}"
+
+- name: Create service file
+  become: true
+  ansible.builtin.template:
+    src: pgbackrest_exporter.service.j2
+    dest: /etc/systemd/system/pgbackrest_exporter.service
+    mode: "0644"
+    owner: root
+    group: root
+  notify:
+    - Reload systemd
+    - Restart service
+
+- name: Start service
+  become: true
+  ansible.builtin.service:
+    name: pgbackrest_exporter
+    state: started
+    enabled: true

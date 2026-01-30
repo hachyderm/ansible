@@ -1,0 +1,7 @@
+{{ ansible_managed | comment }}
+{% if postgresql_archive_command is defined %}
+archive_command = '{{ postgresql_archive_command }}'
+{% endif %}
+{% if postgresql_restore_command is defined %}
+restore_command = '{{ postgresql_restore_command }}'
+{% endif %}
