@@ -1,0 +1,40 @@
+---
+- name: Verify
+  hosts: molecule
+  tasks:
+    - name: Include default vars
+      ansible.builtin.include_vars:
+        dir: '{{ lookup("env", "MOLECULE_PROJECT_DIRECTORY") }}/defaults/'
+        extensions:
+          - 'yml'
+
+    - name: Check binary file
+      ansible.builtin.stat:
+        path: /usr/local/bin/pgbouncer_exporter
+      register: pgbouncer_exporter_binary
+
+    - name: Verify binary file exists
+      ansible.builtin.assert:
+        that: pgbouncer_exporter_binary.stat.exists
+
+    - name: Check the version
+      ansible.builtin.command:
+        cmd: pgbouncer_exporter --version
+      changed_when: false
+      register: pgbouncer_exporter_version_cmd
+
+    - name: Verify the expected version
+      ansible.builtin.assert:
+        that: pgbouncer_exporter_version in pgbouncer_exporter_version_cmd.stderr_lines[0]
+
+    - name: Check telemetry endpoint
+      ansible.builtin.uri:
+        url: "http://{{ ansible_host }}:9127/metrics"
+        method: GET
+        status_code: 200
+        return_content: true
+      register: pgbouncer_exporter_telemetry
+
+    - name: Verify PgBouncer is up
+      ansible.builtin.assert:
+        that: not pgbouncer_exporter_telemetry.content | regex_search('^pgbouncer_up 0$', multiline=True)

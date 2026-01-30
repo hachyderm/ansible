@@ -1,0 +1,46 @@
+{{ ansible_managed | comment }}
+
+[global]
+tls-server-address={{ pgbackrest_agent_address }}
+tls-server-port={{ pgbackrest_agent_port }}
+tls-server-ca-file={{ pgbackrest_agent_tls_ca_file }}
+tls-server-cert-file={{ pgbackrest_agent_tls_cert_file }}
+tls-server-key-file={{ pgbackrest_agent_tls_key_file }}
+{% for hostname, stanza in pgbackrest_agent_allowed_users.items() %}
+tls-server-auth={{ hostname }}={{ stanza }}
+{% endfor %}
+{% if pgbackrest_settings %}
+{% for k, v in pgbackrest_settings.items() %}
+{{ k }}={{ v }}
+{% endfor %}
+{% endif %}
+{% if pgbackrest_agent_repositories %}
+{% for repo in pgbackrest_agent_repositories %}
+{% set repo_id = loop.index %}
+{% for k, v in repo.items() %}
+{% if k == "host" %}
+repo{{ repo_id }}-host={{ v }}
+{% else %}
+repo{{ repo_id }}-host-{{ k }}={{ v }}
+{% endif %}
+{% endfor %}
+repo{{ repo_id }}-host-type=tls
+repo{{ repo_id }}-host-ca-file={{ pgbackrest_agent_tls_ca_file }}
+repo{{ repo_id }}-host-cert-file={{ pgbackrest_agent_tls_cert_file }}
+repo{{ repo_id }}-host-key-file={{ pgbackrest_agent_tls_key_file }}
+{% endfor %}
+{% endif %}
+
+{% if pgbackrest_agent_stanzas %}
+{% for stanza, servers in pgbackrest_agent_stanzas.items() %}
+[{{ stanza }}]
+{% if servers %}
+{% for server in servers %}
+{% set server_id = loop.index %}
+{% for k, v in server.items() %}
+pg{{ server_id }}-{{ k | regex_replace('^pg([0-9].*)?-', '') }}={{ v }}
+{% endfor %}
+{% endfor %}
+{% endif %}
+{% endfor %}
+{% endif %}

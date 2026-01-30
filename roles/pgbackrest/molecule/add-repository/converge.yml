@@ -1,0 +1,6 @@
+---
+- name: Converge
+  hosts: molecule
+  become: true
+  roles:
+    - pgbackrest

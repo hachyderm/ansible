@@ -1,0 +1,6 @@
+---
+- name: Prepare
+  hosts: molecule
+  become: true
+  roles:
+    - postgresql

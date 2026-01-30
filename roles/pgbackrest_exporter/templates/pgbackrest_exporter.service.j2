@@ -1,0 +1,22 @@
+{{ ansible_managed | comment }}
+
+[Unit]
+Description=Prometheus pgBackRest Exporter
+After=network-online.target
+
+[Service]
+Type=simple
+User={{ pgbackrest_exporter_user }}
+Group={{ pgbackrest_exporter_group }}
+ExecStart=/usr/local/bin/pgbackrest_exporter \
+    '--backrest.config={{ pgbackrest_exporter_config_file }}' \
+    '--web.listen-address=0.0.0.0:{{ pgbackrest_exporter_port }}' \
+    '--web.telemetry-path={{ pgbackrest_exporter_telemetry_path }}'
+
+SyslogIdentifier=pgbackrest_exporter
+Restart=always
+RestartSec=1
+StartLimitInterval=0
+
+[Install]
+WantedBy=multi-user.target

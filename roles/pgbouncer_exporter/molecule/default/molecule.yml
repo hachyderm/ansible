@@ -1,0 +1,28 @@
+---
+ansible:
+  executor:
+    args:
+      ansible_playbook:
+        - --inventory=inventory/
+  env:
+    ANSIBLE_ROLES_PATH: ../../../../roles
+  playbooks:
+    create: ../create.yml
+    prepare: prepare.yml
+    converge: converge.yml
+    verify: ../verify.yml
+    destroy: ../destroy.yml
+
+dependency:
+  name: galaxy
+  options:
+    requirements-file: ${MOLECULE_SCENARIO_DIRECTORY}/../requirements.yml
+
+scenario:
+  test_sequence:
+    - create
+    - prepare
+    - converge
+    - idempotence
+    - verify
+    - destroy

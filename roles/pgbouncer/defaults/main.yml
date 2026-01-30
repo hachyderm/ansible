@@ -1,0 +1,18 @@
+---
+pgbouncer_databases: {}
+pgbouncer_users: {}
+pgbouncer_listen_addr:
+  - localhost
+pgbouncer_listen_port: 6432
+pgbouncer_logfile: /var/log/postgresql/pgbouncer.log
+pgbouncer_pidfile: /var/run/postgresql/pgbouncer.pid
+pgbouncer_auth_type: scram-sha-256
+pgbouncer_auth_file: /etc/pgbouncer/userlist.txt
+pgbouncer_admin_users: []
+pgbouncer_stats_users: []
+pgbouncer_max_client_conn: 100
+pgbouncer_default_pool_size: 20
+# pgbouncer_pool_mode:
+pgbouncer_ignore_startup_parameters: []
+pgbouncer_auth_users: []
+pgbouncer_service_after: []

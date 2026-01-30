@@ -1,0 +1,11 @@
+---
+- name: Prepare
+  hosts: molecule
+  become: true
+  roles:
+    - postgresql
+    - pgbouncer
+    - pgbouncer_exporter
+  vars:
+    pgbouncer_exporter_version: 0.10.2
+    pgbouncer_exporter_checksum: 5aaf5f7576fb3ed5bd8b3ed932e07faccf4f5cc1043a9580a7cf2046d2fe962b

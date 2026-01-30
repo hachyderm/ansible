@@ -1,0 +1,15 @@
+{{ ansible_managed | comment }}
+[Service]
+# See https://www.pgbouncer.org/config.html (max_client_conn)
+LimitNOFILE={{
+    [pgbouncer_max_client_conn +
+     pgbouncer_default_pool_size *
+        [(pgbouncer_databases | length), 1] | max *
+        [(pgbouncer_users | length), 1] | max,
+     1024] | max
+}}
+
+{% if pgbouncer_service_after %}
+[Unit]
+After={{ pgbouncer_service_after | join(" ") }}
+{% endif %}

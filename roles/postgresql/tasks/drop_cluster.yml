@@ -1,0 +1,25 @@
+---
+- name: Check variables
+  ansible.builtin.assert:
+    that:
+      - postgresql_cluster_version is defined
+      - postgresql_cluster_name is defined
+
+- name: "Stop cluster {{ postgresql_cluster_version | string + '/' + postgresql_cluster_name | string }}"
+  ansible.builtin.service:
+    name: "postgresql@{{ postgresql_cluster_version }}-{{ postgresql_cluster_name }}.service"
+    state: stopped
+
+- name: "Drop cluster {{ postgresql_cluster_version | string + '/' + postgresql_cluster_name | string }}"
+  ansible.builtin.command:
+    cmd: "pg_dropcluster {{ postgresql_cluster_version }} {{ postgresql_cluster_name }}"
+    removes: "/var/lib/postgresql/{{ postgresql_cluster_version }}/PG_VERSION"
+  changed_when: true
+
+- name: "Delete cluster directories of {{ postgresql_cluster_version | string + '/' + postgresql_cluster_name | string }}"
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - "/etc/postgresql/{{ postgresql_cluster_version }}/{{ postgresql_cluster_name }}"
+    - "/var/lib/postgresql/{{ postgresql_cluster_version }}/{{ postgresql_cluster_name }}"

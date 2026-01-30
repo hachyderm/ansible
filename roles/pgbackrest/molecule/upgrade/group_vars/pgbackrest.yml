@@ -1,0 +1,15 @@
+---
+pgbackrest_additional_groups:
+  - tls
+pgbackrest_agent_address: 0.0.0.0
+pgbackrest_agent_port: 8433
+pgbackrest_agent_allowed_users:
+  replica: main
+pgbackrest_agent_repositories:
+  - host: replica
+    port: 8432
+    user: pgbackrest
+    config: /etc/pgbackrest-server/pgbackrest.conf
+pgbackrest_agent_stanzas:
+  main:
+    - pg-path: "/var/lib/postgresql/{{ postgresql_version }}/main"

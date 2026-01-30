@@ -1,0 +1,48 @@
+---
+- name: Check requirements
+  ansible.builtin.assert:
+    that:
+      - ansible_facts['distribution'] == "Debian"
+
+- name: Install pgbouncer
+  ansible.builtin.package:
+    name: pgbouncer
+
+- name: Create service override directory
+  ansible.builtin.file:
+    path: /etc/systemd/system/pgbouncer.service.d
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Add service override
+  ansible.builtin.template:
+    src: override.conf.j2
+    dest: /etc/systemd/system/pgbouncer.service.d/override.conf
+    owner: root
+    group: root
+    mode: "0644"
+  notify:
+    - Reload systemd
+    - Restart pgbouncer
+
+- name: Configure pgbouncer
+  ansible.builtin.template:
+    src: pgbouncer.ini.j2
+    dest: /etc/pgbouncer/pgbouncer.ini
+    owner: postgres
+    group: postgres
+    mode: "0640"
+  notify:
+    - Restart pgbouncer
+
+- name: Configure auth file
+  ansible.builtin.template:
+    src: auth_file.j2
+    dest: "{{ pgbouncer_auth_file }}"
+    owner: postgres
+    group: postgres
+    mode: "0640"
+  notify:
+    - Reload pgbouncer

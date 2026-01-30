@@ -1,0 +1,22 @@
+{{ ansible_managed | comment }}
+include 'postgresql.base.conf'
+include_dir 'conf.d'
+
+{% if postgresql_manage_replication %}
+wal_level = '{{ postgresql_wal_level }}'
+max_wal_senders = '{{ postgresql_max_number_of_replicas }}'
+max_replication_slots = '{{ postgresql_max_number_of_replicas }}'
+{% if postgresql_instance_role == 'replica' %}
+hot_standby = 'on'
+{% endif %}
+{% endif %}
+
+data_directory = '{{ postgresql_data_directory }}'
+listen_addresses = '{{ postgresql_listen_addresses | join(',') }}'
+port = '{{ postgresql_port }}'
+archive_mode = '{{ postgresql_archive_mode }}'
+logging_collector = '{{ postgresql_logging_collector }}'
+
+{% for k, v in postgresql_settings.items() %}
+{{ k }} = '{{ v }}'
+{% endfor %}

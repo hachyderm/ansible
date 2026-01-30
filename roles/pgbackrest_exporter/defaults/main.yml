@@ -1,0 +1,14 @@
+---
+pgbackrest_exporter_version: 0.22.0
+pgbackrest_exporter_os: linux
+pgbackrest_exporter_arch: x86_64
+# yamllint disable-line rule:line-length
+pgbackrest_exporter_download_url: "https://github.com/woblerr/pgbackrest_exporter/releases/download/v{{ pgbackrest_exporter_version }}/pgbackrest_exporter-{{ pgbackrest_exporter_version
+  }}-{{ pgbackrest_exporter_os }}-{{ pgbackrest_exporter_arch }}.tar.gz"
+pgbackrest_exporter_checksum: 1562febbb006e96236e30ad0098757724614b2f29f87c1d210fed9083c4c31b5
+pgbackrest_exporter_bin: /usr/local/bin/pgbackrest_exporter
+pgbackrest_exporter_user: pgbackrest-exp
+pgbackrest_exporter_group: "{{ pgbackrest_exporter_user }}"
+pgbackrest_exporter_config_file: /etc/pgbackrest/pgbackrest.conf
+pgbackrest_exporter_port: 9854
+pgbackrest_exporter_telemetry_path: /metrics

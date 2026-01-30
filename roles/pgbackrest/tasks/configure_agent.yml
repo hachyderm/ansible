@@ -1,0 +1,72 @@
+---
+- name: Create configuration directory
+  ansible.builtin.file:
+    path: /etc/pgbackrest
+    state: directory
+    mode: "0755"
+    owner: "{{ pgbackrest_agent_user }}"
+    group: "{{ pgbackrest_agent_group }}"
+
+- name: Add agent user to additional groups
+  ansible.builtin.user:
+    name: "{{ pgbackrest_agent_user }}"
+    groups: "{{ pgbackrest_additional_groups }}"
+    append: true
+  when: pgbackrest_additional_groups | length > 0
+
+- name: Copy CA file for agent
+  ansible.builtin.copy:
+    dest: "{{ pgbackrest_agent_tls_ca_file }}"
+    owner: "{{ pgbackrest_agent_user }}"
+    group: "{{ pgbackrest_agent_group }}"
+    mode: "0644"
+    content: "{{ pgbackrest_agent_tls_ca }}"
+  when: pgbackrest_agent_tls_ca is defined
+  notify: Restart agent
+
+- name: Copy cert file for agent
+  ansible.builtin.copy:
+    dest: "{{ pgbackrest_agent_tls_cert_file }}"
+    owner: "{{ pgbackrest_agent_user }}"
+    group: "{{ pgbackrest_agent_group }}"
+    mode: "0644"
+    content: "{{ pgbackrest_agent_tls_cert }}"
+  when: pgbackrest_agent_tls_cert is defined
+  notify: Restart agent
+
+- name: Copy key file for agent
+  ansible.builtin.copy:
+    dest: "{{ pgbackrest_agent_tls_key_file }}"
+    owner: "{{ pgbackrest_agent_user }}"
+    group: "{{ pgbackrest_agent_group }}"
+    mode: "0600"
+    content: "{{ pgbackrest_agent_tls_key }}"
+  when: pgbackrest_agent_tls_key is defined
+  notify: Restart agent
+  no_log: true
+
+- name: Create agent configuration file
+  ansible.builtin.template:
+    src: agent/pgbackrest.conf.j2
+    dest: /etc/pgbackrest/pgbackrest.conf
+    owner: "{{ pgbackrest_agent_user }}"
+    group: "{{ pgbackrest_agent_group }}"
+    mode: "0640"
+  notify: Restart agent
+
+- name: Configure agent service
+  ansible.builtin.template:
+    src: agent/pgbackrest.service.j2
+    dest: /etc/systemd/system/pgbackrest.service
+    owner: root
+    group: root
+    mode: "0644"
+  notify:
+    - Reload systemd
+    - Restart agent
+
+- name: Start agent
+  ansible.builtin.service:
+    name: pgbackrest.service
+    state: started
+    enabled: true

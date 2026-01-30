@@ -1,0 +1,30 @@
+{{ ansible_managed | comment }}
+
+[global]
+{% if pgbackrest_settings %}
+{% for k, v in pgbackrest_settings.items() %}
+{{ k }}={{ v }}
+{% endfor %}
+{% endif %}
+{% if pgbackrest_repositories %}
+{% for repo in pgbackrest_repositories %}
+{% set repo_id = loop.index %}
+{% for k, v in repo.items() %}
+repo{{ repo_id }}-{{ k }}={{ v }}
+{% endfor %}
+{% endfor %}
+{% endif %}
+
+{% if pgbackrest_stanzas %}
+{% for stanza, servers in pgbackrest_stanzas.items() %}
+[{{ stanza }}]
+{% if servers %}
+{% for server in servers %}
+{% set server_id = loop.index %}
+{% for k, v in server.items() %}
+pg{{ server_id }}-{{ k | regex_replace('^pg([0-9].*)?-', '') }}={{ v }}
+{% endfor %}
+{% endfor %}
+{% endif %}
+{% endfor %}
+{% endif %}

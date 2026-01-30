@@ -1,0 +1,16 @@
+{{ ansible_managed | comment }}
+{% if postgresql_log_timezone is defined %}
+log_timezone = '{{ postgresql_log_timezone }}'
+{% endif %}
+{% if postgresql_log_destination is defined %}
+log_destination = '{{ postgresql_log_destination }}'
+{% endif %}
+{% if postgresql_log_directory is defined %}
+log_directory = '{{ postgresql_log_directory }}'
+{% endif %}
+{% if postgresql_log_filename is defined %}
+log_filename = '{{ postgresql_log_filename }}'
+{% endif %}
+{% if postgresql_log_file_mode is defined %}
+log_file_mode = '{{ postgresql_log_file_mode }}'
+{% endif %}

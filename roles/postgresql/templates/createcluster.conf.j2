@@ -1,0 +1,11 @@
+{{ ansible_managed | comment }}
+create_main_cluster = false
+{% if postgresql_initdb_args %}
+initdb_options = '{{ postgresql_initdb_args }}'
+{% endif %}
+ssl = on
+cluster_name = '%v/%c'
+stats_temp_directory = '/var/run/postgresql/%v-%c.pg_stat_tmp'
+log_line_prefix = '%%m [%%p] %%q%%u@%%d '
+add_include_dir = 'conf.d'
+include_dir '/etc/postgresql-common/createcluster.d'

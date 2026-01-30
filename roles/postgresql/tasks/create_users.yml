@@ -1,0 +1,27 @@
+---
+- name: Create users
+  community.postgresql.postgresql_user:
+    login_db: postgres
+    login_user: postgres
+    login_password: "{{ postgresql_superuser_password }}"
+    name: "{{ item.name }}"
+    password: "{{ item.password }}"
+  loop: "{{ postgresql_users }}"
+  loop_control:
+    label: "{{ item.name }}"
+  when: item.name is defined and item.password is defined
+
+- name: Grant roles to users
+  community.postgresql.postgresql_membership:
+    login_db: postgres
+    login_user: postgres
+    login_password: "{{ postgresql_superuser_password }}"
+    target_roles:
+      - "{{ item.name }}"
+    groups: "{{ item.roles }}"
+  loop: "{{ postgresql_users }}"
+  loop_control:
+    label: "{{ item.name }}"
+  when:
+    - "'name' in item"
+    - "'role' in item"

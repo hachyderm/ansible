@@ -1,0 +1,24 @@
+---
+- name: Create containers
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Create containers
+      containers.podman.podman_container:
+        hostname: "{{ item }}"
+        name: "{{ item }}"
+        image: "{{ hostvars[item]['container_image'] }}"
+        command: /lib/systemd/systemd
+        privileged: true
+        systemd: true
+        volumes:
+          - /sys/fs/cgroup:/sys/fs/cgroup:rw
+        cgroupns: host
+        state: started
+      loop: "{{ groups['molecule'] }}"
+
+    - name: Wait for containers to be ready
+      ansible.builtin.wait_for_connection:
+        timeout: 300
+      delegate_to: "{{ item }}"
+      loop: "{{ groups['molecule'] }}"

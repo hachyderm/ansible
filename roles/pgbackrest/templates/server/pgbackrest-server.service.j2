@@ -1,0 +1,21 @@
+{{ ansible_managed | comment }}
+[Unit]
+Description=pgBackRest server
+After=network.target
+StartLimitIntervalSec=0
+{% if pgbackrest_service_after %}
+After={{ pgbackrest_service_after | join(" ") }}
+{% endif %}
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+User={{ pgbackrest_server_user }}
+ExecStartPre=-/usr/bin/mkdir -p {{ pgbackrest_server_lock_path }}
+ExecStartPre=-/usr/bin/chown {{ pgbackrest_server_user }}:{{ pgbackrest_server_group }} {{ pgbackrest_server_lock_path }}
+ExecStart=/usr/bin/pgbackrest --config /etc/pgbackrest-server/pgbackrest.conf server
+ExecReload=/bin/kill -HUP $MAINPID
+
+[Install]
+WantedBy=multi-user.target

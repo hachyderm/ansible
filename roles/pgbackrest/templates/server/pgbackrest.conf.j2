@@ -1,0 +1,44 @@
+{{ ansible_managed | comment }}
+
+[global]
+tls-server-address={{ pgbackrest_server_address }}
+tls-server-port={{ pgbackrest_server_port }}
+tls-server-ca-file={{ pgbackrest_server_tls_ca_file }}
+tls-server-cert-file={{ pgbackrest_server_tls_cert_file }}
+tls-server-key-file={{ pgbackrest_server_tls_key_file }}
+{% for hostname, stanza in pgbackrest_server_allowed_users.items() %}
+tls-server-auth={{ hostname }}={{ stanza }}
+{% endfor %}
+log-path=/var/log/pgbackrest-server
+lock-path={{ pgbackrest_server_lock_path }}
+{% if pgbackrest_settings %}
+{% for k, v in pgbackrest_settings.items() %}
+{{ k }}={{ v }}
+{% endfor %}
+{% endif %}
+{% if pgbackrest_server_repositories %}
+{% for repo in pgbackrest_server_repositories %}
+{% set repo_id = loop.index %}
+{% for k, v in repo.items() %}
+repo{{ repo_id }}-{{ k }}={{ v }}
+{% endfor %}
+{% endfor %}
+{% endif %}
+
+{% if pgbackrest_server_stanzas %}
+{% for stanza, servers in pgbackrest_server_stanzas.items() %}
+[{{ stanza }}]
+{% if servers %}
+{% for server in servers %}
+{% set server_id = loop.index %}
+{% for k, v in server.items() %}
+pg{{ server_id }}-{{ k | regex_replace('^pg([0-9].*)?-', '') }}={{ v }}
+{% endfor %}
+pg{{ server_id }}-host-type=tls
+pg{{ server_id }}-host-ca-file={{ pgbackrest_server_tls_ca_file }}
+pg{{ server_id }}-host-cert-file={{ pgbackrest_server_tls_cert_file }}
+pg{{ server_id }}-host-key-file={{ pgbackrest_server_tls_key_file }}
+{% endfor %}
+{% endif %}
+{% endfor %}
+{% endif %}

@@ -1,0 +1,25 @@
+---
+- name: Install minimal pgBackRest and PostgreSQL
+  hosts: molecule
+  become: true
+  roles:
+    - pgbackrest
+    - postgresql
+  vars:
+    pgbackrest_full_install: false
+    pgbackrest_repositories: &pgbackrest_repositories
+      - path: /var/lib/pgbackrest/repo1
+        cipher-pass: CHANGEME
+        cipher-type: aes-256-cbc
+        retention-full-type: time
+        retention-full: 14
+        retention-diff: 3
+        bundle: y
+
+- name: Finalize pgBackRest configuration
+  hosts: molecule
+  become: true
+  roles:
+    - pgbackrest
+  vars:
+    pgbackrest_repositories: *pgbackrest_repositories

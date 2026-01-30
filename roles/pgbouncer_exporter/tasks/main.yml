@@ -1,0 +1,66 @@
+---
+- name: Check the version
+  ansible.builtin.command:
+    cmd: pgbouncer_exporter --version
+  changed_when: false
+  ignore_errors: true
+  register: pgbouncer_exporter_version_cmd
+
+- name: Install if the version differs
+  when: >-
+    pgbouncer_exporter_version_cmd.failed
+    or pgbouncer_exporter_version not in pgbouncer_exporter_version_cmd.stderr_lines[0]
+  ansible.builtin.include_tasks: install.yml
+
+- name: Create group
+  become: true
+  ansible.builtin.group:
+    name: "{{ pgbouncer_exporter_group }}"
+
+- name: Create user
+  become: true
+  ansible.builtin.user:
+    name: "{{ pgbouncer_exporter_user }}"
+    system: true
+    password: "!"
+    create_home: false
+    group: "{{ pgbouncer_exporter_group }}"
+
+- name: Create environment directory
+  become: true
+  ansible.builtin.file:
+    state: directory
+    path: /etc/default
+    mode: "0755"
+    owner: root
+    group: root
+
+- name: Create environment file
+  become: true
+  ansible.builtin.template:
+    src: pgbouncer_exporter.j2
+    dest: /etc/default/pgbouncer_exporter
+    mode: "0600"
+    owner: root
+    group: root
+  notify:
+    - Restart service
+
+- name: Create service file
+  become: true
+  ansible.builtin.template:
+    src: pgbouncer_exporter.service.j2
+    dest: /etc/systemd/system/pgbouncer_exporter.service
+    mode: "0644"
+    owner: root
+    group: root
+  notify:
+    - Reload systemd
+    - Restart service
+
+- name: Start service
+  become: true
+  ansible.builtin.service:
+    name: pgbouncer_exporter
+    state: started
+    enabled: true

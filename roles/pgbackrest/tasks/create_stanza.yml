@@ -1,0 +1,36 @@
+---
+- name: Check variables
+  ansible.builtin.assert:
+    that:
+      - pgbackrest_config_file is defined # Path to the configuration file
+      - pgbackrest_command_user is defined # Name of the user to run the command
+      - pgbackrest_stanza_name is defined # Name of the stanza to look in the info
+
+- name: Gather stanza info
+  ansible.builtin.include_tasks: gather_stanza_info.yml
+
+- name: Detect if stanza needs to be created
+  ansible.builtin.set_fact:
+    pgbackrest_stanza_create: >-
+      {{ 'missing stanza path' in pgbackrest_stanza_info | community.general.json_query('[].repo[].status.message') }}
+
+- name: Create stanza
+  ansible.builtin.command:
+    cmd: >-
+      pgbackrest
+        --log-level-console=info
+        --config={{ pgbackrest_config_file }}
+        --stanza={{ pgbackrest_stanza_name }}
+          stanza-create
+  when: pgbackrest_stanza_create
+  become: true
+  become_user: "{{ pgbackrest_command_user }}"
+  register: pgbackrest_stanza_create_command
+  retries: 5
+  delay: 5
+  until: pgbackrest_stanza_create_command.rc == 0
+  changed_when: >-
+    not (
+      pgbackrest_stanza_create_command.stdout_lines
+        | regex_search("stanza '" + pgbackrest_stanza_name +"' already exists on repo[0-9]+ and is valid")
+    )

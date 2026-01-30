@@ -1,0 +1,14 @@
+---
+- name: Reload systemd
+  ansible.builtin.systemd_service:
+    daemon_reload: true
+
+- name: Restart server
+  ansible.builtin.service:
+    name: pgbackrest-server.service
+    state: restarted
+
+- name: Restart agent
+  ansible.builtin.service:
+    name: pgbackrest.service
+    state: restarted

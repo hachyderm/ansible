@@ -1,0 +1,22 @@
+---
+- name: Systemctl daemon-reload
+  ansible.builtin.systemd:
+    daemon_reload: true
+
+- name: Restart postgresql
+  ansible.builtin.service:
+    name: "postgresql@{{ postgresql_version }}-{{ postgresql_cluster_name }}.service"
+    state: restarted
+
+- name: Reload postgresql
+  ansible.builtin.service:
+    name: "postgresql@{{ postgresql_version }}-{{ postgresql_cluster_name }}.service"
+    state: reloaded
+
+- name: Analyze in stages
+  ansible.builtin.command:
+    cmd: vacuumdb --all --analyze-in-stages
+  environment:
+    PGPASSWORD: "{{ postgresql_superuser_password }}"
+    PGUSER: postgres
+  changed_when: true

@@ -1,0 +1,3 @@
+---
+exclude_paths:
+  - roles/*/molecule/*/group_vars

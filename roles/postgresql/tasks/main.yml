@@ -1,0 +1,164 @@
+---
+- name: Check requirements
+  ansible.builtin.assert:
+    that:
+      - postgresql_superuser_password is defined
+      - not postgresql_manage_replication or postgresql_replication_password is defined
+      - not postgresql_manage_replication or postgresql_instance_role != "replica" or postgresql_primary_host is defined
+      - ansible_facts['distribution'] == "Debian"
+
+- name: Install required packages
+  ansible.builtin.package:
+    name:
+      - acl # required to create the superuser using an underprivileged user
+      - python3-psycopg2 # required to manage resources inside the database
+
+- name: Install PostgreSQL common package
+  ansible.builtin.package:
+    name: postgresql-common
+
+- name: Configure log rotation
+  ansible.builtin.template:
+    src: postgresql-common.j2
+    dest: /etc/logrotate.d/postgresql-common
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Configure cluster creation
+  ansible.builtin.template:
+    src: createcluster.conf.j2
+    dest: /etc/postgresql-common/createcluster.conf
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Install PostgreSQL server package
+  ansible.builtin.package:
+    name: "postgresql-{{ postgresql_version }}"
+
+- name: Configure unit dependencies
+  when: postgresql_service_after | length > 0
+  block:
+    - name: Create service override directory
+      ansible.builtin.file:
+        path: "/etc/systemd/system/postgresql@{{ postgresql_version }}-{{ postgresql_cluster_name }}.service.d"
+        state: directory
+        mode: "0755"
+        owner: root
+        group: root
+
+    - name: Add service override
+      ansible.builtin.template:
+        src: override.conf.j2
+        dest: "/etc/systemd/system/postgresql@{{ postgresql_version }}-{{ postgresql_cluster_name }}.service.d/override.conf"
+        mode: "0644"
+        owner: root
+        group: root
+      notify: Systemctl daemon-reload
+
+- name: Create cluster
+  ansible.builtin.include_tasks: create_cluster.yml
+  when: >-
+    postgresql_upgrade_from_version is not defined
+    or postgresql_instance_role == 'replica'
+
+- name: Upgrade cluster
+  ansible.builtin.include_tasks: upgrade_cluster.yml
+  when: postgresql_upgrade_from_version is defined
+
+- name: Check if base configuration exists
+  ansible.builtin.stat:
+    path: "/etc/postgresql/{{ postgresql_version }}/{{ postgresql_cluster_name }}/postgresql.base.conf"
+  register: postgresql_config_base_file
+
+- name: Copy base configuration
+  ansible.builtin.copy:
+    remote_src: true
+    src: "/etc/postgresql/{{ postgresql_version }}/{{ postgresql_cluster_name }}/postgresql.conf"
+    dest: "/etc/postgresql/{{ postgresql_version }}/{{ postgresql_cluster_name }}/postgresql.base.conf"
+    owner: postgres
+    group: postgres
+    mode: "0644"
+  when: not postgresql_config_base_file.stat.exists
+
+- name: Create PostgreSQL configuration
+  ansible.builtin.template:
+    src: postgresql.conf.j2
+    dest: "/etc/postgresql/{{ postgresql_version }}/{{ postgresql_cluster_name }}/postgresql.conf"
+    owner: postgres
+    group: postgres
+    mode: "0644"
+  notify: Restart postgresql
+
+- name: Create PostgreSQL configuration directory
+  ansible.builtin.file:
+    state: directory
+    path: "/etc/postgresql/{{ postgresql_version }}/{{ postgresql_cluster_name }}/conf.d"
+    owner: postgres
+    group: postgres
+    mode: "0755"
+
+- name: Create PostgreSQL log configuration
+  ansible.builtin.template:
+    src: conf.d/log.conf.j2
+    dest: "/etc/postgresql/{{ postgresql_version }}/{{ postgresql_cluster_name }}/conf.d/log.conf"
+    owner: postgres
+    group: postgres
+    mode: "0644"
+  notify: Reload postgresql
+
+- name: Create PostgreSQL PITR configuration
+  ansible.builtin.template:
+    src: conf.d/pitr.conf.j2
+    dest: "/etc/postgresql/{{ postgresql_version }}/{{ postgresql_cluster_name }}/conf.d/pitr.conf"
+    owner: postgres
+    group: postgres
+    mode: "0644"
+  notify: Reload postgresql
+
+- name: Create PostgreSQL HBA configuration
+  ansible.builtin.template:
+    src: pg_hba.conf.j2
+    dest: "/etc/postgresql/{{ postgresql_version }}/{{ postgresql_cluster_name }}/pg_hba.conf"
+    owner: postgres
+    group: postgres
+    mode: "0644"
+  notify: Reload postgresql
+
+- name: Set environment variables for root
+  ansible.builtin.lineinfile:
+    path: /root/.bashrc
+    line: "export PGUSER=postgres"
+
+- name: Create pgpass
+  ansible.builtin.template:
+    src: .pgpass.j2
+    dest: "{{ item.dest }}"
+    owner: "{{ item.owner }}"
+    group: "{{ item.group }}"
+    mode: "0600"
+  loop:
+    - dest: /var/lib/postgresql/.pgpass
+      owner: postgres
+      group: postgres
+    - dest: /root/.pgpass
+      owner: root
+      group: root
+  loop_control:
+    label: "{{ item.dest }}"
+  when: postgresql_manage_pgpass
+
+- name: Start service
+  ansible.builtin.include_tasks: start_service.yml
+
+- name: Flush handlers
+  ansible.builtin.meta: flush_handlers
+
+- name: Create users
+  ansible.builtin.include_tasks: create_users.yml
+  when: postgresql_instance_role == "primary"
+
+- name: Manage replication
+  ansible.builtin.include_tasks: manage_replication.yml
+  when: postgresql_manage_replication

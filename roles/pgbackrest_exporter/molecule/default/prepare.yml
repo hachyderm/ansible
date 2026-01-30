@@ -1,0 +1,29 @@
+---
+- name: Install minimal pgBackRest and PostgreSQL
+  hosts: molecule
+  become: true
+  roles:
+    - pgbackrest
+    - postgresql
+  vars:
+    pgbackrest_full_install: false
+
+- name: Finalize pgBackRest configuration
+  hosts: molecule
+  become: true
+  roles:
+    - pgbackrest
+
+- name: Create backups
+  hosts: molecule
+  become: true
+  tasks:
+    - name: Create full backup
+      ansible.builtin.service:
+        name: pgbackrest-full
+        state: started
+
+    - name: Create diff backup
+      ansible.builtin.service:
+        name: pgbackrest-diff
+        state: started

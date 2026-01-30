@@ -1,0 +1,30 @@
+---
+- name: Create configuration directory
+  ansible.builtin.file:
+    path: /etc/pgbackrest
+    state: directory
+    mode: "0755"
+    owner: "{{ pgbackrest_user }}"
+    group: "{{ pgbackrest_group }}"
+
+- name: Add user to additional groups
+  ansible.builtin.user:
+    name: "{{ pgbackrest_user }}"
+    groups: "{{ pgbackrest_additional_groups }}"
+    append: true
+  when: pgbackrest_additional_groups | length > 0
+
+- name: Create configuration file
+  ansible.builtin.template:
+    src: standalone/pgbackrest.conf.j2
+    dest: /etc/pgbackrest/pgbackrest.conf
+    owner: "{{ pgbackrest_user }}"
+    group: "{{ pgbackrest_group }}"
+    mode: "0640"
+
+- name: Finish configuration
+  when: pgbackrest_full_install
+  ansible.builtin.include_tasks: finish_configuration.yml
+  vars:
+    pgbackrest_config_file: /etc/pgbackrest/pgbackrest.conf
+    pgbackrest_command_user: "{{ pgbackrest_user }}"

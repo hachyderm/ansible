@@ -1,0 +1,53 @@
+---
+- name: Download the archive and install the binary
+  vars:
+    archive_directory: "pgbouncer_exporter-{{ pgbouncer_exporter_version }}.{{ pgbouncer_exporter_os }}-{{ pgbouncer_exporter_arch }}"
+    archive_name: "{{ archive_directory }}.tar.gz"
+  block:
+    - name: Create temporary directory
+      ansible.builtin.tempfile:
+        state: directory
+      register: pgbouncer_exporter_tempdir
+
+    - name: Download the binary
+      ansible.builtin.get_url:
+        url: "{{ pgbouncer_exporter_download_url }}"
+        dest: "{{ pgbouncer_exporter_tempdir.path }}/{{ archive_name }}"
+        mode: "0644"
+        owner: "{{ ansible_user | default('root') }}"
+        group: "{{ ansible_user | default('root') }}"
+
+    - name: Checksum the archive
+      ansible.builtin.stat:
+        path: "{{ pgbouncer_exporter_tempdir.path }}/{{ archive_name }}"
+        checksum_algorithm: sha256
+        get_checksum: true
+      register: pgbouncer_exporter_archive
+
+    - name: Verify the checksums
+      ansible.builtin.assert:
+        that: pgbouncer_exporter_archive.stat.checksum == pgbouncer_exporter_checksum
+        fail_msg: Checksums mismatch
+
+    - name: Extract the archive
+      ansible.builtin.unarchive:
+        src: "{{ pgbouncer_exporter_tempdir.path }}/{{ archive_name }}"
+        dest: "{{ pgbouncer_exporter_tempdir.path }}"
+        remote_src: true
+
+    - name: Move binary to the installation path
+      become: true
+      ansible.builtin.copy:
+        src: "{{ pgbouncer_exporter_tempdir.path }}/{{ archive_directory }}/pgbouncer_exporter"
+        dest: "{{ pgbouncer_exporter_bin }}"
+        remote_src: true
+        mode: "0755"
+        owner: root
+        group: root
+      notify: Restart service
+
+  always:
+    - name: Remove temporary directoy
+      ansible.builtin.file:
+        path: "{{ pgbouncer_exporter_tempdir.path }}"
+        state: absent

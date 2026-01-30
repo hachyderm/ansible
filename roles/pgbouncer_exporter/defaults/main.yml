@@ -1,0 +1,14 @@
+---
+pgbouncer_exporter_version: 0.11.0
+pgbouncer_exporter_os: linux
+pgbouncer_exporter_arch: amd64
+# yamllint disable-line rule:line-length
+pgbouncer_exporter_download_url: "https://github.com/prometheus-community/pgbouncer_exporter/releases/download/v{{ pgbouncer_exporter_version }}/pgbouncer_exporter-{{
+  pgbouncer_exporter_version }}.{{ pgbouncer_exporter_os }}-{{ pgbouncer_exporter_arch }}.tar.gz"
+pgbouncer_exporter_checksum: de95a3d22141c0f84ac33de07e793c4993410f43d7c10e8ba281559381e031da
+pgbouncer_exporter_bin: /usr/local/bin/pgbouncer_exporter
+pgbouncer_exporter_user: pgbouncer-exp
+pgbouncer_exporter_group: "{{ pgbouncer_exporter_user }}"
+pgbouncer_exporter_port: 9127
+pgbouncer_exporter_telemetry_path: /metrics
+pgbouncer_exporter_connection_string: postgres://postgres:@localhost:6543/pgbouncer?sslmode=disable

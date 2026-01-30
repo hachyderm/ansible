@@ -1,0 +1,24 @@
+---
+namespace: hachyderm
+name: general
+version: 1.0.0
+readme: README.md
+authors:
+  - "Julien Riou (https://github.com/jouir)"
+  - "Preston Doster (https://github.com/preskton)"
+description: "Ansible Collection for Hachyderm"
+license_file: LICENSE
+tags:
+  - database
+  - infrastructure
+  - postgresql
+  - mastodon
+  - hachyderm
+repository: "https://github.com/hachyderm/ansible"
+issues: "https://github.com/hachyderm/ansible/issues"
+build_ignore:
+  - .github
+  - .gitignore
+  - changelogs
+  - roles/*/molecule
+  - '*.tar.gz'
