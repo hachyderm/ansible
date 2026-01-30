@@ -22,3 +22,4 @@ build_ignore:
   - changelogs
   - roles/*/molecule
   - '*.tar.gz'
+  - test-requirements.yml
