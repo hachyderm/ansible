@@ -1,0 +1,50 @@
+---
+name: Ansible Galaxy
+
+on:
+  push:
+    tags:
+      - '*'
+
+concurrency:
+  group: galaxy-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  ANSIBLE_FORCE_COLOR: true
+  ANSIBLE_GALAXY_SERVER_GALAXY_URL: "https://galaxy.ansible.com"
+  ANSIBLE_GALAXY_SERVER_GALAXY_TIMEOUT: 120
+  ANSIBLE_GALAXY_SERVER_LIST: "galaxy"
+  ANSIBLE_GALAXY_SERVER_GALAXY_TOKEN: "${{ secrets.ANSIBLE_GALAXY_TOKEN }}"
+
+jobs:
+  ansible-galaxy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Install Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+
+      - name: Install Ansible
+        run: |
+          python -m pip install --upgrade pip
+          pip install ansible-core
+
+      - name: Install yq
+        run: |
+          sudo apt-get install -y yq
+
+      - name: Build collection
+        run: |
+          ansible-galaxy collection build
+
+      - name: Publish collection
+        run: |
+          namespace=$(yq -r ".namespace" < galaxy.yml)
+          name=$(yq -r ".name" < galaxy.yml)
+          version=$(yq -r ".version" < galaxy.yml)
+          ansible-galaxy collection publish ${namespace}-${name}-${version}.tar.gz
