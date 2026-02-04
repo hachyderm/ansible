@@ -26,7 +26,7 @@ See [VARIABLES](VARIABLES.md).
 
 ## Local Testing
 
-The prefered way of locally testing the role is to use
+The preferred way of locally testing the role is to use
 [Podman](https://podman.io/) and
 [molecule](https://docs.ansible.com/projects/molecule/).
 

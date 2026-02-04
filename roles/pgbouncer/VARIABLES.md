@@ -4,7 +4,7 @@ See [defaults/main.yml](defaults/main.yml) for the defaults.
 
 ### pgbouncer_databases
 
-Dictionnary of databases connections strings (default `{}`). They key is the
+Dictionary of databases connections strings (default `{}`). They key is the
 database name. The value is the connection string.
 
 Example:
@@ -20,7 +20,7 @@ details.
 
 ### pgbouncer_users
 
-Dictionnary of users (default `{}`). The key is the user name. The value is the
+Dictionary of users (default `{}`). The key is the user name. The value is the
 user settings.
 
 Example:
@@ -156,7 +156,7 @@ for details.
 
 ### pgbouncer_auth_users
 
-Dictionnary of authentication settings used to create the authentication file
+Dictionary of authentication settings used to create the authentication file
 (default `{}`). The key is the username. The value is the password hash.
 
 Example:
