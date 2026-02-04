@@ -46,7 +46,7 @@
         group: root
       notify: Restart service
   always:
-    - name: Remove temporary directoy
+    - name: Remove temporary directory
       ansible.builtin.file:
         path: "{{ pgbackrest_exporter_tempdir.path }}"
         state: absent

@@ -68,7 +68,7 @@ Command to execute when a pgBackRest backup command is performed.
 
 The command takes two positional arguments:
 
-* `pgBackRest`: the string `pgBackRest` to tell who's runing the commmand
+* `pgBackRest`: the string `pgBackRest` to tell who's runing the command
 * `message`: a message to tell what is happening (replaced by
   `pgbackrest_notification_message_start` and
   `pgbackrest_notification_message_stop`)
@@ -262,7 +262,7 @@ See [Stanza Options](https://pgbackrest.org/configuration.html#section-stanza).
 
 ### pgbackrest_agent_allowed_users
 
-Dictionnary of allowed users (server) on the agent (default `{}`).
+Dictionary of allowed users (server) on the agent (default `{}`).
 
 The key is the hostname. The value is the stanza name.
 
@@ -453,7 +453,7 @@ See [Stanza Options](https://pgbackrest.org/configuration.html#section-stanza).
 
 ### pgbackrest_server_allowed_users
 
-Dictionnary of allowed users (agents) on the server (default `{}`).
+Dictionary of allowed users (agents) on the server (default `{}`).
 
 The key is the hostname. The value is the stanza name.
 
