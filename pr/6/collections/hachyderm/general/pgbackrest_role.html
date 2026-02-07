@@ -216,7 +216,7 @@ To check whether it is installed, run <code class="code docutils literal notrans
 </div></td>
 <td><div class="ansible-option-cell"><p>List of agent to repositories (server) communication</p>
 <p>All repositories must be declared</p>
-<p>If pgBackRest is supposed to send backups to multiple object storage or filesystems, create a list of the size of the number of server repositories (`pgbackrest_server_repositories`)</p>
+<p>If pgBackRest is supposed to send backups to multiple object storage or filesystems, create a list of the size of the number of server repositories (<code class="docutils literal notranslate"><span class="pre">pgbackrest_server_repositories</span></code>)</p>
 <p>Even if the content is repeated</p>
 <p>The repository index will be automatically genetated</p>
 <p>See <a class="reference external" href="https://pgbackrest.org/configuration.html#section-repository">Repository Options</a></p>
@@ -241,9 +241,9 @@ To check whether it is installed, run <code class="code docutils literal notrans
 </div></td>
 <td><div class="ansible-option-cell"><p>Content of a Certificate Authority (CA) to verify the authenticity of TLS certificates for an agent</p>
 <p>Use the same CA for agent and server</p>
-<p>If defined, the content will be written in `pgbackrest_agent_tls_ca_file`</p>
+<p>If defined, the content will be written in <code class="docutils literal notranslate"><span class="pre">pgbackrest_agent_tls_ca_file</span></code></p>
 <p>See <a class="reference external" href="https://pgbackrest.org/configuration.html#section-server/option-tls-server-ca-file">TLS Server Certificate Authorities Option</a></p>
-<p>Generate a test CA with `openssl req -new -x509 -days 3650 -nodes -out ca.crt -keyout ca.key -subj “/CN=ca”`</p>
+<p>Generate a test CA with <code class="docutils literal notranslate"><span class="pre">openssl</span> <span class="pre">req</span> <span class="pre">-new</span> <span class="pre">-x509</span> <span class="pre">-days</span> <span class="pre">3650</span> <span class="pre">-nodes</span> <span class="pre">-out</span> <span class="pre">ca.crt</span> <span class="pre">-keyout</span> <span class="pre">ca.key</span> <span class="pre">-subj</span> <span class="pre">&quot;/CN=ca&quot;</span></code></p>
 </div></td>
 </tr>
 <tr class="row-even"><td><div class="ansible-option-cell">
@@ -251,7 +251,7 @@ To check whether it is installed, run <code class="code docutils literal notrans
 <a class="ansibleOptionLink" href="#parameter-main--pgbackrest_agent_tls_ca_file" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">path</span></p>
 </div></td>
 <td><div class="ansible-option-cell"><p>Path to the TLS server certificate authorities for an agent</p>
-<p>For certificates signed by a trusted CA (like Let’s Encrypt), use `/etc/ssl/certs/ca-certificates.crt`</p>
+<p>For certificates signed by a trusted CA (like Let’s Encrypt), use <code class="docutils literal notranslate"><span class="pre">/etc/ssl/certs/ca-certificates.crt</span></code></p>
 <p>See <a class="reference external" href="https://pgbackrest.org/configuration.html#section-server/option-tls-server-ca-file">TLS Server Certificate Authorities Option</a></p>
 <p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">&quot;/etc/pgbackrest/ca.crt&quot;</span></code></p>
 </div></td>
@@ -262,7 +262,7 @@ To check whether it is installed, run <code class="code docutils literal notrans
 </div></td>
 <td><div class="ansible-option-cell"><p>Content of the TLS server certificate for an agent</p>
 <p>See <a class="reference external" href="https://pgbackrest.org/configuration.html#section-server/option-tls-server-cert-file">TLS Server Certificate Option</a></p>
-<p>Generate a test cert (and key) with `openssl req -new -nodes -out primary.csr -keyout primary.key -subj “/CN=primary”` and `openssl x509 -req -in primary.csr -days 3650 -CA ca.crt -CAkey ca.key -CAcreateserial -out primary.crt` where `primary` is the resolvable hostname of the agent</p>
+<p>Generate a test cert (and key) with <code class="docutils literal notranslate"><span class="pre">openssl</span> <span class="pre">req</span> <span class="pre">-new</span> <span class="pre">-nodes</span> <span class="pre">-out</span> <span class="pre">primary.csr</span> <span class="pre">-keyout</span> <span class="pre">primary.key</span> <span class="pre">-subj</span> <span class="pre">&quot;/CN=primary&quot;</span></code> and <code class="docutils literal notranslate"><span class="pre">openssl</span> <span class="pre">x509</span> <span class="pre">-req</span> <span class="pre">-in</span> <span class="pre">primary.csr</span> <span class="pre">-days</span> <span class="pre">3650</span> <span class="pre">-CA</span> <span class="pre">ca.crt</span> <span class="pre">-CAkey</span> <span class="pre">ca.key</span> <span class="pre">-CAcreateserial</span> <span class="pre">-out</span> <span class="pre">primary.crt</span></code> where <code class="docutils literal notranslate"><span class="pre">primary</span></code> is the resolvable hostname of the agent</p>
 </div></td>
 </tr>
 <tr class="row-even"><td><div class="ansible-option-cell">
@@ -279,7 +279,7 @@ To check whether it is installed, run <code class="code docutils literal notrans
 <a class="ansibleOptionLink" href="#parameter-main--pgbackrest_agent_tls_key" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
 </div></td>
 <td><div class="ansible-option-cell"><p>Content of the TLS server key for an agent</p>
-<p>If defined, the content will be written in `pgbackrest_agent_tls_key_file`</p>
+<p>If defined, the content will be written in <code class="docutils literal notranslate"><span class="pre">pgbackrest_agent_tls_key_file</span></code></p>
 <p>See <a class="reference external" href="https://pgbackrest.org/configuration.html#section-server/option-tls-server-key-file">TLS Server Key Option</a></p>
 </div></td>
 </tr>
@@ -304,11 +304,11 @@ To check whether it is installed, run <code class="code docutils literal notrans
 <div class="ansibleOptionAnchor" id="parameter-main--pgbackrest_full_install"></div><p class="ansible-option-title" id="ansible-collections-hachyderm-general-pgbackrest-role-parameter-main-pgbackrest-full-install"><strong>pgbackrest_full_install</strong></p>
 <a class="ansibleOptionLink" href="#parameter-main--pgbackrest_full_install" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">boolean</span></p>
 </div></td>
-<td><div class="ansible-option-cell"><p>Enable tasks that are part of a circular dependency with the `postgresql` role</p>
+<td><div class="ansible-option-cell"><p>Enable tasks that are part of a circular dependency with the <code class="docutils literal notranslate"><span class="pre">postgresql</span></code> role</p>
 <p>Checking configuration forces a WAL to be archived so a working PostgreSQL instance is required</p>
 <p>But, if PostgreSQL is deployed with the pgbackrest binary for the restore command, the service may not start because it requires pgBackRest to be fully working</p>
 <p>Same for stanza creation</p>
-<p>The `pgbackrest_full_install` variable can be disabled to ignore all the tasks that are part of the circular dependency issue</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">pgbackrest_full_install</span></code> variable can be disabled to ignore all the tasks that are part of the circular dependency issue</p>
 <p class="ansible-option-line"><strong class="ansible-option-choices">Choices:</strong></p>
 <ul class="simple">
 <li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">false</span></code></p></li>
@@ -330,10 +330,8 @@ To check whether it is installed, run <code class="code docutils literal notrans
 </div></td>
 <td><div class="ansible-option-cell"><p>Command to execute when a pgBackRest backup command is performed</p>
 <p>The command takes two positional arguments</p>
-<ol class="arabic simple">
-<li><p>`pgBackRest`: the string `pgBackRest` to tell who’s runing the commmand</p></li>
-<li><p>`message`: a message to tell what is happening (replaced by `pgbackrest_notification_message_start` and `pgbackrest_notification_message_stop`)</p></li>
-</ol>
+<p><code class="docutils literal notranslate"><span class="pre">pgBackRest</span></code>: the string <code class="docutils literal notranslate"><span class="pre">pgBackRest</span></code> to tell who’s runing the commmand</p>
+<p><code class="docutils literal notranslate"><span class="pre">message</span></code>: a message to tell what is happening (replaced by <code class="docutils literal notranslate"><span class="pre">pgbackrest_notification_message_start</span></code> and <code class="docutils literal notranslate"><span class="pre">pgbackrest_notification_message_stop</span></code>)</p>
 </div></td>
 </tr>
 <tr class="row-odd"><td><div class="ansible-option-cell">
@@ -462,7 +460,7 @@ To check whether it is installed, run <code class="code docutils literal notrans
 </div></td>
 <td><div class="ansible-option-cell"><p>Content of a Certificate Authority (CA) to verify the authenticity of TLS certificates for a server</p>
 <p>Use the same CA for agent and server</p>
-<p>If defined, the content will be written in `pgbackrest_server_tls_ca_file`</p>
+<p>If defined, the content will be written in <code class="docutils literal notranslate"><span class="pre">pgbackrest_server_tls_ca_file</span></code></p>
 <p>See <a class="reference external" href="https://pgbackrest.org/configuration.html#section-server/option-tls-server-ca-file">TLS Server Certificate Authorities Option</a></p>
 </div></td>
 </tr>
@@ -480,10 +478,10 @@ To check whether it is installed, run <code class="code docutils literal notrans
 <a class="ansibleOptionLink" href="#parameter-main--pgbackrest_server_tls_cert" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
 </div></td>
 <td><div class="ansible-option-cell"><p>Content of the TLS server certificate for a server</p>
-<p>When `pgbackrest_role` is `both`, use the same TLS cert for agent and server</p>
-<p>If defined, the content will be written in `pgbackrest_server_tls_cert_file`</p>
+<p>When <code class="docutils literal notranslate"><span class="pre">pgbackrest_role</span></code> is <code class="docutils literal notranslate"><span class="pre">both</span></code>, use the same TLS cert for agent and server</p>
+<p>If defined, the content will be written in <code class="docutils literal notranslate"><span class="pre">pgbackrest_server_tls_cert_file</span></code></p>
 <p>See <a class="reference external" href="https://pgbackrest.org/configuration.html#section-server/option-tls-server-cert-file">TLS Server Certificate Option</a></p>
-<p>Generate a test cert (and key) with `openssl req -new -nodes -out server.csr -keyout server.key -subj “/CN=server”` and `openssl x509 -req -in server.csr -days 3650 -CA ca.crt -CAkey ca.key -CAcreateserial -out server.crt` where `server` is the resolvable hostname of the backup server</p>
+<p>Generate a test cert (and key) with <code class="docutils literal notranslate"><span class="pre">openssl</span> <span class="pre">req</span> <span class="pre">-new</span> <span class="pre">-nodes</span> <span class="pre">-out</span> <span class="pre">server.csr</span> <span class="pre">-keyout</span> <span class="pre">server.key</span> <span class="pre">-subj</span> <span class="pre">&quot;/CN=server&quot;</span></code> and <code class="docutils literal notranslate"><span class="pre">openssl</span> <span class="pre">x509</span> <span class="pre">-req</span> <span class="pre">-in</span> <span class="pre">server.csr</span> <span class="pre">-days</span> <span class="pre">3650</span> <span class="pre">-CA</span> <span class="pre">ca.crt</span> <span class="pre">-CAkey</span> <span class="pre">ca.key</span> <span class="pre">-CAcreateserial</span> <span class="pre">-out</span> <span class="pre">server.crt</span></code> where <code class="docutils literal notranslate"><span class="pre">server</span></code> is the resolvable hostname of the backup server</p>
 </div></td>
 </tr>
 <tr class="row-even"><td><div class="ansible-option-cell">
@@ -500,8 +498,8 @@ To check whether it is installed, run <code class="code docutils literal notrans
 <a class="ansibleOptionLink" href="#parameter-main--pgbackrest_server_tls_key" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
 </div></td>
 <td><div class="ansible-option-cell"><p>Content of the TLS server key for a server</p>
-<p>When `pgbackrest_role` is `both`, use the same TLS key for agent and server</p>
-<p>If defined, the content will be written in `pgbackrest_server_tls_key_file`</p>
+<p>When <code class="docutils literal notranslate"><span class="pre">pgbackrest_role</span></code> is <code class="docutils literal notranslate"><span class="pre">both</span></code>, use the same TLS key for agent and server</p>
+<p>If defined, the content will be written in <code class="docutils literal notranslate"><span class="pre">pgbackrest_server_tls_key_file</span></code></p>
 <p>See <a class="reference external" href="https://pgbackrest.org/configuration.html#section-server/option-tls-server-key-file">TLS Server Key Option</a></p>
 </div></td>
 </tr>
