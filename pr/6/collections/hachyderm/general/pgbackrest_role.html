@@ -218,7 +218,7 @@ To check whether it is installed, run <code class="code docutils literal notrans
 <p>All repositories must be declared.</p>
 <p>If pgBackRest is supposed to send backups to multiple object storage or filesystems, create a list of the size of the number of server repositories (<code class="docutils literal notranslate"><span class="pre">pgbackrest_server_repositories</span></code>).</p>
 <p>Even if the content is repeated.</p>
-<p>The repository index will be automatically genetated.</p>
+<p>The repository index will be automatically generated.</p>
 <p>See <a class="reference external" href="https://pgbackrest.org/configuration.html#section-repository">Repository Options</a>.</p>
 <p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">[{&quot;config&quot;:</span> <span class="pre">&quot;/etc/pgbackrest-server/pgbackrest.conf&quot;,</span> <span class="pre">&quot;host&quot;:</span> <span class="pre">&quot;localhost&quot;,</span> <span class="pre">&quot;port&quot;:</span> <span class="pre">8432,</span> <span class="pre">&quot;user&quot;:</span> <span class="pre">&quot;pgbackrest&quot;}]</span></code></p>
 </div></td>
@@ -385,6 +385,8 @@ To check whether it is installed, run <code class="code docutils literal notrans
 <a class="ansibleOptionLink" href="#parameter-main--pgbackrest_schedules" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">dictionary</span></p>
 </div></td>
 <td><div class="ansible-option-cell"><p>Dictionary of backup schedules.</p>
+<p>The key is the backup type (<code class="docutils literal notranslate"><span class="pre">full</span></code> or <code class="docutils literal notranslate"><span class="pre">diff</span></code>).</p>
+<p>The value is a dict of systemd timer settings (see <a class="reference external" href="https://www.freedesktop.org/software/systemd/man/latest/systemd.timer.html">systemd.timer</a>).</p>
 <p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">{}</span></code></p>
 </div></td>
 </tr>
