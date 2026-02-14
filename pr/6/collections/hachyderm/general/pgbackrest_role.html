@@ -170,7 +170,6 @@ To check whether it is installed, run <code class="code docutils literal notrans
 <a class="ansibleOptionLink" href="#parameter-main--pgbackrest_additional_groups" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">list</span> / <span class="ansible-option-elements">elements=string</span></p>
 </div></td>
 <td><div class="ansible-option-cell"><p>List of groups to append to the operating system user.</p>
-<p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">[]</span></code></p>
 </div></td>
 </tr>
 <tr class="row-odd"><td><div class="ansible-option-cell">
@@ -190,7 +189,6 @@ To check whether it is installed, run <code class="code docutils literal notrans
 <p>The key is the hostname.</p>
 <p>The value is the stanza name.</p>
 <p>See <a class="reference external" href="https://pgbackrest.org/configuration.html#section-server/option-tls-server-auth">TLS Server Authorized Clients Option</a>.</p>
-<p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">{}</span></code></p>
 </div></td>
 </tr>
 <tr class="row-odd"><td><div class="ansible-option-cell">
@@ -232,7 +230,6 @@ To check whether it is installed, run <code class="code docutils literal notrans
 <p>The value is a list of stanza options.</p>
 <p>The server index will be automatically generated.</p>
 <p>See <a class="reference external" href="https://pgbackrest.org/configuration.html#section-stanza">Stanza Options</a>.</p>
-<p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">{}</span></code></p>
 </div></td>
 </tr>
 <tr class="row-odd"><td><div class="ansible-option-cell">
@@ -386,7 +383,6 @@ To check whether it is installed, run <code class="code docutils literal notrans
 <td><div class="ansible-option-cell"><p>Dictionary of backup schedules.</p>
 <p>The key is the backup type (<code class="docutils literal notranslate"><span class="pre">full</span></code> or <code class="docutils literal notranslate"><span class="pre">diff</span></code>).</p>
 <p>The value is a dict of systemd timer settings (see <a class="reference external" href="https://www.freedesktop.org/software/systemd/man/latest/systemd.timer.html">systemd.timer</a>).</p>
-<p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">{}</span></code></p>
 </div></td>
 </tr>
 <tr class="row-even"><td><div class="ansible-option-cell">
@@ -407,7 +403,6 @@ To check whether it is installed, run <code class="code docutils literal notrans
 <p>The value is the stanza name.</p>
 <p>Names must be included in the TLS certificate and resolvable by DNS.</p>
 <p>See <a class="reference external" href="https://pgbackrest.org/configuration.html#section-server/option-tls-server-auth">TLS Server Authorized Clients Option</a>.</p>
-<p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">{}</span></code></p>
 </div></td>
 </tr>
 <tr class="row-even"><td><div class="ansible-option-cell">
@@ -453,7 +448,6 @@ To check whether it is installed, run <code class="code docutils literal notrans
 <p>The value is a list of repositories.</p>
 <p>The server index will be automatically generated.</p>
 <p>See <a class="reference external" href="https://pgbackrest.org/configuration.html#section-stanza">Stanza Options</a>.</p>
-<p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">{}</span></code></p>
 </div></td>
 </tr>
 <tr class="row-odd"><td><div class="ansible-option-cell">
@@ -545,7 +539,6 @@ To check whether it is installed, run <code class="code docutils literal notrans
 <p>The key is the setting name.</p>
 <p>The value is the setting value.</p>
 <p>See <a class="reference external" href="https://pgbackrest.org/configuration.html#section-general">General Options</a>.</p>
-<p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">{}</span></code></p>
 </div></td>
 </tr>
 <tr class="row-odd"><td><div class="ansible-option-cell">
@@ -555,7 +548,6 @@ To check whether it is installed, run <code class="code docutils literal notrans
 <td><div class="ansible-option-cell"><p>Dictionary of stanzas to create in a standalone deployment.</p>
 <p>The repository index will be automatically generated.</p>
 <p>See <a class="reference external" href="https://pgbackrest.org/configuration.html#section-stanza">Stanza Options</a>.</p>
-<p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">{}</span></code></p>
 </div></td>
 </tr>
 <tr class="row-even"><td><div class="ansible-option-cell">

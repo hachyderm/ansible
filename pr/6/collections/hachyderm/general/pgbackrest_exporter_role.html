@@ -169,7 +169,7 @@ To check whether it is installed, run <code class="code docutils literal notrans
 <div class="ansibleOptionAnchor" id="parameter-main--pgbackrest_exporter_arch"></div><p class="ansible-option-title" id="ansible-collections-hachyderm-general-pgbackrest-exporter-role-parameter-main-pgbackrest-exporter-arch"><strong>pgbackrest_exporter_arch</strong></p>
 <a class="ansibleOptionLink" href="#parameter-main--pgbackrest_exporter_arch" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
 </div></td>
-<td><div class="ansible-option-cell"><p>Architecture of the system where the exporter will be installed</p>
+<td><div class="ansible-option-cell"><p>Architecture of the system where the exporter will be installed.</p>
 <p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">&quot;x86_64&quot;</span></code></p>
 </div></td>
 </tr>
@@ -177,7 +177,7 @@ To check whether it is installed, run <code class="code docutils literal notrans
 <div class="ansibleOptionAnchor" id="parameter-main--pgbackrest_exporter_bin"></div><p class="ansible-option-title" id="ansible-collections-hachyderm-general-pgbackrest-exporter-role-parameter-main-pgbackrest-exporter-bin"><strong>pgbackrest_exporter_bin</strong></p>
 <a class="ansibleOptionLink" href="#parameter-main--pgbackrest_exporter_bin" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">path</span></p>
 </div></td>
-<td><div class="ansible-option-cell"><p>Path to the exporter binary</p>
+<td><div class="ansible-option-cell"><p>Path to the exporter binary.</p>
 <p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">&quot;/usr/local/bin/pgbackrest_exporter&quot;</span></code></p>
 </div></td>
 </tr>
@@ -185,7 +185,7 @@ To check whether it is installed, run <code class="code docutils literal notrans
 <div class="ansibleOptionAnchor" id="parameter-main--pgbackrest_exporter_checksum"></div><p class="ansible-option-title" id="ansible-collections-hachyderm-general-pgbackrest-exporter-role-parameter-main-pgbackrest-exporter-checksum"><strong>pgbackrest_exporter_checksum</strong></p>
 <a class="ansibleOptionLink" href="#parameter-main--pgbackrest_exporter_checksum" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
 </div></td>
-<td><div class="ansible-option-cell"><p>Checksum of the downloaded archive to avoid supply-chain attack</p>
+<td><div class="ansible-option-cell"><p>Checksum of the downloaded archive to avoid supply-chain attack.</p>
 <p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">&quot;1562febbb006e96236e30ad0098757724614b2f29f87c1d210fed9083c4c31b5&quot;</span></code></p>
 </div></td>
 </tr>
@@ -193,7 +193,7 @@ To check whether it is installed, run <code class="code docutils literal notrans
 <div class="ansibleOptionAnchor" id="parameter-main--pgbackrest_exporter_config_file"></div><p class="ansible-option-title" id="ansible-collections-hachyderm-general-pgbackrest-exporter-role-parameter-main-pgbackrest-exporter-config-file"><strong>pgbackrest_exporter_config_file</strong></p>
 <a class="ansibleOptionLink" href="#parameter-main--pgbackrest_exporter_config_file" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">path</span></p>
 </div></td>
-<td><div class="ansible-option-cell"><p>Path to the configuration file of pgBackRest</p>
+<td><div class="ansible-option-cell"><p>Path to the configuration file of pgBackRest.</p>
 <p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">&quot;/etc/pgbackrest/pgbackrest.conf&quot;</span></code></p>
 </div></td>
 </tr>
@@ -201,7 +201,7 @@ To check whether it is installed, run <code class="code docutils literal notrans
 <div class="ansibleOptionAnchor" id="parameter-main--pgbackrest_exporter_download_url"></div><p class="ansible-option-title" id="ansible-collections-hachyderm-general-pgbackrest-exporter-role-parameter-main-pgbackrest-exporter-download-url"><strong>pgbackrest_exporter_download_url</strong></p>
 <a class="ansibleOptionLink" href="#parameter-main--pgbackrest_exporter_download_url" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
 </div></td>
-<td><div class="ansible-option-cell"><p>URL used to download the exporter archive</p>
+<td><div class="ansible-option-cell"><p>URL used to download the exporter archive.</p>
 <p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">&quot;https://github.com/woblerr/pgbackrest_exporter/releases/download/v{{</span> <span class="pre">pgbackrest_exporter_version</span> <span class="pre">}}/pgbackrest_exporter-{{</span> <span class="pre">pgbackrest_exporter_version</span> <span class="pre">}}-{{</span> <span class="pre">pgbackrest_exporter_os</span> <span class="pre">}}-{{</span> <span class="pre">pgbackrest_exporter_arch</span> <span class="pre">}}.tar.gz&quot;</span></code></p>
 </div></td>
 </tr>
@@ -209,7 +209,7 @@ To check whether it is installed, run <code class="code docutils literal notrans
 <div class="ansibleOptionAnchor" id="parameter-main--pgbackrest_exporter_group"></div><p class="ansible-option-title" id="ansible-collections-hachyderm-general-pgbackrest-exporter-role-parameter-main-pgbackrest-exporter-group"><strong>pgbackrest_exporter_group</strong></p>
 <a class="ansibleOptionLink" href="#parameter-main--pgbackrest_exporter_group" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
 </div></td>
-<td><div class="ansible-option-cell"><p>Group to create for the user to run the exporter</p>
+<td><div class="ansible-option-cell"><p>Group to create for the user to run the exporter.</p>
 <p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">&quot;{{</span> <span class="pre">pgbackrest_exporter_user</span> <span class="pre">}}&quot;</span></code></p>
 </div></td>
 </tr>
@@ -217,7 +217,7 @@ To check whether it is installed, run <code class="code docutils literal notrans
 <div class="ansibleOptionAnchor" id="parameter-main--pgbackrest_exporter_os"></div><p class="ansible-option-title" id="ansible-collections-hachyderm-general-pgbackrest-exporter-role-parameter-main-pgbackrest-exporter-os"><strong>pgbackrest_exporter_os</strong></p>
 <a class="ansibleOptionLink" href="#parameter-main--pgbackrest_exporter_os" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
 </div></td>
-<td><div class="ansible-option-cell"><p>Operating system of where the exporter will be installed</p>
+<td><div class="ansible-option-cell"><p>Operating system of where the exporter will be installed.</p>
 <p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">&quot;linux&quot;</span></code></p>
 </div></td>
 </tr>
@@ -225,7 +225,7 @@ To check whether it is installed, run <code class="code docutils literal notrans
 <div class="ansibleOptionAnchor" id="parameter-main--pgbackrest_exporter_port"></div><p class="ansible-option-title" id="ansible-collections-hachyderm-general-pgbackrest-exporter-role-parameter-main-pgbackrest-exporter-port"><strong>pgbackrest_exporter_port</strong></p>
 <a class="ansibleOptionLink" href="#parameter-main--pgbackrest_exporter_port" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">integer</span></p>
 </div></td>
-<td><div class="ansible-option-cell"><p>Port to listen for the exporter</p>
+<td><div class="ansible-option-cell"><p>Port to listen for the exporter.</p>
 <p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">9854</span></code></p>
 </div></td>
 </tr>
@@ -233,7 +233,7 @@ To check whether it is installed, run <code class="code docutils literal notrans
 <div class="ansibleOptionAnchor" id="parameter-main--pgbackrest_exporter_telemetry_path"></div><p class="ansible-option-title" id="ansible-collections-hachyderm-general-pgbackrest-exporter-role-parameter-main-pgbackrest-exporter-telemetry-path"><strong>pgbackrest_exporter_telemetry_path</strong></p>
 <a class="ansibleOptionLink" href="#parameter-main--pgbackrest_exporter_telemetry_path" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
 </div></td>
-<td><div class="ansible-option-cell"><p>Route to scrap metrics on the exporter</p>
+<td><div class="ansible-option-cell"><p>Route to scrap metrics on the exporter.</p>
 <p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">&quot;/metrics&quot;</span></code></p>
 </div></td>
 </tr>
@@ -241,7 +241,7 @@ To check whether it is installed, run <code class="code docutils literal notrans
 <div class="ansibleOptionAnchor" id="parameter-main--pgbackrest_exporter_user"></div><p class="ansible-option-title" id="ansible-collections-hachyderm-general-pgbackrest-exporter-role-parameter-main-pgbackrest-exporter-user"><strong>pgbackrest_exporter_user</strong></p>
 <a class="ansibleOptionLink" href="#parameter-main--pgbackrest_exporter_user" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
 </div></td>
-<td><div class="ansible-option-cell"><p>User to create to run the exporter</p>
+<td><div class="ansible-option-cell"><p>User to create to run the exporter.</p>
 <p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">&quot;pgbackrest-exp&quot;</span></code></p>
 </div></td>
 </tr>
@@ -249,7 +249,7 @@ To check whether it is installed, run <code class="code docutils literal notrans
 <div class="ansibleOptionAnchor" id="parameter-main--pgbackrest_exporter_version"></div><p class="ansible-option-title" id="ansible-collections-hachyderm-general-pgbackrest-exporter-role-parameter-main-pgbackrest-exporter-version"><strong>pgbackrest_exporter_version</strong></p>
 <a class="ansibleOptionLink" href="#parameter-main--pgbackrest_exporter_version" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
 </div></td>
-<td><div class="ansible-option-cell"><p>Version of the exporter</p>
+<td><div class="ansible-option-cell"><p>Version of the exporter.</p>
 <p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">&quot;0.22.0&quot;</span></code></p>
 </div></td>
 </tr>
