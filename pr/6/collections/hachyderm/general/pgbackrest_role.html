@@ -354,12 +354,11 @@ To check whether it is installed, run <code class="code docutils literal notrans
 </tr>
 <tr class="row-odd"><td><div class="ansible-option-cell">
 <div class="ansibleOptionAnchor" id="parameter-main--pgbackrest_repositories"></div><p class="ansible-option-title" id="ansible-collections-hachyderm-general-pgbackrest-role-parameter-main-pgbackrest-repositories"><strong>pgbackrest_repositories</strong></p>
-<a class="ansibleOptionLink" href="#parameter-main--pgbackrest_repositories" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">list</span> / <span class="ansible-option-elements">elements=string</span></p>
+<a class="ansibleOptionLink" href="#parameter-main--pgbackrest_repositories" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">list</span> / <span class="ansible-option-elements">elements=dictionary</span></p>
 </div></td>
 <td><div class="ansible-option-cell"><p>List of repositories in a standalone deployment.</p>
 <p>The repository index will be automatically generated.</p>
 <p>See <a class="reference external" href="https://pgbackrest.org/configuration.html#section-repository">Repository Options</a>.</p>
-<p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">[]</span></code></p>
 </div></td>
 </tr>
 <tr class="row-even"><td><div class="ansible-option-cell">
@@ -439,11 +438,10 @@ To check whether it is installed, run <code class="code docutils literal notrans
 </tr>
 <tr class="row-odd"><td><div class="ansible-option-cell">
 <div class="ansibleOptionAnchor" id="parameter-main--pgbackrest_server_repositories"></div><p class="ansible-option-title" id="ansible-collections-hachyderm-general-pgbackrest-role-parameter-main-pgbackrest-server-repositories"><strong>pgbackrest_server_repositories</strong></p>
-<a class="ansibleOptionLink" href="#parameter-main--pgbackrest_server_repositories" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">list</span> / <span class="ansible-option-elements">elements=string</span></p>
+<a class="ansibleOptionLink" href="#parameter-main--pgbackrest_server_repositories" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">list</span> / <span class="ansible-option-elements">elements=dictionary</span></p>
 </div></td>
 <td><div class="ansible-option-cell"><p>List of repositories.</p>
 <p>See <a class="reference external" href="https://pgbackrest.org/configuration.html#section-repository">Repository Options</a>.</p>
-<p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">[]</span></code></p>
 </div></td>
 </tr>
 <tr class="row-even"><td><div class="ansible-option-cell">
@@ -544,6 +542,8 @@ To check whether it is installed, run <code class="code docutils literal notrans
 <a class="ansibleOptionLink" href="#parameter-main--pgbackrest_settings" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">dictionary</span></p>
 </div></td>
 <td><div class="ansible-option-cell"><p>Dictionary of custom settings.</p>
+<p>The key is the setting name.</p>
+<p>The value is the setting value.</p>
 <p>See <a class="reference external" href="https://pgbackrest.org/configuration.html#section-general">General Options</a>.</p>
 <p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">{}</span></code></p>
 </div></td>
