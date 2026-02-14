@@ -1,0 +1,57 @@
+---
+argument_specs:
+  main:
+    short_description: Install and configure PgBouncer Exporter
+    description:
+      - Install and configure L(PgBouncer Exporter, https://github.com/prometheus-community/pgbouncer_exporter).
+    author:
+      - Hachyderm contributors
+    options:
+      pgbouncer_exporter_version:
+        description:
+          - Version of the exporter.
+        default: 0.11.0
+      pgbouncer_exporter_os:
+        description:
+          - Operating system of where the exporter will be installed.
+        default: linux
+      pgbouncer_exporter_arch:
+        description:
+          - Architecture of the system where the exporter will be installed.
+        default: amd64
+      pgbouncer_exporter_download_url:
+        description:
+          - URL used to download the exporter archive.
+        default: "https://github.com/prometheus-community/pgbouncer_exporter/releases/download/\
+          v{{ pgbouncer_exporter_version }}/
+          pgbouncer_exporter-{{ pgbouncer_exporter_version }}.{{ pgbouncer_exporter_os }}-{{ pgbouncer_exporter_arch }}.tar.gz"
+      pgbouncer_exporter_checksum:
+        description:
+          - Checksum of the downloaded archive to avoid supply-chain attack.
+        default: de95a3d22141c0f84ac33de07e793c4993410f43d7c10e8ba281559381e031da
+      pgbouncer_exporter_bin:
+        description:
+          - Path to the exporter binary.
+        type: path
+        default: /usr/local/bin/pgbouncer_exporter
+      pgbouncer_exporter_user:
+        description:
+          - User to create to run the exporter.
+        default: pgbouncer-exp
+      pgbouncer_exporter_group:
+        description:
+          - Group to create for the user to run the exporter.
+        default: "{{ pgbouncer_exporter_user }}"
+      pgbouncer_exporter_port:
+        description:
+          - Port to listen for the exporter.
+        type: int
+        default: 9127
+      pgbouncer_exporter_telemetry_path:
+        description:
+          - Route to scrap metrics on the exporter.
+        default: /metrics
+      pgbouncer_exporter_connection_string:
+        description:
+          - URI to connect to PgBouncer.
+        default: postgres://postgres:@localhost:6543/pgbouncer?sslmode=disable

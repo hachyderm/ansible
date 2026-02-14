@@ -9,6 +9,18 @@ repository](https://wiki.postgresql.org/wiki/Apt).
 * Python 3
 * Debian 12 (bookworm)
 
+## Table of Content
+<!-- ANSIBLE DOCSMITH TOC START -->
+* [Role variables](#variables)
+<!-- ANSIBLE DOCSMITH TOC END -->
+<!-- ANSIBLE DOCSMITH MAIN START -->
+
+## Role variables<a id="variables"></a>
+
+No variables are defined for this role.
+
+<!-- ANSIBLE DOCSMITH MAIN END -->
+
 ## Example
 
 ```yaml

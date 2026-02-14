@@ -1,0 +1,150 @@
+---
+name: Ansible Documentation
+concurrency:
+  group: ansible-documentation-${{ github.head_ref }}
+  cancel-in-progress: true
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - closed
+
+jobs:
+  # Validation job runs a strict build to ensure it will fail CI on any mistakes.
+  validate:
+    permissions:
+      contents: read
+    name: validate
+    if: github.event.action != 'closed'
+    uses: ansible-community/github-docs-build/.github/workflows/_shared-docs-build-push.yml@main
+    with:
+      collection-name: hachyderm.general
+      artifact-upload: false
+      init-lenient: false
+      init-fail-on-error: true
+      build-ref: refs/pull/${{ github.event.number }}/merge
+
+  # Run Ansible Docsmith to check if README files are up-to-date
+  docsmith:
+    runs-on: ubuntu-latest
+    name: docsmith
+    if: github.event.action != 'closed'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Install Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+
+      - name: Install ansible-docsmith
+        run: |
+          python -m pip install --upgrade pip
+          pip install \
+            ansible-docsmith==2.0.0
+
+      - name: Run ansible-docsmith
+        run: |
+          for role_dir in roles/* ; do
+            ansible-docsmith generate $role_dir
+          done
+
+      - name: Check if documentation needs to be updated
+        run: |
+          set -e
+          git diff > diff.txt
+          CHANGES=$(wc -l diff.txt | awk '{ print $1 }')
+          echo "Number of changes: ${CHANGES}"
+          if [ ${CHANGES} -gt 0 ] ; then
+            echo ""
+            cat diff.txt
+            echo ""
+            echo "Fix with the following command:"
+            echo ""
+            echo "run ansible-docsmith generate ${role_dir}"
+            exit 1
+          fi
+
+  # The build job runs with the most lenient settings to ensure the best chance of getting
+  # a rendered docsite that can be looked at.
+  build:
+    permissions:
+      contents: read
+    needs:
+      - validate
+      - docsmith
+    name: build
+    uses: ansible-community/github-docs-build/.github/workflows/_shared-docs-build-pr.yml@main
+    with:
+      collection-name: hachyderm.general
+      init-project: Hachyderm General Collection
+      init-copyright: Hachyderm contributors
+      init-title: Hachyderm General Collection Documentation
+      init-html-short-title: Hachyderm General Collection Documentation
+      squash-hierarchy: true
+      init-lenient: true
+      init-fail-on-error: true
+
+  publish:
+    # use to prevent running on forks
+    if: github.repository == 'hachyderm/ansible'
+    permissions:
+      contents: write
+      pages: write
+      id-token: write
+    needs:
+      - build
+    name: publish
+    uses: ansible-community/github-docs-build/.github/workflows/_shared-docs-build-publish-gh-pages.yml@main
+    with:
+      artifact-name: ${{ needs.build.outputs.artifact-name }}
+      action: ${{ (github.event.action == 'closed' || needs.build.outputs.changed != 'true') && 'teardown' || 'publish' }}
+      publish-gh-pages-branch: true
+    secrets:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  comment:
+    permissions:
+      pull-requests: write
+    runs-on: ubuntu-latest
+    needs:
+      - build
+      - publish
+    name: comment
+    steps:
+      - name: PR comment
+        uses: ansible-community/github-docs-build/actions/ansible-docs-build-comment@main
+        with:
+          body-includes: '## Docs Build'
+          reactions: heart
+          action: ${{ needs.build.outputs.changed != 'true' && 'remove' || '' }}
+          on-closed-action: remove
+          on-merged-body: |
+            ## Documentation 📝
+
+            Thank you for contribution!✨
+
+            This PR has been merged and the docs are now incorporated into `main`:
+            ${{ env.GHP_BASE_URL }}/branch/main
+          body: |
+            ## Documentation 📝
+
+            Thank you for contribution!✨
+
+            The docs for **this PR** have been published here:
+            ${{ vars.GHP_BASE_URL }}/pr/${{ github.event.number }}
+
+            You can compare to the docs for the `main` branch here:
+            ${{ vars.GHP_BASE_URL }}/branch/main
+
+            The docsite for **this PR** is also available for download as an artifact from this run:
+            ${{ needs.build.outputs.artifact-url }}
+
+            File changes:
+
+            ${{ needs.build.outputs.diff-files-rendered }}
+
+            ${{ needs.build.outputs.diff-rendered }}

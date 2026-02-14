@@ -1,56 +1,367 @@
 ---
+
+# Role of the pgBackRest instance on the server.
+#
+# C(standalone) to run everything locally.
+#
+# C(server) to start a TLS server and orchestrate backup policies.
+#
+# C(agent) to start a TLS server to receive operations from the server.
+#
+# C(both) to configure a server and an agent on the same host.
+#
+# - Type: str
+# - Required: No
+# - Default: standalone
+# - Choices: standalone, server, agent, both
 pgbackrest_role: standalone
+
+# Dictionary of custom settings.
+#
+# The key is the setting name.
+#
+# The value is the setting value.
+#
+# See L(General
+# Options,https://pgbackrest.org/configuration.html#section-general).
+#
+# - Type: dict
+# - Required: No
 pgbackrest_settings: {}
+
+# Dictionary of backup schedules.
+#
+# The key is the backup type (C(full) or C(diff)).
+#
+# The value is a dict of systemd timer settings (see
+# L(systemd.timer,https://www.freedesktop.org/software/systemd/man/latest/systemd.timer.html)).
+#
+# - Type: dict
+# - Required: No
 pgbackrest_schedules: {}
+
+# List of systemd units to wait before starting pgBackRest.
+#
+# - Type: list
+# - Required: No
+# - List elements: str
 pgbackrest_service_after: []
-# pgbackrest_notification_command:
+
+# Message sent to the notification command when a backup command is starting.
+#
+# - Type: str
+# - Required: No
+# - Default: starting
 pgbackrest_notification_message_start: starting
+
+# Message sent to the notification command when a backup command is stopping.
+#
+# - Type: str
+# - Required: No
+# - Default: done
 pgbackrest_notification_message_stop: done
+
+# Enable tasks that are part of a circular dependency with the
+# C(hachyderm.general.postgresql) role.
+#
+# Checking configuration forces a WAL to be archived so a working PostgreSQL
+# instance is required.
+#
+# But, if PostgreSQL is deployed with the pgbackrest binary for the restore
+# command, the service may not start because it requires pgBackRest to be fully
+# working.
+#
+# Same for stanza creation.
+#
+# The C(pgbackrest_full_install) variable can be disabled to ignore all the
+# tasks that are part of the circular dependency issue.
+#
+# - Type: bool
+# - Required: No
+# - Default: true
 pgbackrest_full_install: true
+
+# List of groups to append to the operating system user.
+#
+# - Type: list
+# - Required: No
+# - List elements: str
 pgbackrest_additional_groups: []
-##############
-# STANDALONE #
-##############
+
+# Operating system user for a standalone deployment.
+#
+# - Type: str
+# - Required: No
+# - Default: postgres
 pgbackrest_user: postgres
+
+# Operating system group for a standalone deployment.
+#
+# - Type: str
+# - Required: No
+# - Default: postgres
 pgbackrest_group: postgres
+
+# List of repositories in a standalone deployment.
+#
+# The repository index will be automatically generated.
+#
+# See L(Repository
+# Options,https://pgbackrest.org/configuration.html#section-repository).
+#
+# - Type: list
+# - Required: No
+# - List elements: dict
 pgbackrest_repositories: []
+
+# Dictionary of stanzas to create in a standalone deployment.
+#
+# The repository index will be automatically generated.
+#
+# See L(Stanza
+# Options,https://pgbackrest.org/configuration.html#section-stanza).
+#
+# - Type: dict
+# - Required: No
 pgbackrest_stanzas: {}
-#########
-# AGENT #
-#########
+
+# Operating system user for an agent.
+#
+# - Type: str
+# - Required: No
+# - Default: postgres
 pgbackrest_agent_user: postgres
+
+# Operating system group for an agent.
+#
+# - Type: str
+# - Required: No
+# - Default: postgres
 pgbackrest_agent_group: postgres
+
+# Address to listen for an agent.
+#
+# See L(TLS Server Address
+# Option,https://pgbackrest.org/configuration.html#section-server/option-tls-server-address).
+#
+# - Type: str
+# - Required: No
+# - Default: localhost
 pgbackrest_agent_address: localhost
+
+# Address to listen for an agent.
+#
+# See L(TLS Server Port
+# Option,https://pgbackrest.org/configuration.html#section-server/option-tls-server-port).
+#
+# - Type: int
+# - Required: No
+# - Default: 8432
 pgbackrest_agent_port: 8432
-# pgbackrest_agent_tls_ca:
+
+# Path to the TLS server certificate authorities for an agent.
+#
+# For certificates signed by a trusted CA (like Let's Encrypt), use
+# C(/etc/ssl/certs/ca-certificates.crt).
+#
+# See L(TLS Server Certificate Authorities
+# Option,https://pgbackrest.org/configuration.html#section-server/option-tls-server-ca-file).
+#
+# - Type: path
+# - Required: No
+# - Default: /etc/pgbackrest/ca.crt
 pgbackrest_agent_tls_ca_file: /etc/pgbackrest/ca.crt
-# pgbackrest_agent_tls_cert:
+
+# Path to the TLS server certificate for an agent.
+#
+# See L(TLS Server Certificate
+# Option,https://pgbackrest.org/configuration.html#section-server/option-tls-server-cert-file).
+#
+# - Type: path
+# - Required: No
+# - Default: /etc/pgbackrest/server.crt
 pgbackrest_agent_tls_cert_file: /etc/pgbackrest/server.crt
-# pgbackrest_agent_tls_key:
+
+# Path to the TLS server key file for an agent.
+#
+# See L(TLS Server Key
+# Option,https://pgbackrest.org/configuration.html#section-server/option-tls-server-key-file).
+#
+# - Type: path
+# - Required: No
+# - Default: /etc/pgbackrest/server.key
 pgbackrest_agent_tls_key_file: /etc/pgbackrest/server.key
+
+# Dictionary of stanzas supported by an agent.
+#
+# The key is the name of each stanza.
+#
+# The value is a list of stanza options.
+#
+# The server index will be automatically generated.
+#
+# See L(Stanza
+# Options,https://pgbackrest.org/configuration.html#section-stanza).
+#
+# - Type: dict
+# - Required: No
 pgbackrest_agent_stanzas: {}
+
+# Dictionary of allowed users (server) on the agent.
+#
+# The key is the hostname.
+#
+# The value is the stanza name.
+#
+# See L(TLS Server Authorized Clients
+# Option,https://pgbackrest.org/configuration.html#section-server/option-tls-server-auth).
+#
+# - Type: dict
+# - Required: No
 pgbackrest_agent_allowed_users: {}
+
+# List of agent to repositories (server) communication.
+#
+# All repositories must be declared.
+#
+# If pgBackRest is supposed to send backups to multiple object storage or
+# filesystems, create a list of the size of the number of server repositories
+# (C(pgbackrest_server_repositories)).
+#
+# Even if the content is repeated.
+#
+# The repository index will be automatically generated.
+#
+# See L(Repository
+# Options,https://pgbackrest.org/configuration.html#section-repository).
+#
+# - Type: list
+# - Required: No
+# - Default: [{'host': 'localhost', 'port': 8432, 'user': 'pgbackrest', 'config': '/etc/pgbackrest-server/pgbackrest.conf'}]
+# - List elements: dict
 pgbackrest_agent_repositories:
   - host: localhost
     port: 8432
     user: pgbackrest
     config: /etc/pgbackrest-server/pgbackrest.conf
 
-##########
-# SERVER #
-##########
+# Operating system user for a server.
+#
+# - Type: str
+# - Required: No
+# - Default: pgbackrest
 pgbackrest_server_user: pgbackrest
+
+# Home of the operating system user for a server.
+#
+# - Type: path
+# - Required: No
+# - Default: /var/lib/pgbackrest
 pgbackrest_server_user_home: /var/lib/pgbackrest
+
+# Operating system group for a server.
+#
+# - Type: str
+# - Required: No
+# - Default: pgbackrest
 pgbackrest_server_group: pgbackrest
+
+# Address to listen for a server.
+#
+# See L(TLS Server Address
+# Option,https://pgbackrest.org/configuration.html#section-server/option-tls-server-address).
+#
+# - Type: str
+# - Required: No
+# - Default: localhost
 pgbackrest_server_address: localhost
+
+# Port to listen for a server.
+#
+# See L(TLS Server Port
+# Option,https://pgbackrest.org/configuration.html#section-server/option-tls-server-port).
+#
+# - Type: int
+# - Required: No
+# - Default: 8432
 pgbackrest_server_port: 8432
-# pgbackrest_server_tls_ca:
+
+# Path to the TLS server certificate authorities for a server.
+#
+# See L(TLS Server Certificate Authorities
+# Option,https://pgbackrest.org/configuration.html#section-server/option-tls-server-ca-file).
+#
+# - Type: path
+# - Required: No
+# - Default: /etc/pgbackrest-server/ca.crt
 pgbackrest_server_tls_ca_file: /etc/pgbackrest-server/ca.crt
-# pgbackrest_server_tls_cert:
+
+# Path to the TLS server certificate for a server.
+#
+# See L(TLS Server Certificate
+# Option,https://pgbackrest.org/configuration.html#section-server/option-tls-server-cert-file).
+#
+# - Type: path
+# - Required: No
+# - Default: /etc/pgbackrest-server/server.crt
 pgbackrest_server_tls_cert_file: /etc/pgbackrest-server/server.crt
-# pgbackrest_server_tls_key:
+
+# Path to the TLS server key file for a server.
+#
+# See L(TLS Server Key
+# Option,https://pgbackrest.org/configuration.html#section-server/option-tls-server-key-file).
+#
+# - Type: path
+# - Required: No
+# - Default: /etc/pgbackrest-server/server.key
 pgbackrest_server_tls_key_file: /etc/pgbackrest-server/server.key
+
+# List of repositories.
+#
+# See L(Repository
+# Options,https://pgbackrest.org/configuration.html#section-repository).
+#
+# - Type: list
+# - Required: No
+# - List elements: dict
 pgbackrest_server_repositories: []
+
+# Dictionary of stanzas to create on a server.
+#
+# The key is the stanza name.
+#
+# The value is a list of repositories.
+#
+# The server index will be automatically generated.
+#
+# See L(Stanza
+# Options,https://pgbackrest.org/configuration.html#section-stanza).
+#
+# - Type: dict
+# - Required: No
 pgbackrest_server_stanzas: {}
+
+# Dictionary of allowed users (agents) on the server.
+#
+# The key is the hostname.
+#
+# The value is the stanza name.
+#
+# Names must be included in the TLS certificate and resolvable by DNS.
+#
+# See L(TLS Server Authorized Clients
+# Option,https://pgbackrest.org/configuration.html#section-server/option-tls-server-auth).
+#
+# - Type: dict
+# - Required: No
 pgbackrest_server_allowed_users: {}
+
+# Path where lock files are stored on the server.
+#
+# See L(Lock Path
+# Option,https://pgbackrest.org/configuration.html#section-general/option-lock-path).
+#
+# - Type: path
+# - Required: No
+# - Default: /tmp/pgbackrest-server
 pgbackrest_server_lock_path: /tmp/pgbackrest-server

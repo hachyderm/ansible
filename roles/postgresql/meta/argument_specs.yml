@@ -1,0 +1,193 @@
+---
+argument_specs:
+  main:
+    short_description: Install and configure PostgreSQL
+    description:
+      - Install and configure L(PostgreSQL,https://www.postgresql.org/), an
+        open source object-relational database system.
+    author:
+      - Hachyderm contributors
+    options:
+      postgresql_version:
+        description:
+          - Version of the PostgreSQL binaries.
+          - Upgrading this version will deploy a new independent cluster without upgrading one.
+          - See C(postgresql_upgrade_from_version) for upgrades.
+        default: 15
+      postgresql_port:
+        description:
+          - The TCP port the server listens on.
+        type: int
+        default: 5432
+      postgresql_cluster_name:
+        description:
+          - Name of the cluster.
+          - Useful when multiple clusters are deployed on the same server.
+        default: main
+      postgresql_initdb_args:
+        description:
+          - Arguments passed to C(initdb) to create a new cluster.
+          - See L(initdb,https://www.postgresql.org/docs/current/app-initdb.html).
+        default: "-k"
+      postgresql_data_directory:
+        description:
+          - Specifies the directory to use for data storage.
+          - See L(data_directory,https://www.postgresql.org/docs/current/runtime-config-file-locations.html#GUC-DATA-DIRECTORY).
+      postgresql_listen_addresses:
+        description:
+          - List of addresses PostgreSQL will listen to.
+          - This list will be transformed to a coma separated list by the role.
+          - See L(listen_addresses,https://www.postgresql.org/docs/current/runtime-config-connection.html#GUC-LISTEN-ADDRESSES).
+        type: list
+        elements: str
+        default:
+          - localhost
+      postgresql_archive_mode:
+        description:
+          - Enable or disable WAL archiving.
+          - Because this mode can only be at server start, it is a good idea to
+            enable it then use an archive command that does nothing so you can
+            change the archive command later without a restart.
+          - See L(archive_mode,https://www.postgresql.org/docs/current/runtime-config-wal.html#GUC-ARCHIVE-MODE).
+        default: "on"
+        choices:
+          - "on"
+          - "off"
+      postgresql_archive_command:
+        description:
+          - Command to archive WAL files.
+          - See L(archive_command,https://www.postgresql.org/docs/current/runtime-config-wal.html#GUC-ARCHIVE-COMMAND).
+      postgresql_restore_command:
+        description:
+          - Command to restore WAL files.
+          - See L(restore_command,https://www.postgresql.org/docs/current/runtime-config-wal.html#GUC-RESTORE-COMMAND).
+      postgresql_logging_collector:
+        description:
+          - Enable or disable the logging collector.
+          - See L(logging_collector,https://www.postgresql.org/docs/current/runtime-config-logging.html#GUC-LOGGING-COLLECTOR).
+        default: "on"
+        choices:
+          - "on"
+          - "off"
+      postgresql_log_timezone:
+        description:
+          - Sets the time zone used for timestamps written in the server log.
+          - See L(log_timezone,https://www.postgresql.org/docs/current/runtime-config-logging.html#GUC-LOG-TIMEZONE).
+      postgresql_log_destination:
+        description:
+          - Sets the destination of the logs.
+          - See L(log_destination,https://www.postgresql.org/docs/current/runtime-config-logging.html#GUC-LOG-DESTINATION).
+      postgresql_log_directory:
+        description:
+          - When C(postgresql_logging_collector) is enabled, this parameter
+            determines the directory in which log files will be created.
+          - See L(log_directory,https://www.postgresql.org/docs/current/runtime-config-logging.html#GUC-LOG-DIRECTORY).
+      postgresql_log_filename:
+        description:
+          - When C(postgresql_logging_collector) is enabled, this parameter sets the file names of the created log files.
+          - See L(log_filename,https://www.postgresql.org/docs/current/runtime-config-logging.html#GUC-LOG-FILENAME).
+      postgresql_log_file_mode:
+        description:
+          - On Unix systems this parameter sets the permissions for log files
+            when C(postgresql_logging_collector) is enabled.
+          - See L(log_file_mode,https://www.postgresql.org/docs/current/runtime-config-logging.html#GUC-LOG-FILE-MODE).
+      postgresql_settings:
+        description:
+          - Dictionary of custom settings.
+          - The key is the name of the setting.
+          - The value is the value of the setting.
+        type: dict
+      postgresql_hba_rules:
+        description:
+          - List of host-based authentication rules.
+          - See L(The pg_hba.conf File,https://www.postgresql.org/docs/current/auth-pg-hba-conf.html).
+        type: list
+        elements: str
+        default:
+          - "local all all scram-sha-256      # allow local connections with secure password"
+          - "host  all all all scram-sha-256  # allow host (with and without TLS) with secure password"
+      postgresql_manage_pgpass:
+        description:
+          - Create the C(.pgpass) files for C(root) and C(postgres) or not.
+          - See L(The Password File,https://www.postgresql.org/docs/current/libpq-pgpass.html).
+        type: bool
+        default: false
+      postgresql_manage_replication:
+        description:
+          - Configure replication on a replica.
+          - This operation will REMOVE THE DATA DIRECTORY to synchronize with a primary.
+        type: bool
+        default: false
+      postgresql_wal_level:
+        description:
+          - Determines how much information is written to the WAL.
+          - See L(wal_level,https://www.postgresql.org/docs/current/runtime-config-wal.html#GUC-WAL-LEVEL).
+        choices:
+          - "replica"
+          - "minimal"
+          - "logical"
+      postgresql_replication_username:
+        description:
+          - Name of the replication user.
+        default: repl
+      postgresql_replication_password:
+        description:
+          - Password of the replication user.
+      postgresql_replication_network:
+        description:
+          - IP range of the network used for the replication to allow in the C(pg_hba.conf) to setup the replication.
+        default: 127.0.0.1/32
+      postgresql_max_number_of_replicas:
+        description:
+          - Defines
+            L(max_wal_senders,https://www.postgresql.org/docs/current/runtime-config-replication.html#GUC-MAX-WAL-SENDERS)
+            and
+            L(max_replication_slots,https://www.postgresql.org/docs/current/runtime-config-replication.html#GUC-MAX-REPLICATION-SLOTS).
+        type: int
+        default: 10
+      postgresql_instance_role:
+        description:
+          - Role of the instance.
+          - Configure replication settings.
+          - This variable does not promote a replica to primary.
+        default: primary
+        choices:
+          - primary
+          - replica
+      postgresql_replication_slot_name:
+        description:
+          - In a replication setup, define the name of the replication slot.
+        default: "{{ inventory_hostname }}"
+      postgresql_primary_host:
+        description:
+          - In a replication setup, define where to find the primary host.
+      postgresql_primary_port:
+        description:
+          - In a replication setup, define where to find the primary port.
+        default: 5432
+      postgresql_users:
+        description:
+          - List of users to create.
+          - The key of the dict in the list must have a C(name) and a C(password).
+          - The key of the dict in the list can have a list of C(roles).
+        type: list
+        elements: dict
+      postgresql_service_after:
+        description:
+          - List of systemd units to wait before starting the service.
+        type: list
+      postgresql_upgrade_from_version:
+        description:
+          - Used to perform major upgrades.
+          - Tell what version the cluster to upgrade is running.
+          - Required for L(pg_upgrade,https://www.postgresql.org/docs/current/pgupgrade.html).
+      postgresql_upgrade_drop_cluster:
+        description:
+          - Once upgraded, remove the old cluster.
+        type: bool
+        default: true
+      postgresql_upgrade_remove_packages:
+        description:
+          - Once upgraded, remove the old packages.
+        type: bool
+        default: true
