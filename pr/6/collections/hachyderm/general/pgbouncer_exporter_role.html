@@ -166,14 +166,6 @@ To check whether it is installed, run <code class="code docutils literal notrans
 </thead>
 <tbody>
 <tr class="row-even"><td><div class="ansible-option-cell">
-<div class="ansibleOptionAnchor" id="parameter-main--pgbackrest_exporter_version"></div><p class="ansible-option-title" id="ansible-collections-hachyderm-general-pgbouncer-exporter-role-parameter-main-pgbackrest-exporter-version"><strong>pgbackrest_exporter_version</strong></p>
-<a class="ansibleOptionLink" href="#parameter-main--pgbackrest_exporter_version" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
-</div></td>
-<td><div class="ansible-option-cell"><p>Version of the exporter.</p>
-<p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">&quot;0.11.0&quot;</span></code></p>
-</div></td>
-</tr>
-<tr class="row-odd"><td><div class="ansible-option-cell">
 <div class="ansibleOptionAnchor" id="parameter-main--pgbouncer_exporter_arch"></div><p class="ansible-option-title" id="ansible-collections-hachyderm-general-pgbouncer-exporter-role-parameter-main-pgbouncer-exporter-arch"><strong>pgbouncer_exporter_arch</strong></p>
 <a class="ansibleOptionLink" href="#parameter-main--pgbouncer_exporter_arch" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
 </div></td>
@@ -181,7 +173,7 @@ To check whether it is installed, run <code class="code docutils literal notrans
 <p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">&quot;amd64&quot;</span></code></p>
 </div></td>
 </tr>
-<tr class="row-even"><td><div class="ansible-option-cell">
+<tr class="row-odd"><td><div class="ansible-option-cell">
 <div class="ansibleOptionAnchor" id="parameter-main--pgbouncer_exporter_bin"></div><p class="ansible-option-title" id="ansible-collections-hachyderm-general-pgbouncer-exporter-role-parameter-main-pgbouncer-exporter-bin"><strong>pgbouncer_exporter_bin</strong></p>
 <a class="ansibleOptionLink" href="#parameter-main--pgbouncer_exporter_bin" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">path</span></p>
 </div></td>
@@ -189,7 +181,7 @@ To check whether it is installed, run <code class="code docutils literal notrans
 <p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">&quot;/usr/local/bin/pgbouncer_exporter&quot;</span></code></p>
 </div></td>
 </tr>
-<tr class="row-odd"><td><div class="ansible-option-cell">
+<tr class="row-even"><td><div class="ansible-option-cell">
 <div class="ansibleOptionAnchor" id="parameter-main--pgbouncer_exporter_checksum"></div><p class="ansible-option-title" id="ansible-collections-hachyderm-general-pgbouncer-exporter-role-parameter-main-pgbouncer-exporter-checksum"><strong>pgbouncer_exporter_checksum</strong></p>
 <a class="ansibleOptionLink" href="#parameter-main--pgbouncer_exporter_checksum" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
 </div></td>
@@ -197,7 +189,7 @@ To check whether it is installed, run <code class="code docutils literal notrans
 <p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">&quot;de95a3d22141c0f84ac33de07e793c4993410f43d7c10e8ba281559381e031da&quot;</span></code></p>
 </div></td>
 </tr>
-<tr class="row-even"><td><div class="ansible-option-cell">
+<tr class="row-odd"><td><div class="ansible-option-cell">
 <div class="ansibleOptionAnchor" id="parameter-main--pgbouncer_exporter_connection_string"></div><p class="ansible-option-title" id="ansible-collections-hachyderm-general-pgbouncer-exporter-role-parameter-main-pgbouncer-exporter-connection-string"><strong>pgbouncer_exporter_connection_string</strong></p>
 <a class="ansibleOptionLink" href="#parameter-main--pgbouncer_exporter_connection_string" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
 </div></td>
@@ -205,7 +197,7 @@ To check whether it is installed, run <code class="code docutils literal notrans
 <p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">&quot;postgres://postgres:&#64;localhost:6543/pgbouncer?sslmode=disable&quot;</span></code></p>
 </div></td>
 </tr>
-<tr class="row-odd"><td><div class="ansible-option-cell">
+<tr class="row-even"><td><div class="ansible-option-cell">
 <div class="ansibleOptionAnchor" id="parameter-main--pgbouncer_exporter_download_url"></div><p class="ansible-option-title" id="ansible-collections-hachyderm-general-pgbouncer-exporter-role-parameter-main-pgbouncer-exporter-download-url"><strong>pgbouncer_exporter_download_url</strong></p>
 <a class="ansibleOptionLink" href="#parameter-main--pgbouncer_exporter_download_url" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
 </div></td>
@@ -213,7 +205,7 @@ To check whether it is installed, run <code class="code docutils literal notrans
 <p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">&quot;https://github.com/prometheus-community/pgbouncer_exporter/releases/download/v{{</span> <span class="pre">pgbouncer_exporter_version</span> <span class="pre">}}/</span> <span class="pre">pgbouncer_exporter-{{</span> <span class="pre">pgbouncer_exporter_version</span> <span class="pre">}}.{{</span> <span class="pre">pgbouncer_exporter_os</span> <span class="pre">}}-{{</span> <span class="pre">pgbouncer_exporter_arch</span> <span class="pre">}}.tar.gz&quot;</span></code></p>
 </div></td>
 </tr>
-<tr class="row-even"><td><div class="ansible-option-cell">
+<tr class="row-odd"><td><div class="ansible-option-cell">
 <div class="ansibleOptionAnchor" id="parameter-main--pgbouncer_exporter_group"></div><p class="ansible-option-title" id="ansible-collections-hachyderm-general-pgbouncer-exporter-role-parameter-main-pgbouncer-exporter-group"><strong>pgbouncer_exporter_group</strong></p>
 <a class="ansibleOptionLink" href="#parameter-main--pgbouncer_exporter_group" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
 </div></td>
@@ -221,7 +213,7 @@ To check whether it is installed, run <code class="code docutils literal notrans
 <p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">&quot;{{</span> <span class="pre">pgbouncer_exporter_user</span> <span class="pre">}}&quot;</span></code></p>
 </div></td>
 </tr>
-<tr class="row-odd"><td><div class="ansible-option-cell">
+<tr class="row-even"><td><div class="ansible-option-cell">
 <div class="ansibleOptionAnchor" id="parameter-main--pgbouncer_exporter_os"></div><p class="ansible-option-title" id="ansible-collections-hachyderm-general-pgbouncer-exporter-role-parameter-main-pgbouncer-exporter-os"><strong>pgbouncer_exporter_os</strong></p>
 <a class="ansibleOptionLink" href="#parameter-main--pgbouncer_exporter_os" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
 </div></td>
@@ -229,7 +221,7 @@ To check whether it is installed, run <code class="code docutils literal notrans
 <p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">&quot;linux&quot;</span></code></p>
 </div></td>
 </tr>
-<tr class="row-even"><td><div class="ansible-option-cell">
+<tr class="row-odd"><td><div class="ansible-option-cell">
 <div class="ansibleOptionAnchor" id="parameter-main--pgbouncer_exporter_port"></div><p class="ansible-option-title" id="ansible-collections-hachyderm-general-pgbouncer-exporter-role-parameter-main-pgbouncer-exporter-port"><strong>pgbouncer_exporter_port</strong></p>
 <a class="ansibleOptionLink" href="#parameter-main--pgbouncer_exporter_port" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">integer</span></p>
 </div></td>
@@ -237,7 +229,7 @@ To check whether it is installed, run <code class="code docutils literal notrans
 <p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">9127</span></code></p>
 </div></td>
 </tr>
-<tr class="row-odd"><td><div class="ansible-option-cell">
+<tr class="row-even"><td><div class="ansible-option-cell">
 <div class="ansibleOptionAnchor" id="parameter-main--pgbouncer_exporter_telemetry_path"></div><p class="ansible-option-title" id="ansible-collections-hachyderm-general-pgbouncer-exporter-role-parameter-main-pgbouncer-exporter-telemetry-path"><strong>pgbouncer_exporter_telemetry_path</strong></p>
 <a class="ansibleOptionLink" href="#parameter-main--pgbouncer_exporter_telemetry_path" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
 </div></td>
@@ -245,12 +237,20 @@ To check whether it is installed, run <code class="code docutils literal notrans
 <p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">&quot;/metrics&quot;</span></code></p>
 </div></td>
 </tr>
-<tr class="row-even"><td><div class="ansible-option-cell">
+<tr class="row-odd"><td><div class="ansible-option-cell">
 <div class="ansibleOptionAnchor" id="parameter-main--pgbouncer_exporter_user"></div><p class="ansible-option-title" id="ansible-collections-hachyderm-general-pgbouncer-exporter-role-parameter-main-pgbouncer-exporter-user"><strong>pgbouncer_exporter_user</strong></p>
 <a class="ansibleOptionLink" href="#parameter-main--pgbouncer_exporter_user" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
 </div></td>
 <td><div class="ansible-option-cell"><p>User to create to run the exporter.</p>
 <p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">&quot;pgbouncer-exp&quot;</span></code></p>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-main--pgbouncer_exporter_version"></div><p class="ansible-option-title" id="ansible-collections-hachyderm-general-pgbouncer-exporter-role-parameter-main-pgbouncer-exporter-version"><strong>pgbouncer_exporter_version</strong></p>
+<a class="ansibleOptionLink" href="#parameter-main--pgbouncer_exporter_version" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>Version of the exporter.</p>
+<p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">&quot;0.11.0&quot;</span></code></p>
 </div></td>
 </tr>
 </tbody>
