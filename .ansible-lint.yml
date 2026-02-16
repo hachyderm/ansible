@@ -1,3 +1,4 @@
 ---
 exclude_paths:
   - roles/*/molecule/*/group_vars
+  - roles/*/defaults/main.yml

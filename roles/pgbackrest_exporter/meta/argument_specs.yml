@@ -1,0 +1,57 @@
+---
+argument_specs:
+  main:
+    short_description: Install and configure pgBackRest Exporter
+    description:
+      - Install and configure L(pgBackRest Exporter, https://github.com/woblerr/pgbackrest_exporter)
+    author:
+      - Hachyderm contributors
+    options:
+      pgbackrest_exporter_version:
+        description:
+          - Version of the exporter.
+        default: 0.22.0
+      pgbackrest_exporter_os:
+        description:
+          - Operating system of where the exporter will be installed.
+        default: linux
+      pgbackrest_exporter_arch:
+        description:
+          - Architecture of the system where the exporter will be installed.
+        default: x86_64
+      pgbackrest_exporter_download_url:
+        description:
+          - URL used to download the exporter archive.
+        default: "https://github.com/woblerr/pgbackrest_exporter/releases/download/v{{ pgbackrest_exporter_version }}/\
+          pgbackrest_exporter-{{ pgbackrest_exporter_version }}-{{ pgbackrest_exporter_os }}-{{ pgbackrest_exporter_arch }}.tar.gz"
+      pgbackrest_exporter_checksum:
+        description:
+          - Checksum of the downloaded archive to avoid supply-chain attack.
+        default: 1562febbb006e96236e30ad0098757724614b2f29f87c1d210fed9083c4c31b5
+      pgbackrest_exporter_bin:
+        description:
+          - Path to the exporter binary.
+        type: path
+        default: /usr/local/bin/pgbackrest_exporter
+      pgbackrest_exporter_user:
+        description:
+          - User to create to run the exporter.
+        default: pgbackrest-exp
+      pgbackrest_exporter_group:
+        description:
+          - Group to create for the user to run the exporter.
+        default: "{{ pgbackrest_exporter_user }}"
+      pgbackrest_exporter_config_file:
+        description:
+          - Path to the configuration file of pgBackRest.
+        type: path
+        default: /etc/pgbackrest/pgbackrest.conf
+      pgbackrest_exporter_port:
+        description:
+          - Port to listen for the exporter.
+        type: int
+        default: 9854
+      pgbackrest_exporter_telemetry_path:
+        description:
+          - Route to scrap metrics on the exporter.
+        default: "/metrics"

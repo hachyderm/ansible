@@ -1,1 +1,4 @@
 .ansible
+*.tar.gz
+venv
+built-docs

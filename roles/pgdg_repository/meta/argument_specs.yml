@@ -1,0 +1,7 @@
+---
+argument_specs:
+  main:
+    short_description: Configure PGDG repository
+    description: Configure PGDG repository
+    author:
+      - Hachyderm contributors

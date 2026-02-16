@@ -1,37 +1,221 @@
 ---
+
+# Version of the PostgreSQL binaries.
+#
+# Upgrading this version will deploy a new independent cluster without upgrading
+# one.
+#
+# See C(postgresql_upgrade_from_version) for upgrades.
+#
+# - Type: str
+# - Required: No
+# - Default: 15
 postgresql_version: 15
+
+# Name of the cluster.
+#
+# Useful when multiple clusters are deployed on the same server.
+#
+# - Type: str
+# - Required: No
+# - Default: main
 postgresql_cluster_name: main
+
+# Arguments passed to C(initdb) to create a new cluster.
+#
+# See L(initdb,https://www.postgresql.org/docs/current/app-initdb.html).
+#
+# - Type: str
+# - Required: No
+# - Default: -k
 postgresql_initdb_args: "-k"
+
+# Specifies the directory to use for data storage.
+#
+# See
+# L(data_directory,https://www.postgresql.org/docs/current/runtime-config-file-locations.html#GUC-DATA-DIRECTORY).
+#
+# - Type: str
+# - Required: No
 postgresql_data_directory: "/var/lib/postgresql/{{ postgresql_version }}/{{ postgresql_cluster_name }}"
+
+# List of addresses PostgreSQL will listen to.
+#
+# This list will be transformed to a coma separated list by the role.
+#
+# See
+# L(listen_addresses,https://www.postgresql.org/docs/current/runtime-config-connection.html#GUC-LISTEN-ADDRESSES).
+#
+# - Type: list
+# - Required: No
+# - Default: ['localhost']
+# - List elements: str
 postgresql_listen_addresses:
   - localhost
+
+# The TCP port the server listens on.
+#
+# - Type: int
+# - Required: No
+# - Default: 5432
 postgresql_port: 5432
+
+# Enable or disable WAL archiving.
+#
+# Because this mode can only be at server start, it is a good idea to enable it
+# then use an archive command that does nothing so you can change the archive
+# command later without a restart.
+#
+# See
+# L(archive_mode,https://www.postgresql.org/docs/current/runtime-config-wal.html#GUC-ARCHIVE-MODE).
+#
+# - Type: str
+# - Required: No
+# - Default: on
+# - Choices: on, off
 postgresql_archive_mode: "on"
-# postgresql_archive_command:
-# postgresql_restore_command:
+
+# Enable or disable the logging collector.
+#
+# See
+# L(logging_collector,https://www.postgresql.org/docs/current/runtime-config-logging.html#GUC-LOGGING-COLLECTOR).
+#
+# - Type: str
+# - Required: No
+# - Default: on
+# - Choices: on, off
 postgresql_logging_collector: "on"
-# postgresql_log_timezone:
-# postgresql_log_destination:
-# postgresql_log_directory:
-# postgresql_log_filename:
-# postgresql_log_file_mode:
+
+# Dictionary of custom settings.
+#
+# The key is the name of the setting.
+#
+# The value is the value of the setting.
+#
+# - Type: dict
+# - Required: No
 postgresql_settings: {}
+
+# List of host-based authentication rules.
+#
+# See L(The pg_hba.conf
+# File,https://www.postgresql.org/docs/current/auth-pg-hba-conf.html).
+#
+# - Type: list
+# - Required: No
+# - Default: ['local all all scram-sha-256      # allow local connections with secure password', 'host  all all all scram-sha-256  # allow host (with and without TLS) with secure password']
+# - List elements: str
 postgresql_hba_rules:
   - "local all all scram-sha-256      # allow local connections with secure password"
   - "host  all all all scram-sha-256  # allow host (with and without TLS) with secure password"
+
+# Create the C(.pgpass) files for C(root) and C(postgres) or not.
+#
+# See L(The Password
+# File,https://www.postgresql.org/docs/current/libpq-pgpass.html).
+#
+# - Type: bool
+# - Required: No
+# - Default: false
 postgresql_manage_pgpass: false
+
+# Configure replication on a replica.
+#
+# This operation will REMOVE THE DATA DIRECTORY to synchronize with a primary.
+#
+# - Type: bool
+# - Required: No
+# - Default: false
 postgresql_manage_replication: false
+
+# Determines how much information is written to the WAL.
+#
+# See
+# L(wal_level,https://www.postgresql.org/docs/current/runtime-config-wal.html#GUC-WAL-LEVEL).
+#
+# - Type: str
+# - Required: No
+# - Choices: replica, minimal, logical
 postgresql_wal_level: replica
+
+# Name of the replication user.
+#
+# - Type: str
+# - Required: No
+# - Default: repl
 postgresql_replication_username: repl
-# postgresql_replication_password:
+
+# IP range of the network used for the replication to allow in the
+# C(pg_hba.conf) to setup the replication.
+#
+# - Type: str
+# - Required: No
+# - Default: 127.0.0.1/32
 postgresql_replication_network: 127.0.0.1/32
+
+# Defines
+# L(max_wal_senders,https://www.postgresql.org/docs/current/runtime-config-replication.html#GUC-MAX-WAL-SENDERS)
+# and
+# L(max_replication_slots,https://www.postgresql.org/docs/current/runtime-config-replication.html#GUC-MAX-REPLICATION-SLOTS).
+#
+# - Type: int
+# - Required: No
+# - Default: 10
 postgresql_max_number_of_replicas: 10
+
+# Role of the instance.
+#
+# Configure replication settings.
+#
+# This variable does not promote a replica to primary.
+#
+# - Type: str
+# - Required: No
+# - Default: primary
+# - Choices: primary, replica
 postgresql_instance_role: primary
+
+# In a replication setup, define the name of the replication slot.
+#
+# - Type: str
+# - Required: No
+# - Default: {{ inventory_hostname }}
 postgresql_replication_slot_name: "{{ inventory_hostname }}"
-# postgresql_primary_host:
+
+# In a replication setup, define where to find the primary port.
+#
+# - Type: str
+# - Required: No
+# - Default: 5432
 postgresql_primary_port: 5432
+
+# List of users to create.
+#
+# The key of the dict in the list must have a C(name) and a C(password).
+#
+# The key of the dict in the list can have a list of C(roles).
+#
+# - Type: list
+# - Required: No
+# - List elements: dict
 postgresql_users: []
+
+# List of systemd units to wait before starting the service.
+#
+# - Type: list
+# - Required: No
 postgresql_service_after: []
-# postgresql_upgrade_from_version:
+
+# Once upgraded, remove the old cluster.
+#
+# - Type: bool
+# - Required: No
+# - Default: true
 postgresql_upgrade_drop_cluster: true
+
+# Once upgraded, remove the old packages.
+#
+# - Type: bool
+# - Required: No
+# - Default: true
 postgresql_upgrade_remove_packages: true

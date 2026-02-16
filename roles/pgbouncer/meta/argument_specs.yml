@@ -1,0 +1,107 @@
+---
+argument_specs:
+  main:
+    short_description: Install and configure PgBouncer
+    description:
+      - Install and configure L(PgBouncer,https://www.pgbouncer.org/), a lightweight connection pooler for PostgreSQL.
+    author:
+      - Hachyderm contributors
+    options:
+      pgbouncer_databases:
+        description:
+          - Dictionary of databases connections strings.
+          - The key is the database name.
+          - The value is the connection string.
+          - See L(Section [databases],https://www.pgbouncer.org/config.html#section-databases).
+        type: dict
+      pgbouncer_users:
+        description:
+          - Dictionary of users.
+          - The key is the user name.
+          - The value is the user settings.
+          - See L(Section [users],https://www.pgbouncer.org/config.html#section-users).
+        type: dict
+      pgbouncer_listen_addr:
+        description:
+          - List of addresses to listen.
+          - See L(listen_addr,https://www.pgbouncer.org/config.html#listen_addr).
+        type: list
+        elements: str
+        default:
+          - localhost
+      pgbouncer_listen_port:
+        description:
+          - Which port to listen on.
+          - See L(listen_port,https://www.pgbouncer.org/config.html#listen_port).
+        type: int
+        default: 6432
+      pgbouncer_logfile:
+        description:
+          - Path to the log file.
+          - See L(logfile,https://www.pgbouncer.org/config.html#logfile).
+        type: path
+        default: /var/log/postgresql/pgbouncer.log
+      pgbouncer_pidfile:
+        description:
+          - Path to PID file.
+          - See L(pidfile,https://www.pgbouncer.org/config.html#pidfile).
+        type: path
+        default: /var/run/postgresql/pgbouncer.pid
+      pgbouncer_auth_type:
+        description:
+          - How to authenticate users.
+          - See L(auth_type,https://www.pgbouncer.org/config.html#auth_type).
+        default: scram-sha-256
+      pgbouncer_auth_file:
+        description:
+          - Path to the authentication file.
+          - See L(auth_file,https://www.pgbouncer.org/config.html#auth_file).
+        type: path
+        default: /etc/pgbouncer/userlist.txt
+      pgbouncer_admin_users:
+        description:
+          - List of database users that are allowed to connect and run all commands on the console.
+          - See L(admin_users,https://www.pgbouncer.org/config.html#admin_users).
+        type: list
+      pgbouncer_stats_users:
+        description:
+          - List of database users that are allowed to connect and run read-only queries on the console.
+          - The list will be transformed to a coma separated list in the configuration file.
+          - See L(stats_users,https://www.pgbouncer.org/config.html#stats_users).
+        type: list
+      pgbouncer_max_client_conn:
+        description:
+          - Maximum number of client connections allowed.
+          - See L(max_client_conn,https://www.pgbouncer.org/config.html#max_client_conn).
+        type: int
+        default: 100
+      pgbouncer_default_pool_size:
+        description:
+          - How many server connections to allow per user/database pair.
+          - See L(default_pool_size,https://www.pgbouncer.org/config.html#default_pool_size).
+        type: int
+        default: 20
+      pgbouncer_pool_mode:
+        description:
+          - Specifies when a server connection can be reused by other clients.
+          - See L(pool_mode,https://www.pgbouncer.org/config.html#pool_mode).
+        choices:
+          - session
+          - transaction
+          - statement
+      pgbouncer_ignore_startup_parameters:
+        description:
+          - List of parameters to ignore in startup packets.
+          - The list will be transformed to a coma separated list in the configuration file.
+          - See L(ignore_startup_parameters,https://www.pgbouncer.org/config.html#ignore_startup_parameters).
+        type: list
+      pgbouncer_auth_users:
+        description:
+          - Dictionary of authentication settings used to create the authentication file.
+          - The key is the username.
+          - The value is the password hash.
+        type: dict
+      pgbouncer_service_after:
+        description:
+          - List of systemd units to wait before starting the service.
+        type: list

@@ -1,18 +1,150 @@
 ---
+
+# Dictionary of databases connections strings.
+#
+# The key is the database name.
+#
+# The value is the connection string.
+#
+# See L(Section
+# [databases],https://www.pgbouncer.org/config.html#section-databases).
+#
+# - Type: dict
+# - Required: No
 pgbouncer_databases: {}
+
+# Dictionary of users.
+#
+# The key is the user name.
+#
+# The value is the user settings.
+#
+# See L(Section [users],https://www.pgbouncer.org/config.html#section-users).
+#
+# - Type: dict
+# - Required: No
 pgbouncer_users: {}
+
+# List of addresses to listen.
+#
+# See L(listen_addr,https://www.pgbouncer.org/config.html#listen_addr).
+#
+# - Type: list
+# - Required: No
+# - Default: ['localhost']
+# - List elements: str
 pgbouncer_listen_addr:
   - localhost
+
+# Which port to listen on.
+#
+# See L(listen_port,https://www.pgbouncer.org/config.html#listen_port).
+#
+# - Type: int
+# - Required: No
+# - Default: 6432
 pgbouncer_listen_port: 6432
+
+# Path to the log file.
+#
+# See L(logfile,https://www.pgbouncer.org/config.html#logfile).
+#
+# - Type: path
+# - Required: No
+# - Default: /var/log/postgresql/pgbouncer.log
 pgbouncer_logfile: /var/log/postgresql/pgbouncer.log
+
+# Path to PID file.
+#
+# See L(pidfile,https://www.pgbouncer.org/config.html#pidfile).
+#
+# - Type: path
+# - Required: No
+# - Default: /var/run/postgresql/pgbouncer.pid
 pgbouncer_pidfile: /var/run/postgresql/pgbouncer.pid
+
+# How to authenticate users.
+#
+# See L(auth_type,https://www.pgbouncer.org/config.html#auth_type).
+#
+# - Type: str
+# - Required: No
+# - Default: scram-sha-256
 pgbouncer_auth_type: scram-sha-256
+
+# Path to the authentication file.
+#
+# See L(auth_file,https://www.pgbouncer.org/config.html#auth_file).
+#
+# - Type: path
+# - Required: No
+# - Default: /etc/pgbouncer/userlist.txt
 pgbouncer_auth_file: /etc/pgbouncer/userlist.txt
+
+# List of database users that are allowed to connect and run all commands on the
+# console.
+#
+# See L(admin_users,https://www.pgbouncer.org/config.html#admin_users).
+#
+# - Type: list
+# - Required: No
 pgbouncer_admin_users: []
+
+# List of database users that are allowed to connect and run read-only queries
+# on the console.
+#
+# The list will be transformed to a coma separated list in the configuration
+# file.
+#
+# See L(stats_users,https://www.pgbouncer.org/config.html#stats_users).
+#
+# - Type: list
+# - Required: No
 pgbouncer_stats_users: []
+
+# Maximum number of client connections allowed.
+#
+# See L(max_client_conn,https://www.pgbouncer.org/config.html#max_client_conn).
+#
+# - Type: int
+# - Required: No
+# - Default: 100
 pgbouncer_max_client_conn: 100
+
+# How many server connections to allow per user/database pair.
+#
+# See
+# L(default_pool_size,https://www.pgbouncer.org/config.html#default_pool_size).
+#
+# - Type: int
+# - Required: No
+# - Default: 20
 pgbouncer_default_pool_size: 20
-# pgbouncer_pool_mode:
+
+# List of parameters to ignore in startup packets.
+#
+# The list will be transformed to a coma separated list in the configuration
+# file.
+#
+# See
+# L(ignore_startup_parameters,https://www.pgbouncer.org/config.html#ignore_startup_parameters).
+#
+# - Type: list
+# - Required: No
 pgbouncer_ignore_startup_parameters: []
+
+# Dictionary of authentication settings used to create the authentication file.
+#
+# The key is the username.
+#
+# The value is the password hash.
+#
+# - Type: dict
+# - Required: No
 pgbouncer_auth_users: []
+
+# List of systemd units to wait before starting the service.
+#
+# - Type: list
+# - Required: No
 pgbouncer_service_after: []
