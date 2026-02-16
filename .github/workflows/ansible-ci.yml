@@ -6,7 +6,6 @@ on:
       - opened
       - reopened
       - synchronize
-  workflow_dispatch:
 
 concurrency:
   group: ansible-${{ github.event.pull_request.number || github.ref }}
