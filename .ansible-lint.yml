@@ -1,4 +1,5 @@
 ---
 exclude_paths:
+  - .github/workflows/*.yml
   - roles/*/molecule/*/group_vars
   - roles/*/defaults/main.yml
