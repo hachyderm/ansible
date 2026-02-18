@@ -84,6 +84,8 @@ jobs:
       init-copyright: Hachyderm contributors
       init-title: Hachyderm General Collection Documentation
       init-html-short-title: Hachyderm General Collection Documentation
+      init-extra-html-theme-options: |
+        documentation_home_url=https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/pr/${{ github.event.number }}
       squash-hierarchy: true
       init-lenient: true
       init-fail-on-error: true
@@ -135,10 +137,10 @@ jobs:
             Thank you for contribution!✨
 
             The docs for **this PR** have been published here:
-            ${{ vars.GHP_BASE_URL }}/pr/${{ github.event.number }}
+            https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/pr/${{ github.event.number }}
 
             You can compare to the docs for the `main` branch here:
-            ${{ vars.GHP_BASE_URL }}/branch/main
+            https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/branch/main
 
             The docsite for **this PR** is also available for download as an artifact from this run:
             ${{ needs.build.outputs.artifact-url }}
