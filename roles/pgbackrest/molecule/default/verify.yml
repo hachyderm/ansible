@@ -21,6 +21,24 @@
         cmd: pgbackrest check
       changed_when: false
 
+    - name: Check full backup service
+      ansible.builtin.systemd:
+        name: pgbackrest-full.service
+      register: pgbackrest_full_service
+
+    - name: Verify that full backup service will not start at boot
+      ansible.builtin.assert:
+        that: pgbackrest_full_service.status.UnitFileState == "disabled"
+
+    - name: Check diff backup service
+      ansible.builtin.systemd:
+        name: pgbackrest-diff.service
+      register: pgbackrest_diff_service
+
+    - name: Verify that diff backup service will not start at boot
+      ansible.builtin.assert:
+        that: pgbackrest_diff_service.status.UnitFileState == "disabled"
+
     - name: Start a full backup
       ansible.builtin.service:
         name: pgbackrest-full.service
