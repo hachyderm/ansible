@@ -15,7 +15,7 @@
 - name: Manage schedules services
   ansible.builtin.service:
     name: "pgbackrest-{{ backup_type }}.service"
-    enabled: true
+    enabled: false
   loop: "{{ pgbackrest_schedules.keys() }}"
   loop_control:
     loop_var: backup_type
