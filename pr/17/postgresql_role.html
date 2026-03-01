@@ -1,0 +1,520 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta content="2.24.0" name="antsibull-docs" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>hachyderm.general.postgresql role – Install and configure PostgreSQL &mdash; Hachyderm General Collection  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=41de9001" />
+      <link rel="stylesheet" type="text/css" href="_static/css/ansible.css?v=b54c304f" />
+      <link rel="stylesheet" type="text/css" href="_static/antsibull-minimal.css" />
+      <link rel="stylesheet" type="text/css" href="_static/css/rtd-ethical-ads.css?v=289b023e" />
+
+  
+    <link rel="shortcut icon" href="_static/images/Ansible-Mark-RGB_Black.png"/>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=7f41d439"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="hachyderm.general.pgdg_repository role – Configure PGDG repository" href="pgdg_repository_role.html" /><!-- extra head elements for Ansible beyond RTD Sphinx Theme -->
+
+
+
+
+</head>
+
+<body class="wy-body-for-nav"><!-- extra body elements for Ansible beyond RTD Sphinx Theme -->
+
+<div class="DocSite-globalNav ansibleNav">
+  <ul>
+    <li><a href="https://www.ansible.com/blog" target="_blank">Blog</a></li>
+    <li><a href="https://forum.ansible.com/" target="_blank">Ansible community forum</a></li>
+    <li><a href="https://docs.ansible.com/" target="_blank">Documentation</a></li>
+  </ul>
+</div>
+
+<a class="DocSite-nav" href="https://hachyderm.github.io/ansible/pr/17" style="padding-bottom: 30px;">
+
+  <img class="DocSiteNav-logo"
+    src="_static/images/Ansible-Mark-RGB_White.png"
+    alt="Ansible Logo">
+  <div class="DocSiteNav-title">Hachyderm General Collection Documentation</div>
+</a>
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Hachyderm General Collection
+          </a><!--- Based on https://github.com/rtfd/sphinx_rtd_theme/pull/438/files -->
+
+<div class="version">
+  
+    
+  
+</div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <label class="sr-only" for="q">Search docs:</label>
+    <input type="text" class="st-default-search-input" id="q" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="pgbackrest_role.html">hachyderm.general.pgbackrest role – Install and configure pgBackRest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pgbackrest_exporter_role.html">hachyderm.general.pgbackrest_exporter role – Install and configure pgBackRest Exporter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pgbouncer_role.html">hachyderm.general.pgbouncer role – Install and configure PgBouncer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pgbouncer_exporter_role.html">hachyderm.general.pgbouncer_exporter role – Install and configure PgBouncer Exporter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pgdg_repository_role.html">hachyderm.general.pgdg_repository role – Configure PGDG repository</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">hachyderm.general.postgresql role – Install and configure PostgreSQL</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#entry-point-main-install-and-configure-postgresql">Entry point <code class="docutils literal notranslate"><span class="pre">main</span></code> – Install and configure PostgreSQL</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#synopsis">Synopsis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#parameters">Parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#authors">Authors</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#collection-links">Collection links</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<!-- extra nav elements for Ansible beyond RTD Sphinx Theme -->
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Hachyderm General Collection</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">hachyderm.general.postgresql role – Install and configure PostgreSQL</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+
+  
+           <div itemprop="articleBody">
+             
+  <span class="target" id="ansible-collections-hachyderm-general-postgresql-role"></span><section id="hachyderm-general-postgresql-role-install-and-configure-postgresql">
+<h1>hachyderm.general.postgresql role – Install and configure PostgreSQL<a class="headerlink" href="#hachyderm-general-postgresql-role-install-and-configure-postgresql" title="Link to this heading"></a></h1>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This role is part of the <a class="reference external" href="https://galaxy.ansible.com/ui/repo/published/hachyderm/general/">hachyderm.general collection</a> (version 1.0.0).</p>
+<p>It is not included in <code class="docutils literal notranslate"><span class="pre">ansible-core</span></code>.
+To check whether it is installed, run <code class="code docutils literal notranslate"><span class="pre">ansible-galaxy</span> <span class="pre">collection</span> <span class="pre">list</span></code>.</p>
+<p>To install it use: <code class="code docutils literal notranslate"><span class="pre">ansible-galaxy</span> <span class="pre">collection</span> <span class="pre">install</span> <span class="pre">hachyderm.general</span></code>.</p>
+<p>To use it in a playbook, specify: <code class="code docutils literal notranslate"><span class="pre">hachyderm.general.postgresql</span></code>.</p>
+</div>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#entry-point-main-install-and-configure-postgresql" id="id1">Entry point <code class="docutils literal notranslate"><span class="pre">main</span></code> – Install and configure PostgreSQL</a></p>
+<ul>
+<li><p><a class="reference internal" href="#synopsis" id="id2">Synopsis</a></p></li>
+<li><p><a class="reference internal" href="#parameters" id="id3">Parameters</a></p></li>
+<li><p><a class="reference internal" href="#authors" id="id4">Authors</a></p></li>
+</ul>
+</li>
+</ul>
+</nav>
+<span class="target" id="ansible-collections-hachyderm-general-postgresql-role-entrypoint-main"></span><section id="entry-point-main-install-and-configure-postgresql">
+<h2><a class="toc-backref" href="#id1" role="doc-backlink">Entry point <code class="docutils literal notranslate"><span class="pre">main</span></code> – Install and configure PostgreSQL</a><a class="headerlink" href="#entry-point-main-install-and-configure-postgresql" title="Link to this heading"></a></h2>
+<section id="synopsis">
+<h3><a class="toc-backref" href="#id2" role="doc-backlink">Synopsis</a><a class="headerlink" href="#synopsis" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Install and configure <a class="reference external" href="https://www.postgresql.org/">PostgreSQL</a>, an open source object-relational database system.</p></li>
+</ul>
+</section>
+<section id="parameters">
+<h3><a class="toc-backref" href="#id3" role="doc-backlink">Parameters</a><a class="headerlink" href="#parameters" title="Link to this heading"></a></h3>
+<table class="longtable ansible-option-table docutils align-default" style="width: 100%">
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter</p></th>
+<th class="head"><p>Comments</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-main--postgresql_archive_command"></div><p class="ansible-option-title" id="ansible-collections-hachyderm-general-postgresql-role-parameter-main-postgresql-archive-command"><strong>postgresql_archive_command</strong></p>
+<a class="ansibleOptionLink" href="#parameter-main--postgresql_archive_command" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>Command to archive WAL files.</p>
+<p>See <a class="reference external" href="https://www.postgresql.org/docs/current/runtime-config-wal.html#GUC-ARCHIVE-COMMAND">archive_command</a>.</p>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-main--postgresql_archive_mode"></div><p class="ansible-option-title" id="ansible-collections-hachyderm-general-postgresql-role-parameter-main-postgresql-archive-mode"><strong>postgresql_archive_mode</strong></p>
+<a class="ansibleOptionLink" href="#parameter-main--postgresql_archive_mode" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>Enable or disable WAL archiving.</p>
+<p>Because this mode can only be at server start, it is a good idea to enable it then use an archive command that does nothing so you can change the archive command later without a restart.</p>
+<p>See <a class="reference external" href="https://www.postgresql.org/docs/current/runtime-config-wal.html#GUC-ARCHIVE-MODE">archive_mode</a>.</p>
+<p class="ansible-option-line"><strong class="ansible-option-choices">Choices:</strong></p>
+<ul class="simple">
+<li><p><code class="ansible-option-default-bold docutils literal notranslate"><strong><span class="pre">&quot;on&quot;</span></strong></code> <span class="ansible-option-choices-default-mark">← (default)</span></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">&quot;off&quot;</span></code></p></li>
+</ul>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-main--postgresql_cluster_name"></div><p class="ansible-option-title" id="ansible-collections-hachyderm-general-postgresql-role-parameter-main-postgresql-cluster-name"><strong>postgresql_cluster_name</strong></p>
+<a class="ansibleOptionLink" href="#parameter-main--postgresql_cluster_name" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>Name of the cluster.</p>
+<p>Useful when multiple clusters are deployed on the same server.</p>
+<p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">&quot;main&quot;</span></code></p>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-main--postgresql_data_directory"></div><p class="ansible-option-title" id="ansible-collections-hachyderm-general-postgresql-role-parameter-main-postgresql-data-directory"><strong>postgresql_data_directory</strong></p>
+<a class="ansibleOptionLink" href="#parameter-main--postgresql_data_directory" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>Specifies the directory to use for data storage.</p>
+<p>See <a class="reference external" href="https://www.postgresql.org/docs/current/runtime-config-file-locations.html#GUC-DATA-DIRECTORY">data_directory</a>.</p>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-main--postgresql_hba_rules"></div><p class="ansible-option-title" id="ansible-collections-hachyderm-general-postgresql-role-parameter-main-postgresql-hba-rules"><strong>postgresql_hba_rules</strong></p>
+<a class="ansibleOptionLink" href="#parameter-main--postgresql_hba_rules" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">list</span> / <span class="ansible-option-elements">elements=string</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>List of host-based authentication rules.</p>
+<p>See <a class="reference external" href="https://www.postgresql.org/docs/current/auth-pg-hba-conf.html">The pg_hba.conf File</a>.</p>
+<p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">[&quot;local</span> <span class="pre">all</span> <span class="pre">all</span> <span class="pre">scram-sha-256</span>&#160;&#160;&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">allow</span> <span class="pre">local</span> <span class="pre">connections</span> <span class="pre">with</span> <span class="pre">secure</span> <span class="pre">password&quot;,</span> <span class="pre">&quot;host</span>&#160; <span class="pre">all</span> <span class="pre">all</span> <span class="pre">all</span> <span class="pre">scram-sha-256</span>&#160; <span class="pre">#</span> <span class="pre">allow</span> <span class="pre">host</span> <span class="pre">(with</span> <span class="pre">and</span> <span class="pre">without</span> <span class="pre">TLS)</span> <span class="pre">with</span> <span class="pre">secure</span> <span class="pre">password&quot;]</span></code></p>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-main--postgresql_initdb_args"></div><p class="ansible-option-title" id="ansible-collections-hachyderm-general-postgresql-role-parameter-main-postgresql-initdb-args"><strong>postgresql_initdb_args</strong></p>
+<a class="ansibleOptionLink" href="#parameter-main--postgresql_initdb_args" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>Arguments passed to <code class="docutils literal notranslate"><span class="pre">initdb</span></code> to create a new cluster.</p>
+<p>See <a class="reference external" href="https://www.postgresql.org/docs/current/app-initdb.html">initdb</a>.</p>
+<p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">&quot;-k&quot;</span></code></p>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-main--postgresql_instance_role"></div><p class="ansible-option-title" id="ansible-collections-hachyderm-general-postgresql-role-parameter-main-postgresql-instance-role"><strong>postgresql_instance_role</strong></p>
+<a class="ansibleOptionLink" href="#parameter-main--postgresql_instance_role" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>Role of the instance.</p>
+<p>Configure replication settings.</p>
+<p>This variable does not promote a replica to primary.</p>
+<p class="ansible-option-line"><strong class="ansible-option-choices">Choices:</strong></p>
+<ul class="simple">
+<li><p><code class="ansible-option-default-bold docutils literal notranslate"><strong><span class="pre">&quot;primary&quot;</span></strong></code> <span class="ansible-option-choices-default-mark">← (default)</span></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">&quot;replica&quot;</span></code></p></li>
+</ul>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-main--postgresql_listen_addresses"></div><p class="ansible-option-title" id="ansible-collections-hachyderm-general-postgresql-role-parameter-main-postgresql-listen-addresses"><strong>postgresql_listen_addresses</strong></p>
+<a class="ansibleOptionLink" href="#parameter-main--postgresql_listen_addresses" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">list</span> / <span class="ansible-option-elements">elements=string</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>List of addresses PostgreSQL will listen to.</p>
+<p>This list will be transformed to a coma separated list by the role.</p>
+<p>See <a class="reference external" href="https://www.postgresql.org/docs/current/runtime-config-connection.html#GUC-LISTEN-ADDRESSES">listen_addresses</a>.</p>
+<p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">[&quot;localhost&quot;]</span></code></p>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-main--postgresql_log_destination"></div><p class="ansible-option-title" id="ansible-collections-hachyderm-general-postgresql-role-parameter-main-postgresql-log-destination"><strong>postgresql_log_destination</strong></p>
+<a class="ansibleOptionLink" href="#parameter-main--postgresql_log_destination" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>Sets the destination of the logs.</p>
+<p>See <a class="reference external" href="https://www.postgresql.org/docs/current/runtime-config-logging.html#GUC-LOG-DESTINATION">log_destination</a>.</p>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-main--postgresql_log_directory"></div><p class="ansible-option-title" id="ansible-collections-hachyderm-general-postgresql-role-parameter-main-postgresql-log-directory"><strong>postgresql_log_directory</strong></p>
+<a class="ansibleOptionLink" href="#parameter-main--postgresql_log_directory" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>When <code class="docutils literal notranslate"><span class="pre">postgresql_logging_collector</span></code> is enabled, this parameter determines the directory in which log files will be created.</p>
+<p>See <a class="reference external" href="https://www.postgresql.org/docs/current/runtime-config-logging.html#GUC-LOG-DIRECTORY">log_directory</a>.</p>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-main--postgresql_log_file_mode"></div><p class="ansible-option-title" id="ansible-collections-hachyderm-general-postgresql-role-parameter-main-postgresql-log-file-mode"><strong>postgresql_log_file_mode</strong></p>
+<a class="ansibleOptionLink" href="#parameter-main--postgresql_log_file_mode" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>On Unix systems this parameter sets the permissions for log files when <code class="docutils literal notranslate"><span class="pre">postgresql_logging_collector</span></code> is enabled.</p>
+<p>See <a class="reference external" href="https://www.postgresql.org/docs/current/runtime-config-logging.html#GUC-LOG-FILE-MODE">log_file_mode</a>.</p>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-main--postgresql_log_filename"></div><p class="ansible-option-title" id="ansible-collections-hachyderm-general-postgresql-role-parameter-main-postgresql-log-filename"><strong>postgresql_log_filename</strong></p>
+<a class="ansibleOptionLink" href="#parameter-main--postgresql_log_filename" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>When <code class="docutils literal notranslate"><span class="pre">postgresql_logging_collector</span></code> is enabled, this parameter sets the file names of the created log files.</p>
+<p>See <a class="reference external" href="https://www.postgresql.org/docs/current/runtime-config-logging.html#GUC-LOG-FILENAME">log_filename</a>.</p>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-main--postgresql_log_timezone"></div><p class="ansible-option-title" id="ansible-collections-hachyderm-general-postgresql-role-parameter-main-postgresql-log-timezone"><strong>postgresql_log_timezone</strong></p>
+<a class="ansibleOptionLink" href="#parameter-main--postgresql_log_timezone" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>Sets the time zone used for timestamps written in the server log.</p>
+<p>See <a class="reference external" href="https://www.postgresql.org/docs/current/runtime-config-logging.html#GUC-LOG-TIMEZONE">log_timezone</a>.</p>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-main--postgresql_logging_collector"></div><p class="ansible-option-title" id="ansible-collections-hachyderm-general-postgresql-role-parameter-main-postgresql-logging-collector"><strong>postgresql_logging_collector</strong></p>
+<a class="ansibleOptionLink" href="#parameter-main--postgresql_logging_collector" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>Enable or disable the logging collector.</p>
+<p>See <a class="reference external" href="https://www.postgresql.org/docs/current/runtime-config-logging.html#GUC-LOGGING-COLLECTOR">logging_collector</a>.</p>
+<p class="ansible-option-line"><strong class="ansible-option-choices">Choices:</strong></p>
+<ul class="simple">
+<li><p><code class="ansible-option-default-bold docutils literal notranslate"><strong><span class="pre">&quot;on&quot;</span></strong></code> <span class="ansible-option-choices-default-mark">← (default)</span></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">&quot;off&quot;</span></code></p></li>
+</ul>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-main--postgresql_manage_pgpass"></div><p class="ansible-option-title" id="ansible-collections-hachyderm-general-postgresql-role-parameter-main-postgresql-manage-pgpass"><strong>postgresql_manage_pgpass</strong></p>
+<a class="ansibleOptionLink" href="#parameter-main--postgresql_manage_pgpass" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">boolean</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>Create the <code class="docutils literal notranslate"><span class="pre">.pgpass</span></code> files for <code class="docutils literal notranslate"><span class="pre">root</span></code> and <code class="docutils literal notranslate"><span class="pre">postgres</span></code> or not.</p>
+<p>See <a class="reference external" href="https://www.postgresql.org/docs/current/libpq-pgpass.html">The Password File</a>.</p>
+<p class="ansible-option-line"><strong class="ansible-option-choices">Choices:</strong></p>
+<ul class="simple">
+<li><p><code class="ansible-option-default-bold docutils literal notranslate"><strong><span class="pre">false</span></strong></code> <span class="ansible-option-choices-default-mark">← (default)</span></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">true</span></code></p></li>
+</ul>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-main--postgresql_manage_replication"></div><p class="ansible-option-title" id="ansible-collections-hachyderm-general-postgresql-role-parameter-main-postgresql-manage-replication"><strong>postgresql_manage_replication</strong></p>
+<a class="ansibleOptionLink" href="#parameter-main--postgresql_manage_replication" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">boolean</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>Configure replication on a replica.</p>
+<p>This operation will REMOVE THE DATA DIRECTORY to synchronize with a primary.</p>
+<p class="ansible-option-line"><strong class="ansible-option-choices">Choices:</strong></p>
+<ul class="simple">
+<li><p><code class="ansible-option-default-bold docutils literal notranslate"><strong><span class="pre">false</span></strong></code> <span class="ansible-option-choices-default-mark">← (default)</span></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">true</span></code></p></li>
+</ul>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-main--postgresql_max_number_of_replicas"></div><p class="ansible-option-title" id="ansible-collections-hachyderm-general-postgresql-role-parameter-main-postgresql-max-number-of-replicas"><strong>postgresql_max_number_of_replicas</strong></p>
+<a class="ansibleOptionLink" href="#parameter-main--postgresql_max_number_of_replicas" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">integer</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>Defines <a class="reference external" href="https://www.postgresql.org/docs/current/runtime-config-replication.html#GUC-MAX-WAL-SENDERS">max_wal_senders</a> and <a class="reference external" href="https://www.postgresql.org/docs/current/runtime-config-replication.html#GUC-MAX-REPLICATION-SLOTS">max_replication_slots</a>.</p>
+<p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">10</span></code></p>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-main--postgresql_port"></div><p class="ansible-option-title" id="ansible-collections-hachyderm-general-postgresql-role-parameter-main-postgresql-port"><strong>postgresql_port</strong></p>
+<a class="ansibleOptionLink" href="#parameter-main--postgresql_port" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">integer</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>The TCP port the server listens on.</p>
+<p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">5432</span></code></p>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-main--postgresql_primary_host"></div><p class="ansible-option-title" id="ansible-collections-hachyderm-general-postgresql-role-parameter-main-postgresql-primary-host"><strong>postgresql_primary_host</strong></p>
+<a class="ansibleOptionLink" href="#parameter-main--postgresql_primary_host" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>In a replication setup, define where to find the primary host.</p>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-main--postgresql_primary_port"></div><p class="ansible-option-title" id="ansible-collections-hachyderm-general-postgresql-role-parameter-main-postgresql-primary-port"><strong>postgresql_primary_port</strong></p>
+<a class="ansibleOptionLink" href="#parameter-main--postgresql_primary_port" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>In a replication setup, define where to find the primary port.</p>
+<p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">5432</span></code></p>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-main--postgresql_replication_network"></div><p class="ansible-option-title" id="ansible-collections-hachyderm-general-postgresql-role-parameter-main-postgresql-replication-network"><strong>postgresql_replication_network</strong></p>
+<a class="ansibleOptionLink" href="#parameter-main--postgresql_replication_network" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>IP range of the network used for the replication to allow in the <code class="docutils literal notranslate"><span class="pre">pg_hba.conf</span></code> to setup the replication.</p>
+<p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">&quot;127.0.0.1/32&quot;</span></code></p>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-main--postgresql_replication_password"></div><p class="ansible-option-title" id="ansible-collections-hachyderm-general-postgresql-role-parameter-main-postgresql-replication-password"><strong>postgresql_replication_password</strong></p>
+<a class="ansibleOptionLink" href="#parameter-main--postgresql_replication_password" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>Password of the replication user.</p>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-main--postgresql_replication_slot_name"></div><p class="ansible-option-title" id="ansible-collections-hachyderm-general-postgresql-role-parameter-main-postgresql-replication-slot-name"><strong>postgresql_replication_slot_name</strong></p>
+<a class="ansibleOptionLink" href="#parameter-main--postgresql_replication_slot_name" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>In a replication setup, define the name of the replication slot.</p>
+<p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">&quot;{{</span> <span class="pre">inventory_hostname</span> <span class="pre">}}&quot;</span></code></p>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-main--postgresql_replication_username"></div><p class="ansible-option-title" id="ansible-collections-hachyderm-general-postgresql-role-parameter-main-postgresql-replication-username"><strong>postgresql_replication_username</strong></p>
+<a class="ansibleOptionLink" href="#parameter-main--postgresql_replication_username" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>Name of the replication user.</p>
+<p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">&quot;repl&quot;</span></code></p>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-main--postgresql_restore_command"></div><p class="ansible-option-title" id="ansible-collections-hachyderm-general-postgresql-role-parameter-main-postgresql-restore-command"><strong>postgresql_restore_command</strong></p>
+<a class="ansibleOptionLink" href="#parameter-main--postgresql_restore_command" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>Command to restore WAL files.</p>
+<p>See <a class="reference external" href="https://www.postgresql.org/docs/current/runtime-config-wal.html#GUC-RESTORE-COMMAND">restore_command</a>.</p>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-main--postgresql_service_after"></div><p class="ansible-option-title" id="ansible-collections-hachyderm-general-postgresql-role-parameter-main-postgresql-service-after"><strong>postgresql_service_after</strong></p>
+<a class="ansibleOptionLink" href="#parameter-main--postgresql_service_after" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">list</span> / <span class="ansible-option-elements">elements=string</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>List of systemd units to wait before starting the service.</p>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-main--postgresql_settings"></div><p class="ansible-option-title" id="ansible-collections-hachyderm-general-postgresql-role-parameter-main-postgresql-settings"><strong>postgresql_settings</strong></p>
+<a class="ansibleOptionLink" href="#parameter-main--postgresql_settings" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">dictionary</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>Dictionary of custom settings.</p>
+<p>The key is the name of the setting.</p>
+<p>The value is the value of the setting.</p>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-main--postgresql_upgrade_drop_cluster"></div><p class="ansible-option-title" id="ansible-collections-hachyderm-general-postgresql-role-parameter-main-postgresql-upgrade-drop-cluster"><strong>postgresql_upgrade_drop_cluster</strong></p>
+<a class="ansibleOptionLink" href="#parameter-main--postgresql_upgrade_drop_cluster" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">boolean</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>Once upgraded, remove the old cluster.</p>
+<p class="ansible-option-line"><strong class="ansible-option-choices">Choices:</strong></p>
+<ul class="simple">
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">false</span></code></p></li>
+<li><p><code class="ansible-option-default-bold docutils literal notranslate"><strong><span class="pre">true</span></strong></code> <span class="ansible-option-choices-default-mark">← (default)</span></p></li>
+</ul>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-main--postgresql_upgrade_from_version"></div><p class="ansible-option-title" id="ansible-collections-hachyderm-general-postgresql-role-parameter-main-postgresql-upgrade-from-version"><strong>postgresql_upgrade_from_version</strong></p>
+<a class="ansibleOptionLink" href="#parameter-main--postgresql_upgrade_from_version" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>Used to perform major upgrades.</p>
+<p>Tell what version the cluster to upgrade is running.</p>
+<p>Required for <a class="reference external" href="https://www.postgresql.org/docs/current/pgupgrade.html">pg_upgrade</a>.</p>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-main--postgresql_upgrade_remove_packages"></div><p class="ansible-option-title" id="ansible-collections-hachyderm-general-postgresql-role-parameter-main-postgresql-upgrade-remove-packages"><strong>postgresql_upgrade_remove_packages</strong></p>
+<a class="ansibleOptionLink" href="#parameter-main--postgresql_upgrade_remove_packages" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">boolean</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>Once upgraded, remove the old packages.</p>
+<p class="ansible-option-line"><strong class="ansible-option-choices">Choices:</strong></p>
+<ul class="simple">
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">false</span></code></p></li>
+<li><p><code class="ansible-option-default-bold docutils literal notranslate"><strong><span class="pre">true</span></strong></code> <span class="ansible-option-choices-default-mark">← (default)</span></p></li>
+</ul>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-main--postgresql_users"></div><p class="ansible-option-title" id="ansible-collections-hachyderm-general-postgresql-role-parameter-main-postgresql-users"><strong>postgresql_users</strong></p>
+<a class="ansibleOptionLink" href="#parameter-main--postgresql_users" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">list</span> / <span class="ansible-option-elements">elements=dictionary</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>List of users to create.</p>
+<p>The key of the dict in the list must have a <code class="docutils literal notranslate"><span class="pre">name</span></code> and a <code class="docutils literal notranslate"><span class="pre">password</span></code>.</p>
+<p>The key of the dict in the list can have a list of <code class="docutils literal notranslate"><span class="pre">roles</span></code>.</p>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-main--postgresql_version"></div><p class="ansible-option-title" id="ansible-collections-hachyderm-general-postgresql-role-parameter-main-postgresql-version"><strong>postgresql_version</strong></p>
+<a class="ansibleOptionLink" href="#parameter-main--postgresql_version" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>Version of the PostgreSQL binaries.</p>
+<p>Upgrading this version will deploy a new independent cluster without upgrading one.</p>
+<p>See <code class="docutils literal notranslate"><span class="pre">postgresql_upgrade_from_version</span></code> for upgrades.</p>
+<p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">15</span></code></p>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-main--postgresql_wal_level"></div><p class="ansible-option-title" id="ansible-collections-hachyderm-general-postgresql-role-parameter-main-postgresql-wal-level"><strong>postgresql_wal_level</strong></p>
+<a class="ansibleOptionLink" href="#parameter-main--postgresql_wal_level" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>Determines how much information is written to the WAL.</p>
+<p>See <a class="reference external" href="https://www.postgresql.org/docs/current/runtime-config-wal.html#GUC-WAL-LEVEL">wal_level</a>.</p>
+<p class="ansible-option-line"><strong class="ansible-option-choices">Choices:</strong></p>
+<ul class="simple">
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">&quot;replica&quot;</span></code></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">&quot;minimal&quot;</span></code></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">&quot;logical&quot;</span></code></p></li>
+</ul>
+</div></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="authors">
+<h3><a class="toc-backref" href="#id4" role="doc-backlink">Authors</a><a class="headerlink" href="#authors" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Hachyderm contributors</p></li>
+</ul>
+<section id="collection-links">
+<h4>Collection links<a class="headerlink" href="#collection-links" title="Link to this heading"></a></h4>
+<ul class="ansible-links">
+<li><span><a aria-role="button" class="ansible-link reference external" href="https://github.com/hachyderm/ansible/issues" rel="noopener external" target="_blank">Issue Tracker</a></span></li>
+<li><span><a aria-role="button" class="ansible-link reference external" href="https://github.com/hachyderm/ansible" rel="noopener external" target="_blank">Repository (Sources)</a></span></li>
+</ul>
+</section>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          
+
+<footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pgdg_repository_role.html" class="btn btn-neutral float-left" title="hachyderm.general.pgdg_repository role – Configure PGDG repository" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Hachyderm contributors.</p>
+  </div>
+
+  
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script><!-- extra footer elements for Ansible beyond RTD Sphinx Theme -->
+
+</body>
+</html>
