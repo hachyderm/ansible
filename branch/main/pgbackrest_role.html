@@ -369,12 +369,48 @@ To check whether it is installed, run <code class="code docutils literal notrans
 </div></td>
 </tr>
 <tr class="row-odd"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-main--pgbackrest_schedule_diff"></div><p class="ansible-option-title" id="ansible-collections-hachyderm-general-pgbackrest-role-parameter-main-pgbackrest-schedule-diff"><strong>pgbackrest_schedule_diff</strong></p>
+<a class="ansibleOptionLink" href="#parameter-main--pgbackrest_schedule_diff" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>When to start differential backups.</p>
+<p>See <a class="reference external" href="https://www.freedesktop.org/software/systemd/man/latest/systemd.timer.html#OnCalendar=">OnCalendar</a>.</p>
+<p>See <a class="reference external" href="https://www.freedesktop.org/software/systemd/man/latest/systemd.time.html#Calendar%2520Events">Calendar Events</a>.</p>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-main--pgbackrest_schedule_full"></div><p class="ansible-option-title" id="ansible-collections-hachyderm-general-pgbackrest-role-parameter-main-pgbackrest-schedule-full"><strong>pgbackrest_schedule_full</strong></p>
+<a class="ansibleOptionLink" href="#parameter-main--pgbackrest_schedule_full" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>When to start full backups.</p>
+<p>See <a class="reference external" href="https://www.freedesktop.org/software/systemd/man/latest/systemd.timer.html#OnCalendar=">OnCalendar</a>.</p>
+<p>See <a class="reference external" href="https://www.freedesktop.org/software/systemd/man/latest/systemd.time.html#Calendar%2520Events">Calendar Events</a>.</p>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-main--pgbackrest_schedule_incr"></div><p class="ansible-option-title" id="ansible-collections-hachyderm-general-pgbackrest-role-parameter-main-pgbackrest-schedule-incr"><strong>pgbackrest_schedule_incr</strong></p>
+<a class="ansibleOptionLink" href="#parameter-main--pgbackrest_schedule_incr" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>When to start incremental backups.</p>
+<p>See <a class="reference external" href="https://www.freedesktop.org/software/systemd/man/latest/systemd.timer.html#OnCalendar=">OnCalendar</a>.</p>
+<p>See <a class="reference external" href="https://www.freedesktop.org/software/systemd/man/latest/systemd.time.html#Calendar%2520Events">Calendar Events</a>.</p>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-cell">
 <div class="ansibleOptionAnchor" id="parameter-main--pgbackrest_schedules"></div><p class="ansible-option-title" id="ansible-collections-hachyderm-general-pgbackrest-role-parameter-main-pgbackrest-schedules"><strong>pgbackrest_schedules</strong></p>
 <a class="ansibleOptionLink" href="#parameter-main--pgbackrest_schedules" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">dictionary</span></p>
 </div></td>
-<td><div class="ansible-option-cell"><p>Dictionary of backup schedules.</p>
+<td><div class="ansible-option-cell"><p>DEPRECATED.</p>
+<p>Use <code class="docutils literal notranslate"><span class="pre">pgbackrest_schedule_full</span></code>, <code class="docutils literal notranslate"><span class="pre">pgbackrest_schedule_diff</span></code> and <code class="docutils literal notranslate"><span class="pre">pgbackrest_schedule_incr</span></code> instead.</p>
+<p>Dictionary of backup schedules.</p>
 <p>The key is the backup type (<code class="docutils literal notranslate"><span class="pre">full</span></code> or <code class="docutils literal notranslate"><span class="pre">diff</span></code>).</p>
 <p>The value is a dict of systemd timer settings (see <a class="reference external" href="https://www.freedesktop.org/software/systemd/man/latest/systemd.timer.html">systemd.timer</a>).</p>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-main--pgbackrest_schedules_randomized_delay_sec"></div><p class="ansible-option-title" id="ansible-collections-hachyderm-general-pgbackrest-role-parameter-main-pgbackrest-schedules-randomized-delay-sec"><strong>pgbackrest_schedules_randomized_delay_sec</strong></p>
+<a class="ansibleOptionLink" href="#parameter-main--pgbackrest_schedules_randomized_delay_sec" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">integer</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>Random number of seconds to wait before starting backup services.</p>
 </div></td>
 </tr>
 <tr class="row-even"><td><div class="ansible-option-cell">
