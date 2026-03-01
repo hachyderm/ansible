@@ -26,6 +26,10 @@ Supported features:
   * [`pgbackrest_role`](#variable-pgbackrest_role)
   * [`pgbackrest_settings`](#variable-pgbackrest_settings)
   * [`pgbackrest_schedules`](#variable-pgbackrest_schedules)
+  * [`pgbackrest_schedule_full`](#variable-pgbackrest_schedule_full)
+  * [`pgbackrest_schedule_diff`](#variable-pgbackrest_schedule_diff)
+  * [`pgbackrest_schedule_incr`](#variable-pgbackrest_schedule_incr)
+  * [`pgbackrest_schedules_randomized_delay_sec`](#variable-pgbackrest_schedules_randomized_delay_sec)
   * [`pgbackrest_service_after`](#variable-pgbackrest_service_after)
   * [`pgbackrest_notification_command`](#variable-pgbackrest_notification_command)
   * [`pgbackrest_notification_message_start`](#variable-pgbackrest_notification_message_start)
@@ -75,7 +79,11 @@ The following variables can be configured for this role:
 |----------|------|----------|---------|------------------------|
 | `pgbackrest_role` | `str` | No | `"standalone"` | Role of the pgBackRest instance on the server.<br><br>C(standalone) to run everything locally.<br><br>C(server) to start a TLS server and orchestrate backup policies.<br><br>C(agent) to start a TLS server to receive operations from the […](#variable-pgbackrest_role) |
 | `pgbackrest_settings` | `dict` | No | N/A | Dictionary of custom settings.<br><br>The key is the setting name.<br><br>The value is the setting value.<br><br>See L(General Options,https://pgbackrest.org/configuration.html#section-general). |
-| `pgbackrest_schedules` | `dict` | No | N/A | Dictionary of backup schedules.<br><br>The key is the backup type (C(full) or C(diff)).<br><br>The value is a dict of systemd timer settings (see L(systemd.timer,https://www.freedesktop.org/software/systemd/man/latest/systemd.timer.html)). |
+| `pgbackrest_schedules` | `dict` | No | N/A | DEPRECATED.<br><br>Use C(pgbackrest_schedule_full), C(pgbackrest_schedule_diff) and C(pgbackrest_schedule_incr) instead.<br><br>Dictionary of backup schedules.<br><br>The key is the backup type (C(full) or C(diff)).<br><br>The value is a dict of […](#variable-pgbackrest_schedules) |
+| `pgbackrest_schedule_full` | `str` | No | N/A | When to start full backups.<br><br>See L(OnCalendar,https://www.freedesktop.org/software/systemd/man/latest/systemd.timer.html#OnCalendar=).<br><br>See L(Calendar […](#variable-pgbackrest_schedule_full) |
+| `pgbackrest_schedule_diff` | `str` | No | N/A | When to start differential backups.<br><br>See L(OnCalendar,https://www.freedesktop.org/software/systemd/man/latest/systemd.timer.html#OnCalendar=).<br><br>See L(Calendar […](#variable-pgbackrest_schedule_diff) |
+| `pgbackrest_schedule_incr` | `str` | No | N/A | When to start incremental backups.<br><br>See L(OnCalendar,https://www.freedesktop.org/software/systemd/man/latest/systemd.timer.html#OnCalendar=).<br><br>See L(Calendar […](#variable-pgbackrest_schedule_incr) |
+| `pgbackrest_schedules_randomized_delay_sec` | `int` | No | N/A | Random number of seconds to wait before starting backup services. |
 | `pgbackrest_service_after` | `list` | No | N/A | List of systemd units to wait before starting pgBackRest. |
 | `pgbackrest_notification_command` | `str` | No | N/A | Command to execute when a pgBackRest backup command is performed.<br><br>The command takes two positional arguments.<br><br>1. the C(pgBackRest) string to tell who's runing the command.<br><br>2. a C(message) to tell what is happening (replaced by […](#variable-pgbackrest_notification_command) |
 | `pgbackrest_notification_message_start` | `str` | No | `"starting"` | Message sent to the notification command when a backup command is starting. |
@@ -157,6 +165,10 @@ See L(General Options,https://pgbackrest.org/configuration.html#section-general)
 
 [*⇑ Back to ToC ⇑*](#toc)
 
+DEPRECATED.
+
+Use C(pgbackrest_schedule_full), C(pgbackrest_schedule_diff) and C(pgbackrest_schedule_incr) instead.
+
 Dictionary of backup schedules.
 
 The key is the backup type (C(full) or C(diff)).
@@ -164,6 +176,62 @@ The key is the backup type (C(full) or C(diff)).
 The value is a dict of systemd timer settings (see L(systemd.timer,https://www.freedesktop.org/software/systemd/man/latest/systemd.timer.html)).
 
 - **Type**: `dict`
+- **Required**: No
+
+
+
+### `pgbackrest_schedule_full`<a id="variable-pgbackrest_schedule_full"></a>
+
+[*⇑ Back to ToC ⇑*](#toc)
+
+When to start full backups.
+
+See L(OnCalendar,https://www.freedesktop.org/software/systemd/man/latest/systemd.timer.html#OnCalendar=).
+
+See L(Calendar Events,https://www.freedesktop.org/software/systemd/man/latest/systemd.time.html#Calendar%20Events).
+
+- **Type**: `str`
+- **Required**: No
+
+
+
+### `pgbackrest_schedule_diff`<a id="variable-pgbackrest_schedule_diff"></a>
+
+[*⇑ Back to ToC ⇑*](#toc)
+
+When to start differential backups.
+
+See L(OnCalendar,https://www.freedesktop.org/software/systemd/man/latest/systemd.timer.html#OnCalendar=).
+
+See L(Calendar Events,https://www.freedesktop.org/software/systemd/man/latest/systemd.time.html#Calendar%20Events).
+
+- **Type**: `str`
+- **Required**: No
+
+
+
+### `pgbackrest_schedule_incr`<a id="variable-pgbackrest_schedule_incr"></a>
+
+[*⇑ Back to ToC ⇑*](#toc)
+
+When to start incremental backups.
+
+See L(OnCalendar,https://www.freedesktop.org/software/systemd/man/latest/systemd.timer.html#OnCalendar=).
+
+See L(Calendar Events,https://www.freedesktop.org/software/systemd/man/latest/systemd.time.html#Calendar%20Events).
+
+- **Type**: `str`
+- **Required**: No
+
+
+
+### `pgbackrest_schedules_randomized_delay_sec`<a id="variable-pgbackrest_schedules_randomized_delay_sec"></a>
+
+[*⇑ Back to ToC ⇑*](#toc)
+
+Random number of seconds to wait before starting backup services.
+
+- **Type**: `int`
 - **Required**: No
 
 
@@ -767,17 +835,9 @@ pgbackrest_stanzas:
   main:
    - pg-path: "/var/lib/postgresql/{{ postgresql_version }}/main"
      pg-host-port: 5432
-pgbackrest_schedules:
-  full:
-    OnCalendar: "Mon *-*-* 4:30:00"
-    RandomizedDelaySec: 1800
-    FixedRandomDelay: false
-    Persistent: false
-  diff:
-    OnCalendar: "Tue..Sun *-*-* 4:30:00"
-    RandomizedDelaySec: 1800
-    FixedRandomDelay: false
-    Persistent: false
+pgbackrest_schedule_full: "Mon *-*-* 4:30:00"
+pgbackrest_schedule_diff: "Tue..Sun *-*-* 4:30:00"
+pgbackrest_schedules_randomized_delay_sec: 1800
 ```
 
 Playbook:
@@ -907,17 +967,9 @@ pgbackrest_server_stanzas:
     - pg-host: replica
       pg-host-port: 8433
       pg-path: "/var/lib/postgresql/{{ postgresql_version }}/main"
-pgbackrest_schedules:
-  full:
-    OnCalendar: "Mon *-*-* 4:30:00"
-    RandomizedDelaySec: 1800
-    FixedRandomDelay: false
-    Persistent: false
-  diff:
-    OnCalendar: "Tue..Sun *-*-* 4:30:00"
-    RandomizedDelaySec: 1800
-    FixedRandomDelay: false
-    Persistent: false
+pgbackrest_schedule_full: "Mon *-*-* 4:30:00"
+pgbackrest_schedule_diff: "Tue..Sun *-*-* 4:30:00"
+pgbackrest_schedules_randomized_delay_sec: 1800
 ```
 
 Playbook:

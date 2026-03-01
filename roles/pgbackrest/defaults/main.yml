@@ -29,17 +29,6 @@ pgbackrest_role: standalone
 # - Required: No
 pgbackrest_settings: {}
 
-# Dictionary of backup schedules.
-#
-# The key is the backup type (C(full) or C(diff)).
-#
-# The value is a dict of systemd timer settings (see
-# L(systemd.timer,https://www.freedesktop.org/software/systemd/man/latest/systemd.timer.html)).
-#
-# - Type: dict
-# - Required: No
-pgbackrest_schedules: {}
-
 # List of systemd units to wait before starting pgBackRest.
 #
 # - Type: list
