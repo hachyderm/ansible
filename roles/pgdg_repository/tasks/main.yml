@@ -9,12 +9,29 @@
     name: gnupg
     update_cache: true
 
-- name: Install PGDG APT repository key
-  ansible.builtin.apt_key:
+- name: Create keyrings directory
+  ansible.builtin.file:
+    path: /etc/apt/keyrings
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Install PGPG APT repository key
+  ansible.builtin.copy:
     # Copied from https://www.postgresql.org/media/keys/ACCC4CF8.asc to protect against a supply-chain attack
-    data: "{{ lookup('file', 'ACCC4CF8.asc') }}"
+    src: ACCC4CF8.asc
+    dest: /etc/apt/keyrings/ACCC4CF8.asc
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Remove old APT repository
+  ansible.builtin.apt_repository:
+    repo: "deb http://apt.postgresql.org/pub/repos/apt/ {{ ansible_facts['distribution_release'] }}-pgdg main"
+    state: absent
 
 - name: Configure APT repository
   ansible.builtin.apt_repository:
-    repo: "deb http://apt.postgresql.org/pub/repos/apt/ {{ ansible_facts['distribution_release'] }}-pgdg main"
+    repo: "deb [signed-by=/etc/apt/keyrings/ACCC4CF8.asc] http://apt.postgresql.org/pub/repos/apt/ {{ ansible_facts['distribution_release'] }}-pgdg main"
     update_cache: true
