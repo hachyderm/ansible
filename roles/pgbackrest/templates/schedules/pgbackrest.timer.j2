@@ -5,9 +5,18 @@ PartOf=pgbackrest-{{ backup_type }}.service
 
 [Timer]
 Unit=pgbackrest-{{ backup_type }}.service
+{% if timer_settings is defined %}
 {% for k, v in timer_settings.items() %}
 {{ k }}={{ v }}
 {% endfor %}
+{% else %}
+OnCalendar={{ on_calendar }}
+{% if randomized_delay_sec is defined %}
+RandomizedDelaySec={{ randomized_delay_sec }}
+FixedRandomDelay=false
+{% endif %}
+Persistent=false
+{% endif %}
 
 [Install]
 WantedBy=timers.target

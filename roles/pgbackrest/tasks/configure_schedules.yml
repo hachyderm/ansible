@@ -1,45 +1,177 @@
 ---
 - name: Configure schedules services
-  ansible.builtin.template:
-    src: schedules/pgbackrest.service.j2
-    dest: "/etc/systemd/system/pgbackrest-{{ backup_type }}.service"
-    mode: "0644"
-    owner: root
-    group: root
-  loop: "{{ pgbackrest_schedules.keys() }}"
-  loop_control:
-    loop_var: backup_type
-  notify:
-    - Reload systemd
+  when: pgbackrest_schedules is not defined
+  block:
+    - name: Configure services
+      ansible.builtin.template:
+        src: schedules/pgbackrest.service.j2
+        dest: "/etc/systemd/system/pgbackrest-{{ backup_type }}.service"
+        mode: "0644"
+        owner: root
+        group: root
+      loop:
+        - full
+        - diff
+        - incr
+      loop_control:
+        loop_var: backup_type
+      notify:
+        - Reload systemd
 
-- name: Manage schedules services
-  ansible.builtin.service:
-    name: "pgbackrest-{{ backup_type }}.service"
-    enabled: false
-  loop: "{{ pgbackrest_schedules.keys() }}"
-  loop_control:
-    loop_var: backup_type
+    - name: Ensure services are not started at boot
+      ansible.builtin.service:
+        name: "pgbackrest-{{ backup_type }}.service"
+        enabled: false
+      loop:
+        - full
+        - diff
+        - incr
+      loop_control:
+        loop_var: backup_type
 
-- name: Configure schedules timers
-  ansible.builtin.template:
-    src: schedules/pgbackrest.timer.j2
-    dest: "/etc/systemd/system/pgbackrest-{{ backup_type }}.timer"
-    mode: "0644"
-    owner: root
-    group: root
-  vars:
-    timer_settings: "{{ pgbackrest_schedules[backup_type] }}"
-  loop: "{{ pgbackrest_schedules.keys() }}"
-  loop_control:
-    loop_var: backup_type
-  notify:
-    - Reload systemd
+    - name: Remove timer (full)
+      when: pgbackrest_schedule_full is not defined
+      ansible.builtin.file:
+        path: /etc/systemd/system/pgbackrest-full.timer
+        state: absent
+      notify:
+        - Reload systemd
 
-- name: Manage schedules timers
-  ansible.builtin.service:
-    name: "pgbackrest-{{ backup_type }}.timer"
-    enabled: true
-    state: started
-  loop: "{{ pgbackrest_schedules.keys() }}"
-  loop_control:
-    loop_var: backup_type
+    - name: Configure schedule timer (full)
+      when: pgbackrest_schedule_full is defined
+      block:
+        - name: Configure timer (full)
+          ansible.builtin.template:
+            src: schedules/pgbackrest.timer.j2
+            dest: /etc/systemd/system/pgbackrest-full.timer
+            mode: "0644"
+            owner: root
+            group: root
+          vars:
+            backup_type: full
+            on_calendar: "{{ pgbackrest_schedule_full }}"
+            randomized_delay_sec: "{{ pgbackrest_schedules_randomized_delay_sec }}"
+          notify:
+            - Reload systemd
+
+        - name: Ensure timer is started and enabled (full)
+          ansible.builtin.service:
+            name: pgbackrest-full.timer
+            enabled: true
+            state: started
+
+    - name: Remove timer (diff)
+      when: pgbackrest_schedule_diff is not defined
+      ansible.builtin.file:
+        path: /etc/systemd/system/pgbackrest-diff.timer
+        state: absent
+      notify:
+        - Reload systemd
+
+    - name: Configure schedule timer (diff)
+      when: pgbackrest_schedule_diff is defined
+      block:
+        - name: Configure timer (diff)
+          ansible.builtin.template:
+            src: schedules/pgbackrest.timer.j2
+            dest: /etc/systemd/system/pgbackrest-diff.timer
+            mode: "0644"
+            owner: root
+            group: root
+          vars:
+            backup_type: diff
+            on_calendar: "{{ pgbackrest_schedule_diff }}"
+            randomized_delay_sec: "{{ pgbackrest_schedules_randomized_delay_sec }}"
+          notify:
+            - Reload systemd
+
+        - name: Ensure timer is started and enabled (diff)
+          ansible.builtin.service:
+            name: pgbackrest-diff.timer
+            enabled: true
+            state: started
+
+    - name: Remove timer and service (incr)
+      when: pgbackrest_schedule_incr is not defined
+      ansible.builtin.file:
+        path: /etc/systemd/system/pgbackrest-incr.timer
+        state: absent
+      notify:
+        - Reload systemd
+
+    - name: Configure schedule timer (incr)
+      when: pgbackrest_schedule_incr is defined
+      block:
+        - name: Configure timer (incr)
+          ansible.builtin.template:
+            src: schedules/pgbackrest.timer.j2
+            dest: /etc/systemd/system/pgbackrest-incr.timer
+            mode: "0644"
+            owner: root
+            group: root
+          vars:
+            backup_type: incr
+            on_calendar: "{{ pgbackrest_schedule_incr }}"
+            randomized_delay_sec: "{{ pgbackrest_schedules_randomized_delay_sec }}"
+          notify:
+            - Reload systemd
+
+        - name: Ensure timer is started and enabled (incr)
+          ansible.builtin.service:
+            name: pgbackrest-incr.timer
+            enabled: true
+            state: started
+
+
+- name: Configure retro-compatible schedules services with pgbackrest_schedules
+  when: pgbackrest_schedules is defined
+  block:
+    - name: Configure schedules services
+      ansible.builtin.template:
+        src: schedules/pgbackrest.service.j2
+        dest: "/etc/systemd/system/pgbackrest-{{ backup_type }}.service"
+        mode: "0644"
+        owner: root
+        group: root
+      loop: "{{ pgbackrest_schedules.keys() }}"
+      loop_control:
+        loop_var: backup_type
+      notify:
+        - Reload systemd
+
+    - name: Manage schedules services
+      ansible.builtin.service:
+        name: "pgbackrest-{{ backup_type }}.service"
+        enabled: true
+      loop: "{{ pgbackrest_schedules.keys() }}"
+      loop_control:
+        loop_var: backup_type
+
+    - name: Configure schedules timers
+      ansible.builtin.template:
+        src: schedules/pgbackrest.timer.j2
+        dest: "/etc/systemd/system/pgbackrest-{{ backup_type }}.timer"
+        mode: "0644"
+        owner: root
+        group: root
+      vars:
+        timer_settings: "{{ pgbackrest_schedules[backup_type] }}"
+      loop: "{{ pgbackrest_schedules.keys() }}"
+      loop_control:
+        loop_var: backup_type
+      notify:
+        - Reload systemd
+
+    - name: Manage schedules timers
+      ansible.builtin.service:
+        name: "pgbackrest-{{ backup_type }}.timer"
+        enabled: true
+        state: started
+      loop: "{{ pgbackrest_schedules.keys() }}"
+      loop_control:
+        loop_var: backup_type
+
+    - name: "DEPRECATION WARNING: `pgbackrest_schedules` is no longer supported and will be dropped from future releases"
+      ansible.builtin.fail:
+        msg: "Please use `pgbackrest_timer_full`, `pgbackrest_timer_diff` and `pgbackrest_timer_incr` instead"
+      failed_when: false
