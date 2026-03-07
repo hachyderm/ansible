@@ -1,0 +1,9 @@
+---
+container_image: docker.io/geerlingguy/docker-debian13-ansible:latest
+
+pgbackrest_agent_allowed_users:
+  deb13-replica: main
+
+pgbackrest_server_allowed_users:
+  deb13-primary: main
+  deb13-replica: main

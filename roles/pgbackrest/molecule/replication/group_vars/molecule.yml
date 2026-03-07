@@ -1,6 +1,5 @@
 ---
 ansible_connection: containers.podman.podman
-container_image: docker.io/geerlingguy/docker-debian12-ansible:latest
 
 postgresql_version: 18
 postgresql_superuser_password: CHANGEME
@@ -14,15 +13,16 @@ postgresql_manage_pgpass: true
 postgresql_archive_command: 'pgbackrest --stanza=main --log-level-console=warn archive-push %p'
 postgresql_restore_command: 'pgbackrest --stanza=main --log-level-console=warn archive-get %f "%p"'
 
+pgbackrest_additional_groups:
+  - tls
+pgbackrest_agent_tls_ca_file: /etc/tls/ca.crt
+pgbackrest_agent_tls_cert_file: /etc/tls/server.crt
+pgbackrest_agent_tls_key_file: /etc/tls/server.key
 pgbackrest_agent_address: 0.0.0.0
 pgbackrest_agent_port: 8433
-pgbackrest_agent_allowed_users:
-  replica: main
-pgbackrest_agent_repositories:
-  - host: replica
-    port: 8432
-    user: pgbackrest
-    config: /etc/pgbackrest-server/pgbackrest.conf
 pgbackrest_agent_stanzas:
   main:
     - pg-path: "/var/lib/postgresql/{{ postgresql_version }}/main"
+pgbackrest_server_tls_ca_file: /etc/tls/ca.crt
+pgbackrest_server_tls_cert_file: /etc/tls/server.crt
+pgbackrest_server_tls_key_file: /etc/tls/server.key
