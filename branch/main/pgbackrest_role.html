@@ -232,7 +232,9 @@ To check whether it is installed, run <code class="code docutils literal notrans
 <p>Use the same CA for agent and server.</p>
 <p>If defined, the content will be written in <code class="docutils literal notranslate"><span class="pre">pgbackrest_agent_tls_ca_file</span></code>.</p>
 <p>See <a class="reference external" href="https://pgbackrest.org/configuration.html#section-server/option-tls-server-ca-file">TLS Server Certificate Authorities Option</a>.</p>
-<p>Generate a test CA with <code class="docutils literal notranslate"><span class="pre">openssl</span> <span class="pre">req</span> <span class="pre">-new</span> <span class="pre">-x509</span> <span class="pre">-days</span> <span class="pre">3650</span> <span class="pre">-nodes</span> <span class="pre">-out</span> <span class="pre">ca.crt</span> <span class="pre">-keyout</span> <span class="pre">ca.key</span> <span class="pre">-subj</span> <span class="pre">&quot;/CN=ca&quot;</span></code>.</p>
+<p>Generate a CA key with <code class="docutils literal notranslate"><span class="pre">openssl</span> <span class="pre">ecparam</span> <span class="pre">-name</span> <span class="pre">secp384r1</span> <span class="pre">-genkey</span> <span class="pre">-noout</span> <span class="pre">-out</span> <span class="pre">ca.key</span></code>.</p>
+<p>Keep the key to renew certificates during the validity time.</p>
+<p>Generate a CA certificate with <code class="docutils literal notranslate"><span class="pre">openssl</span> <span class="pre">req</span> <span class="pre">-x509</span> <span class="pre">-new</span> <span class="pre">-nodes</span> <span class="pre">-key</span> <span class="pre">ca.key</span> <span class="pre">-sha256</span> <span class="pre">-days</span> <span class="pre">3650</span> <span class="pre">-out</span> <span class="pre">ca.crt</span> <span class="pre">-subj</span> <span class="pre">&quot;/C=BE/ST=Brussels</span> <span class="pre">Capital/L=Brussels/O=My</span> <span class="pre">Organization/OU=pgBackRest/CN=CA&quot;</span></code>.</p>
 </div></td>
 </tr>
 <tr class="row-even"><td><div class="ansible-option-cell">
@@ -240,7 +242,7 @@ To check whether it is installed, run <code class="code docutils literal notrans
 <a class="ansibleOptionLink" href="#parameter-main--pgbackrest_agent_tls_ca_file" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">path</span></p>
 </div></td>
 <td><div class="ansible-option-cell"><p>Path to the TLS server certificate authorities for an agent.</p>
-<p>For certificates signed by a trusted CA (like Let’s Encrypt), use <code class="docutils literal notranslate"><span class="pre">/etc/ssl/certs/ca-certificates.crt</span></code>.</p>
+<p>For certificates signed by a trusted CA, use <code class="docutils literal notranslate"><span class="pre">/etc/ssl/certs/ca-certificates.crt</span></code>.</p>
 <p>See <a class="reference external" href="https://pgbackrest.org/configuration.html#section-server/option-tls-server-ca-file">TLS Server Certificate Authorities Option</a>.</p>
 <p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">&quot;/etc/pgbackrest/ca.crt&quot;</span></code></p>
 </div></td>
@@ -251,7 +253,11 @@ To check whether it is installed, run <code class="code docutils literal notrans
 </div></td>
 <td><div class="ansible-option-cell"><p>Content of the TLS server certificate for an agent.</p>
 <p>See <a class="reference external" href="https://pgbackrest.org/configuration.html#section-server/option-tls-server-cert-file">TLS Server Certificate Option</a>.</p>
-<p>Generate a test cert (and key) with <code class="docutils literal notranslate"><span class="pre">openssl</span> <span class="pre">req</span> <span class="pre">-new</span> <span class="pre">-nodes</span> <span class="pre">-out</span> <span class="pre">primary.csr</span> <span class="pre">-keyout</span> <span class="pre">primary.key</span> <span class="pre">-subj</span> <span class="pre">&quot;/CN=primary&quot;</span></code> and <code class="docutils literal notranslate"><span class="pre">openssl</span> <span class="pre">x509</span> <span class="pre">-req</span> <span class="pre">-in</span> <span class="pre">primary.csr</span> <span class="pre">-days</span> <span class="pre">3650</span> <span class="pre">-CA</span> <span class="pre">ca.crt</span> <span class="pre">-CAkey</span> <span class="pre">ca.key</span> <span class="pre">-CAcreateserial</span> <span class="pre">-out</span> <span class="pre">primary.crt</span></code> where <code class="docutils literal notranslate"><span class="pre">primary</span></code> is the resolvable hostname of the agent.</p>
+<p>See <code class="docutils literal notranslate"><span class="pre">pgbackrest_agent_tls_key</span></code> to generate the key.</p>
+<p>Generate a certificate request with <code class="docutils literal notranslate"><span class="pre">openssl</span> <span class="pre">req</span> <span class="pre">-new</span> <span class="pre">-nodes</span> <span class="pre">-out</span> <span class="pre">agent.csr</span> <span class="pre">-key</span> <span class="pre">agent.key</span> <span class="pre">-subj</span> <span class="pre">&quot;/CN=agent&quot;</span></code>.</p>
+<p>Generate a certificate with <code class="docutils literal notranslate"><span class="pre">openssl</span> <span class="pre">x509</span> <span class="pre">-req</span> <span class="pre">-in</span> <span class="pre">agent.csr</span> <span class="pre">-days</span> <span class="pre">365</span> <span class="pre">-CA</span> <span class="pre">ca.crt</span> <span class="pre">-CAkey</span> <span class="pre">ca.key</span> <span class="pre">-CAcreateserial</span> <span class="pre">-out</span> <span class="pre">agent.crt</span></code>.</p>
+<p>Replace <code class="docutils literal notranslate"><span class="pre">agent</span></code> by the fully qualified domain name of the agent.</p>
+<p>The fully qualified domain name must be resolvable.</p>
 </div></td>
 </tr>
 <tr class="row-even"><td><div class="ansible-option-cell">
@@ -270,6 +276,7 @@ To check whether it is installed, run <code class="code docutils literal notrans
 <td><div class="ansible-option-cell"><p>Content of the TLS server key for an agent.</p>
 <p>If defined, the content will be written in <code class="docutils literal notranslate"><span class="pre">pgbackrest_agent_tls_key_file</span></code>.</p>
 <p>See <a class="reference external" href="https://pgbackrest.org/configuration.html#section-server/option-tls-server-key-file">TLS Server Key Option</a>.</p>
+<p>Generate a key with <code class="docutils literal notranslate"><span class="pre">openssl</span> <span class="pre">ecparam</span> <span class="pre">-name</span> <span class="pre">prime256v1</span> <span class="pre">-genkey</span> <span class="pre">-noout</span> <span class="pre">-out</span> <span class="pre">agent.key</span></code>.</p>
 </div></td>
 </tr>
 <tr class="row-even"><td><div class="ansible-option-cell">
@@ -486,6 +493,9 @@ To check whether it is installed, run <code class="code docutils literal notrans
 <p>Use the same CA for agent and server.</p>
 <p>If defined, the content will be written in <code class="docutils literal notranslate"><span class="pre">pgbackrest_server_tls_ca_file</span></code>.</p>
 <p>See <a class="reference external" href="https://pgbackrest.org/configuration.html#section-server/option-tls-server-ca-file">TLS Server Certificate Authorities Option</a>.</p>
+<p>Generate a CA key with <code class="docutils literal notranslate"><span class="pre">openssl</span> <span class="pre">ecparam</span> <span class="pre">-name</span> <span class="pre">secp384r1</span> <span class="pre">-genkey</span> <span class="pre">-noout</span> <span class="pre">-out</span> <span class="pre">ca.key</span></code>.</p>
+<p>Keep the key to renew certificates during the validity time.</p>
+<p>Generate a CA certificate with <code class="docutils literal notranslate"><span class="pre">openssl</span> <span class="pre">req</span> <span class="pre">-x509</span> <span class="pre">-new</span> <span class="pre">-nodes</span> <span class="pre">-key</span> <span class="pre">ca.key</span> <span class="pre">-sha256</span> <span class="pre">-days</span> <span class="pre">3650</span> <span class="pre">-out</span> <span class="pre">ca.crt</span> <span class="pre">-subj</span> <span class="pre">&quot;/C=BE/ST=Brussels</span> <span class="pre">Capital/L=Brussels/O=My</span> <span class="pre">Organization/OU=pgBackRest/CN=CA&quot;</span></code>.</p>
 </div></td>
 </tr>
 <tr class="row-even"><td><div class="ansible-option-cell">
@@ -505,7 +515,11 @@ To check whether it is installed, run <code class="code docutils literal notrans
 <p>When <code class="docutils literal notranslate"><span class="pre">pgbackrest_role</span></code> is <code class="docutils literal notranslate"><span class="pre">both</span></code>, use the same TLS cert for agent and server.</p>
 <p>If defined, the content will be written in <code class="docutils literal notranslate"><span class="pre">pgbackrest_server_tls_cert_file</span></code>.</p>
 <p>See <a class="reference external" href="https://pgbackrest.org/configuration.html#section-server/option-tls-server-cert-file">TLS Server Certificate Option</a>.</p>
-<p>Generate a test cert (and key) with <code class="docutils literal notranslate"><span class="pre">openssl</span> <span class="pre">req</span> <span class="pre">-new</span> <span class="pre">-nodes</span> <span class="pre">-out</span> <span class="pre">server.csr</span> <span class="pre">-keyout</span> <span class="pre">server.key</span> <span class="pre">-subj</span> <span class="pre">&quot;/CN=server&quot;</span></code> and <code class="docutils literal notranslate"><span class="pre">openssl</span> <span class="pre">x509</span> <span class="pre">-req</span> <span class="pre">-in</span> <span class="pre">server.csr</span> <span class="pre">-days</span> <span class="pre">3650</span> <span class="pre">-CA</span> <span class="pre">ca.crt</span> <span class="pre">-CAkey</span> <span class="pre">ca.key</span> <span class="pre">-CAcreateserial</span> <span class="pre">-out</span> <span class="pre">server.crt</span></code> where <code class="docutils literal notranslate"><span class="pre">server</span></code> is the resolvable hostname of the backup server.</p>
+<p>See <code class="docutils literal notranslate"><span class="pre">pgbackrest_server_tls_key</span></code> to generate the key.</p>
+<p>Generate a certificate request with <code class="docutils literal notranslate"><span class="pre">openssl</span> <span class="pre">req</span> <span class="pre">-new</span> <span class="pre">-nodes</span> <span class="pre">-out</span> <span class="pre">server.csr</span> <span class="pre">-key</span> <span class="pre">server.key</span> <span class="pre">-subj</span> <span class="pre">&quot;/CN=server&quot;</span></code>.</p>
+<p>Generate a certificate with <code class="docutils literal notranslate"><span class="pre">openssl</span> <span class="pre">x509</span> <span class="pre">-req</span> <span class="pre">-in</span> <span class="pre">server.csr</span> <span class="pre">-days</span> <span class="pre">365</span> <span class="pre">-CA</span> <span class="pre">ca.crt</span> <span class="pre">-CAkey</span> <span class="pre">ca.key</span> <span class="pre">-CAcreateserial</span> <span class="pre">-out</span> <span class="pre">server.crt</span></code>.</p>
+<p>Replace <code class="docutils literal notranslate"><span class="pre">server</span></code> by the fully qualified domain name of the server.</p>
+<p>The fully qualified domain name must be resolvable.</p>
 </div></td>
 </tr>
 <tr class="row-even"><td><div class="ansible-option-cell">
@@ -525,6 +539,7 @@ To check whether it is installed, run <code class="code docutils literal notrans
 <p>When <code class="docutils literal notranslate"><span class="pre">pgbackrest_role</span></code> is <code class="docutils literal notranslate"><span class="pre">both</span></code>, use the same TLS key for agent and server.</p>
 <p>If defined, the content will be written in <code class="docutils literal notranslate"><span class="pre">pgbackrest_server_tls_key_file</span></code>.</p>
 <p>See <a class="reference external" href="https://pgbackrest.org/configuration.html#section-server/option-tls-server-key-file">TLS Server Key Option</a>.</p>
+<p>Generate a key with <code class="docutils literal notranslate"><span class="pre">openssl</span> <span class="pre">ecparam</span> <span class="pre">-name</span> <span class="pre">prime256v1</span> <span class="pre">-genkey</span> <span class="pre">-noout</span> <span class="pre">-out</span> <span class="pre">server.key</span></code>.</p>
 </div></td>
 </tr>
 <tr class="row-even"><td><div class="ansible-option-cell">
