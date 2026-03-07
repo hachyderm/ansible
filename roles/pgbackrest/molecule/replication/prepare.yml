@@ -12,32 +12,49 @@
         state: directory
         mode: "0755"
 
-    - name: Generate CA
+    - name: Generate CA key
       ansible.builtin.command:
         cmd: >-
-          openssl req -new -x509 -days 1 -nodes -out ca.crt -keyout ca.key -subj "/CN=ca"
+          openssl ecparam -name secp384r1 -genkey -noout -out ca.key
         chdir: "{{ tmpdir }}"
         creates: "{{ tmpdir }}/ca.key"
 
-    - name: Generate CSR and keys
+    - name: Generate CA cert
       ansible.builtin.command:
         cmd: >-
-          openssl req -new -nodes -out {{ item }}.csr -keyout {{ item }}.key -subj "/CN={{ item }}"
+          openssl req -x509 -new -nodes -key ca.key -sha256 -days 1 -out ca.crt -subj "/C=BE/ST=Brussels Capital/L=Brussels/O=Hachyderm/OU=pgBackRest/CN=CI CA"
         chdir: "{{ tmpdir }}"
-        creates: "{{ tmpdir }}/{{ item }}.csr"
-      loop:
-        - primary
-        - replica
+        creates: "{{ tmpdir }}/ca.crt"
 
-    - name: Generate certificates
+    - name: Generate server keys
       ansible.builtin.command:
         cmd: >-
-          openssl x509 -req -in {{ item }}.csr -days 1 -CA ca.crt -CAkey ca.key -CAcreateserial -out {{ item }}.crt
+          openssl ecparam -name prime256v1 -genkey -noout -out {{ server }}.key
         chdir: "{{ tmpdir }}"
-        creates: "{{ tmpdir }}/{{ item }}.crt"
-      loop:
-        - primary
-        - replica
+        creates: "{{ tmpdir }}/{{ server }}.key"
+      loop: "{{ groups['molecule'] }}"
+      loop_control:
+        loop_var: server
+
+    - name: Generate server CSRs
+      ansible.builtin.command:
+        cmd: >-
+          openssl req -new -nodes -out {{ server }}.csr -key {{ server }}.key -subj "/CN={{ server }}"
+        chdir: "{{ tmpdir }}"
+        creates: "{{ tmpdir }}/{{ server }}.csr"
+      loop: "{{ groups['molecule'] }}"
+      loop_control:
+        loop_var: server
+
+    - name: Generate server certificates
+      ansible.builtin.command:
+        cmd: >-
+          openssl x509 -req -in {{ server }}.csr -days 1 -CA ca.crt -CAkey ca.key -CAcreateserial -out {{ server }}.crt
+        chdir: "{{ tmpdir }}"
+        creates: "{{ tmpdir }}/{{ server }}.crt"
+      loop: "{{ groups['molecule'] }}"
+      loop_control:
+        loop_var: server
 
 
 - name: Copy certificates
@@ -68,15 +85,6 @@
         group: tls
         mode: "0644"
 
-
-- name: Copy certificates on primary
-  hosts: primary
-  become: true
-
-  vars:
-    tmpdir: /tmp/molecule
-
-  tasks:
     - name: Copy certs
       ansible.builtin.copy:
         src: "{{ item.src }}"
@@ -85,33 +93,9 @@
         group: tls
         mode: "{{ item.mode }}"
       loop:
-        - src: "{{ tmpdir }}/primary.crt"
-          dest: /etc/tls/primary.crt
+        - src: "{{ tmpdir }}/{{ inventory_hostname }}.crt"
+          dest: /etc/tls/server.crt
           mode: "0644"
-        - src: "{{ tmpdir }}/primary.key"
-          dest: /etc/tls/primary.key
-          mode: "0640"
-
-
-- name: Copy certificates on replica
-  hosts: replica
-  become: true
-
-  vars:
-    tmpdir: /tmp/molecule
-
-  tasks:
-    - name: Copy certs
-      ansible.builtin.copy:
-        src: "{{ item.src }}"
-        dest: "{{ item.dest }}"
-        owner: root
-        group: tls
-        mode: "{{ item.mode }}"
-      loop:
-        - src: "{{ tmpdir }}/replica.crt"
-          dest: /etc/tls/replica.crt
-          mode: "0644"
-        - src: "{{ tmpdir }}/replica.key"
-          dest: /etc/tls/replica.key
+        - src: "{{ tmpdir }}/{{ inventory_hostname }}.key"
+          dest: /etc/tls/server.key
           mode: "0640"

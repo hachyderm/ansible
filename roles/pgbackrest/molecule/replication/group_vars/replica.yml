@@ -1,0 +1,23 @@
+---
+postgresql_instance_role: replica
+postgresql_primary_host: "deb{{ ansible_facts['distribution_major_version'] }}-primary"
+
+pgbackrest_role: both
+pgbackrest_server_address: 0.0.0.0
+pgbackrest_server_port: 8432
+pgbackrest_server_repositories:
+  - path: /var/lib/pgbackrest
+    cipher-pass: CHANGEME
+    cipher-type: aes-256-cbc
+    retention-full-type: time
+    retention-full: 14
+    retention-diff: 3
+    bundle: y
+pgbackrest_server_stanzas:
+  main:
+    - pg-host: "deb{{ ansible_facts['distribution_major_version'] }}-primary"
+      pg-host-port: 8433
+      pg-path: "/var/lib/postgresql/{{ postgresql_version }}/main"
+    - pg-host: "deb{{ ansible_facts['distribution_major_version'] }}-replica"
+      pg-host-port: 8433
+      pg-path: "/var/lib/postgresql/{{ postgresql_version }}/main"

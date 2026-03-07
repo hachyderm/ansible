@@ -9,9 +9,10 @@ ansible:
   playbooks:
     create: create.yml
     prepare: prepare.yml
-    destroy: destroy.yml
     converge: converge.yml
     verify: verify.yml
+    cleanup: cleanup.yml
+    destroy: destroy.yml
 
 dependency:
   name: galaxy
@@ -25,4 +26,5 @@ scenario:
     - converge
     - idempotence
     - verify
+    - cleanup
     - destroy

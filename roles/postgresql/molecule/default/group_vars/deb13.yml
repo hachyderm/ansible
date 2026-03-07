@@ -1,0 +1,2 @@
+---
+container_image: docker.io/geerlingguy/docker-debian13-ansible:latest

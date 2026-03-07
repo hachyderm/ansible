@@ -1,0 +1,8 @@
+---
+pgbackrest_role: agent
+
+pgbackrest_agent_repositories:
+- host: "deb{{ ansible_facts['distribution_major_version'] }}-replica"
+  port: 8432
+  user: pgbackrest
+  config: /etc/pgbackrest-server/pgbackrest.conf
