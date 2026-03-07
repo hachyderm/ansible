@@ -99,10 +99,10 @@ The following variables can be configured for this role:
 | `pgbackrest_agent_address` | `str` | No | `"localhost"` | Address to listen for an agent.<br><br>See L(TLS Server Address Option,https://pgbackrest.org/configuration.html#section-server/option-tls-server-address). |
 | `pgbackrest_agent_port` | `int` | No | `8432` | Address to listen for an agent.<br><br>See L(TLS Server Port Option,https://pgbackrest.org/configuration.html#section-server/option-tls-server-port). |
 | `pgbackrest_agent_tls_ca` | `str` | No | N/A | Content of a Certificate Authority (CA) to verify the authenticity of TLS certificates for an agent.<br><br>Use the same CA for agent and server.<br><br>If defined, the content will be written in C(pgbackrest_agent_tls_ca_file).<br><br>See L(TLS […](#variable-pgbackrest_agent_tls_ca) |
-| `pgbackrest_agent_tls_ca_file` | `path` | No | `"/etc/pgbackrest/ca.crt"` | Path to the TLS server certificate authorities for an agent.<br><br>For certificates signed by a trusted CA (like Let's Encrypt), use C(/etc/ssl/certs/ca-certificates.crt).<br><br>See L(TLS Server Certificate Authorities […](#variable-pgbackrest_agent_tls_ca_file) |
-| `pgbackrest_agent_tls_cert` | `str` | No | N/A | Content of the TLS server certificate for an agent.<br><br>See L(TLS Server Certificate Option,https://pgbackrest.org/configuration.html#section-server/option-tls-server-cert-file).<br><br>Generate a test cert (and key) with C(openssl req -new -nodes […](#variable-pgbackrest_agent_tls_cert) |
+| `pgbackrest_agent_tls_ca_file` | `path` | No | `"/etc/pgbackrest/ca.crt"` | Path to the TLS server certificate authorities for an agent.<br><br>For certificates signed by a trusted CA, use C(/etc/ssl/certs/ca-certificates.crt).<br><br>See L(TLS Server Certificate Authorities […](#variable-pgbackrest_agent_tls_ca_file) |
+| `pgbackrest_agent_tls_cert` | `str` | No | N/A | Content of the TLS server certificate for an agent.<br><br>See L(TLS Server Certificate Option,https://pgbackrest.org/configuration.html#section-server/option-tls-server-cert-file).<br><br>See C(pgbackrest_agent_tls_key) to generate the […](#variable-pgbackrest_agent_tls_cert) |
 | `pgbackrest_agent_tls_cert_file` | `path` | No | `"/etc/pgbackrest/server.crt"` | Path to the TLS server certificate for an agent.<br><br>See L(TLS Server Certificate Option,https://pgbackrest.org/configuration.html#section-server/option-tls-server-cert-file). |
-| `pgbackrest_agent_tls_key` | `str` | No | N/A | Content of the TLS server key for an agent.<br><br>If defined, the content will be written in C(pgbackrest_agent_tls_key_file).<br><br>See L(TLS Server Key Option,https://pgbackrest.org/configuration.html#section-server/option-tls-server-key-file). |
+| `pgbackrest_agent_tls_key` | `str` | No | N/A | Content of the TLS server key for an agent.<br><br>If defined, the content will be written in C(pgbackrest_agent_tls_key_file).<br><br>See L(TLS Server Key […](#variable-pgbackrest_agent_tls_key) |
 | `pgbackrest_agent_tls_key_file` | `path` | No | `"/etc/pgbackrest/server.key"` | Path to the TLS server key file for an agent.<br><br>See L(TLS Server Key Option,https://pgbackrest.org/configuration.html#section-server/option-tls-server-key-file). |
 | `pgbackrest_agent_stanzas` | `dict` | No | N/A | Dictionary of stanzas supported by an agent.<br><br>The key is the name of each stanza.<br><br>The value is a list of stanza options.<br><br>The server index will be automatically generated.<br><br>See L(Stanza […](#variable-pgbackrest_agent_stanzas) |
 | `pgbackrest_agent_allowed_users` | `dict` | No | N/A | Dictionary of allowed users (server) on the agent.<br><br>The key is the hostname.<br><br>The value is the stanza name.<br><br>See L(TLS Server Authorized Clients […](#variable-pgbackrest_agent_allowed_users) |
@@ -440,7 +440,11 @@ If defined, the content will be written in C(pgbackrest_agent_tls_ca_file).
 
 See L(TLS Server Certificate Authorities Option,https://pgbackrest.org/configuration.html#section-server/option-tls-server-ca-file).
 
-Generate a test CA with C(openssl req -new -x509 -days 3650 -nodes -out ca.crt -keyout ca.key -subj "/CN=ca").
+Generate a CA key with C(openssl ecparam -name secp384r1 -genkey -noout -out ca.key).
+
+Keep the key to renew certificates during the validity time.
+
+Generate a CA certificate with C(openssl req -x509 -new -nodes -key ca.key -sha256 -days 3650 -out ca.crt -subj "/C=BE/ST=Brussels Capital/L=Brussels/O=My Organization/OU=pgBackRest/CN=CA").
 
 - **Type**: `str`
 - **Required**: No
@@ -453,7 +457,7 @@ Generate a test CA with C(openssl req -new -x509 -days 3650 -nodes -out ca.crt -
 
 Path to the TLS server certificate authorities for an agent.
 
-For certificates signed by a trusted CA (like Let's Encrypt), use C(/etc/ssl/certs/ca-certificates.crt).
+For certificates signed by a trusted CA, use C(/etc/ssl/certs/ca-certificates.crt).
 
 See L(TLS Server Certificate Authorities Option,https://pgbackrest.org/configuration.html#section-server/option-tls-server-ca-file).
 
@@ -471,7 +475,15 @@ Content of the TLS server certificate for an agent.
 
 See L(TLS Server Certificate Option,https://pgbackrest.org/configuration.html#section-server/option-tls-server-cert-file).
 
-Generate a test cert (and key) with C(openssl req -new -nodes -out primary.csr -keyout primary.key -subj "/CN=primary") and C(openssl x509 -req -in primary.csr -days 3650 -CA ca.crt -CAkey ca.key -CAcreateserial -out primary.crt) where C(primary) is the resolvable hostname of the agent.
+See C(pgbackrest_agent_tls_key) to generate the key.
+
+Generate a certificate request with C(openssl req -new -nodes -out agent.csr -key agent.key -subj "/CN=agent").
+
+Generate a certificate with C(openssl x509 -req -in agent.csr -days 365 -CA ca.crt -CAkey ca.key -CAcreateserial -out agent.crt).
+
+Replace C(agent) by the fully qualified domain name of the agent.
+
+The fully qualified domain name must be resolvable.
 
 - **Type**: `str`
 - **Required**: No
@@ -501,6 +513,8 @@ Content of the TLS server key for an agent.
 If defined, the content will be written in C(pgbackrest_agent_tls_key_file).
 
 See L(TLS Server Key Option,https://pgbackrest.org/configuration.html#section-server/option-tls-server-key-file).
+
+Generate a key with C(openssl ecparam -name prime256v1 -genkey -noout -out agent.key).
 
 - **Type**: `str`
 - **Required**: No
@@ -656,6 +670,12 @@ If defined, the content will be written in C(pgbackrest_server_tls_ca_file).
 
 See L(TLS Server Certificate Authorities Option,https://pgbackrest.org/configuration.html#section-server/option-tls-server-ca-file).
 
+Generate a CA key with C(openssl ecparam -name secp384r1 -genkey -noout -out ca.key).
+
+Keep the key to renew certificates during the validity time.
+
+Generate a CA certificate with C(openssl req -x509 -new -nodes -key ca.key -sha256 -days 3650 -out ca.crt -subj "/C=BE/ST=Brussels Capital/L=Brussels/O=My Organization/OU=pgBackRest/CN=CA").
+
 - **Type**: `str`
 - **Required**: No
 
@@ -687,7 +707,15 @@ If defined, the content will be written in C(pgbackrest_server_tls_cert_file).
 
 See L(TLS Server Certificate Option,https://pgbackrest.org/configuration.html#section-server/option-tls-server-cert-file).
 
-Generate a test cert (and key) with C(openssl req -new -nodes -out server.csr -keyout server.key -subj "/CN=server") and C(openssl x509 -req -in server.csr -days 3650 -CA ca.crt -CAkey ca.key -CAcreateserial -out server.crt) where C(server) is the resolvable hostname of the backup server.
+See C(pgbackrest_server_tls_key) to generate the key.
+
+Generate a certificate request with C(openssl req -new -nodes -out server.csr -key server.key -subj "/CN=server").
+
+Generate a certificate with C(openssl x509 -req -in server.csr -days 365 -CA ca.crt -CAkey ca.key -CAcreateserial -out server.crt).
+
+Replace C(server) by the fully qualified domain name of the server.
+
+The fully qualified domain name must be resolvable.
 
 - **Type**: `str`
 - **Required**: No
@@ -719,6 +747,8 @@ When C(pgbackrest_role) is C(both), use the same TLS key for agent and server.
 If defined, the content will be written in C(pgbackrest_server_tls_key_file).
 
 See L(TLS Server Key Option,https://pgbackrest.org/configuration.html#section-server/option-tls-server-key-file).
+
+Generate a key with C(openssl ecparam -name prime256v1 -genkey -noout -out server.key).
 
 - **Type**: `str`
 - **Required**: No

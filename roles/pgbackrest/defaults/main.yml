@@ -150,7 +150,7 @@ pgbackrest_agent_port: 8432
 
 # Path to the TLS server certificate authorities for an agent.
 #
-# For certificates signed by a trusted CA (like Let's Encrypt), use
+# For certificates signed by a trusted CA, use
 # C(/etc/ssl/certs/ca-certificates.crt).
 #
 # See L(TLS Server Certificate Authorities
