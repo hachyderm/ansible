@@ -99,11 +99,11 @@ jobs:
       id-token: write
     needs:
       - build
-    name: publish
+    name: publish PR preview
     uses: ansible-community/github-docs-build/.github/workflows/_shared-docs-build-publish-gh-pages.yml@main
     with:
       artifact-name: ${{ needs.build.outputs.artifact-name }}
-      action: ${{ (github.event.action == 'closed' || needs.build.outputs.changed != 'true') && 'teardown' || 'publish' }}
+      action: publish
       publish-gh-pages-branch: true
     secrets:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -150,3 +150,19 @@ jobs:
             ${{ needs.build.outputs.diff-files-rendered }}
 
             ${{ needs.build.outputs.diff-rendered }}
+
+  cleanup:
+    # use to prevent running on forks
+    if: github.repository == 'hachyderm/ansible' && github.event.action == 'closed'
+    permissions:
+      contents: write
+      pages: write
+      id-token: write
+    name: cleanup PR preview
+    uses: ansible-community/github-docs-build/.github/workflows/_shared-docs-build-publish-gh-pages.yml@main
+    with:
+      artifact-name: ${{ needs.build.outputs.artifact-name }}
+      action: teardown
+      publish-gh-pages-branch: true
+    secrets:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
