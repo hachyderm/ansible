@@ -1,0 +1,68 @@
+---
+
+# Version of the binary.
+#
+# See L(releases,https://github.com/TecharoHQ/anubis/releases).
+#
+# - Type: str
+# - Required: No
+# - Default: 1.25.0
+anubis_version: 1.25.0
+
+# Architecture of the system to install Anubis.
+#
+# - Type: str
+# - Required: No
+# - Default: amd64
+anubis_arch: amd64
+
+# URL of the debian package to install.
+#
+# - Type: str
+# - Required: No
+# - Default: https://github.com/TecharoHQ/anubis/releases/download/ v{{ anubis_version }}/anubis_{{ anubis_version }}_{{ anubis_arch }}.deb
+anubis_deb: "https://github.com/TecharoHQ/anubis/releases/download/v{{ anubis_version }}/anubis_{{ anubis_version }}_{{ anubis_arch }}.deb"
+
+# Define the C(BIND) environment variable.
+#
+# - Type: str
+# - Required: No
+# - Default: :8923
+anubis_bind: ":8923"
+
+# Define the C(DIFFICULTY) environment variable.
+#
+# - Type: int
+# - Required: No
+# - Default: 4
+anubis_difficulty: 4
+
+# Define the C(METRICS_BIND) environment variable.
+#
+# - Type: str
+# - Required: No
+# - Default: :9090
+anubis_metrics_bind: ":9090"
+
+# Define the C(POLICY_FNAME) environment variable.
+#
+# - Type: path
+# - Required: No
+# - Default: /etc/anubis/default.botPolicies.yaml
+anubis_policy_fname: /etc/anubis/default.botPolicies.yaml
+
+# Define the C(TARGET) environment variable.
+#
+# - Type: str
+# - Required: No
+# - Default: http://localhost:3923
+anubis_target: http://localhost:3923
+
+# Configure bot policies.
+#
+# See L(Policy Definitions,https://anubis.techaro.lol/docs/admin/policies).
+#
+# - Type: dict
+# - Required: No
+# - Default: {}
+anubis_bot_policies: {}

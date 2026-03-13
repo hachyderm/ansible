@@ -1,0 +1,6 @@
+---
+- name: Restart Anubis
+  become: true
+  ansible.builtin.service:
+    name: "anubis@default.service"
+    state: restarted

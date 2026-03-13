@@ -1,0 +1,240 @@
+---
+argument_specs:
+  main:
+    short_description: Install and configure Anubis
+    description:
+      - Install and configure L(Anubis,https://anubis.techaro.lol), a Web AI Firewall Utility.
+      - See L(Environment variables,https://anubis.techaro.lol/docs/admin/installation/#environment-variables).
+    author:
+      - Hachyderm contributors
+    options:
+      anubis_version:
+        description:
+          - Version of the binary.
+          - See L(releases,https://github.com/TecharoHQ/anubis/releases).
+        default: 1.25.0
+
+      anubis_arch:
+        description:
+          - Architecture of the system to install Anubis.
+        default: amd64
+
+      anubis_deb:
+        description:
+          - URL of the debian package to install.
+        default: >-
+          https://github.com/TecharoHQ/anubis/releases/download/
+          v{{ anubis_version }}/anubis_{{ anubis_version }}_{{ anubis_arch }}.deb
+
+      anubis_bot_policies:
+        description:
+          - Configure bot policies.
+          - See L(Policy Definitions,https://anubis.techaro.lol/docs/admin/policies).
+        type: dict
+        default: {}
+      anubis_asset_lookup_header:
+        description:
+          - Define the C(ASSET_LOOKUP_HEADER) environment variable.
+
+      anubis_base_prefix:
+        description:
+          - Define the C(BASE_PREFIX) environment variable.
+
+      anubis_bind:
+        description:
+          - Define the C(BIND) environment variable.
+        default: ":8923"
+
+      anubis_bind_network:
+        description:
+          - Define the C(BIND_NETWORK) environment variable.
+
+      anubis_challenge_title:
+        description:
+          - Define the C(CHALLENGE_TITLE) environment variable.
+
+      anubis_cookie_domain:
+        description:
+          - Define the C(COOKIE_DOMAIN) environment variable.
+
+      anubis_cookie_dynamic_domain:
+        description:
+          - Define the C(COOKIE_DYNAMIC_DOMAIN) environment variable.
+        type: bool
+
+      anubis_cookie_expiration_time:
+        description:
+          - Define the C(COOKIE_EXPIRATION_TIME) environment variable.
+
+      anubis_custom_real_ip_header:
+        description:
+          - Define the C(CUSTOM_REAL_IP_HEADER) environment variable.
+
+      anubis_cookie_partitioned:
+        description:
+          - Define the C(COOKIE_PARTITIONED) environment variable.
+        type: bool
+
+      anubis_cookie_prefix:
+        description:
+          - Define the C(COOKIE_PREFIX) environment variable.
+
+      anubis_cookie_secure:
+        description:
+          - Define the C(COOKIE_SECURE) environment variable.
+        type: bool
+
+      anubis_cookie_same_site:
+        description:
+          - Define the C(COOKIE_SAME_SITE) environment variable.
+
+      anubis_difficulty:
+        description:
+          - Define the C(DIFFICULTY) environment variable.
+        type: int
+        default: 4
+
+      anubis_difficulty_in_jwt:
+        description:
+          - Define the C(DIFFICULTY_IN_JWT) environment variable.
+        type: bool
+
+      anubis_ed25519_private_key_hex:
+        description:
+          - Define the C(ED25519_PRIVATE_KEY_HEX) environment variable.
+
+      anubis_ed25519_private_key_hex_file:
+        description:
+          - Define the C(ED25519_PRIVATE_KEY_HEX_FILE) environment variable.
+
+      anubis_error_title:
+        description:
+          - Define the C(ERROR_TITLE) environment variable.
+
+      anubis_jwt_restriction_header:
+        description:
+          - Define the C(JWT_RESTRICTION_HEADER) environment variable.
+
+      anubis_metrics_bind:
+        description:
+          - Define the C(METRICS_BIND) environment variable.
+        default: ":9090"
+
+      anubis_metrics_bind_network:
+        description:
+          - Define the C(METRICS_BIND_NETWORK) environment variable.
+
+      anubis_og_expiry_time:
+        description:
+          - Define the C(OG_EXPIRY_TIME) environment variable.
+
+      anubis_og_passthrough:
+        description:
+          - Define the C(OG_PASSTHROUGH) environment variable.
+        type: bool
+
+      anubis_og_cache_consider_host:
+        description:
+          - Define the C(OG_CACHE_CONSIDER_HOST) environment variable.
+        type: bool
+
+      anubis_overlay_folder:
+        description:
+          - Define the C(OVERLAY_FOLDER) environment variable.
+
+      anubis_policy_fname:
+        description:
+          - Define the C(POLICY_FNAME) environment variable.
+        type: path
+        default: /etc/anubis/default.botPolicies.yaml
+
+      anubis_public_url:
+        description:
+          - Define the C(PUBLIC_URL) environment variable.
+
+      anubis_redirect_domains:
+        description:
+          - Define the C(REDIRECT_DOMAINS) environment variable.
+          - Expect a list of domains that will be transformed to a coma separated list.
+        type: list
+
+      anubis_serve_robots_txt:
+        description:
+          - Define the C(SERVE_ROBOTS_TXT) environment variable.
+        type: bool
+
+      anubis_slog_level:
+        description:
+          - Define the C(SLOG_LEVEL) environment variable.
+
+      anubis_socket_mode:
+        description:
+          - Define the C(SOCKET_MODE) environment variable.
+
+      anubis_strip_base_prefix:
+        description:
+          - Define the C(STRIP_BASE_PREFIX) environment variable.
+        type: bool
+
+      anubis_target:
+        description:
+          - Define the C(TARGET) environment variable.
+        default: http://localhost:3923
+
+      anubis_use_remote_address:
+        description:
+          - Define the C(USE_REMOTE_ADDRESS) environment variable.
+
+      anubis_use_simplified_explanation:
+        description:
+          - Define the C(USE_SIMPLIFIED_EXPLANATION) environment variable.
+        type: bool
+
+      anubis_use_templates:
+        description:
+          - Define the C(USE_TEMPLATES) environment variable.
+        type: bool
+
+      anubis_webmaster_email:
+        description:
+          - Define the C(WEBMASTER_EMAIL) environment variable.
+
+      anubis_xff_strip_private:
+        description:
+          - Define the C(XFF_STRIP_PRIVATE) environment variable.
+        type: bool
+
+      anubis_forced_language:
+        description:
+          - Define the C(FORCED_LANGUAGE) environment variable.
+
+      anubis_hs512_secret:
+        description:
+          - Define the C(HS512_SECRET) environment variable.
+
+      anubis_target_disable_keepalive:
+        description:
+          - Define the C(TARGET_DISABLE_KEEPALIVE) environment variable.
+        type: bool
+
+      anubis_target_host:
+        description:
+          - Define the C(TARGET_HOST) environment variable.
+
+      anubis_target_insecure_skip_verify:
+        description:
+          - Define the C(TARGET_INSECURE_SKIP_VERIFY) environment variable.
+        type: bool
+
+      anubis_target_sni:
+        description:
+          - Define the C(TARGET_SNI) environment variable.
+
+      anubis_bbolt_path:
+        description:
+          - Path to the BBolt store backend.
+        type: path
+
+      anubis_valkey_url:
+        description:
+          - URL of the Valkey store backend.
