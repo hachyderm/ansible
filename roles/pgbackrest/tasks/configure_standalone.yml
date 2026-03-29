@@ -22,6 +22,9 @@
     group: "{{ pgbackrest_group }}"
     mode: "0640"
 
+- name: Flush handlers
+  ansible.builtin.meta: flush_handlers
+
 - name: Finish configuration
   when: pgbackrest_full_install
   ansible.builtin.include_tasks: finish_configuration.yml

@@ -1,0 +1,61 @@
+---
+- name: Verify
+  hosts: molecule
+  become: true
+
+  tasks:
+    - name: Check required packages are installed
+      ansible.builtin.package_facts:
+        manager: auto
+
+    - name: Verify package is installed
+      ansible.builtin.assert:
+        that: "'pgbackrest' in ansible_facts.packages"
+        fail_msg: "pgbackrest package is not installed"
+
+
+- name: Verify repository
+  hosts: replica
+
+  environment:
+    PGUSER: postgres
+
+  tasks:
+
+    - name: Check configuration
+      ansible.builtin.command:
+        cmd: pgbackrest --config /etc/pgbackrest-server/pgbackrest.conf check
+      become: true
+      become_user: pgbackrest
+      changed_when: false
+
+    - name: Start a full backup
+      ansible.builtin.service:
+        name: pgbackrest-full.service
+        state: started
+
+    - name: Start a diff backup
+      ansible.builtin.service:
+        name: pgbackrest-diff.service
+        state: started
+
+    - name: Gather backup info
+      ansible.builtin.command:
+        cmd: pgbackrest --config /etc/pgbackrest-server/pgbackrest.conf --stanza=main --output=json info
+      register: pgbackrest_info
+      become: true
+      become_user: pgbackrest
+      changed_when: false
+
+    - name: Verify backup counts
+      ansible.builtin.assert:
+        that:
+          - pgbackrest_info.stdout | from_json | length == 1 # one stanza (main)
+          - (pgbackrest_info.stdout | from_json)[0]['backup'] | length >= 2 # at least two backups
+
+    - name: Verify repository
+      ansible.builtin.command:
+        cmd: pgbackrest --config /etc/pgbackrest-server/pgbackrest.conf --stanza=main verify
+      become: true
+      become_user: pgbackrest
+      changed_when: false

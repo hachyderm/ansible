@@ -1,0 +1,12 @@
+---
+- name: Cleanup
+  hosts: localhost
+
+  vars:
+    tmpdir: /tmp/molecule
+
+  tasks:
+    - name: Remove tmpdir
+      ansible.builtin.file:
+        path: "{{ tmpdir }}"
+        state: absent

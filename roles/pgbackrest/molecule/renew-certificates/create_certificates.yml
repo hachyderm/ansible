@@ -1,5 +1,5 @@
 ---
-- name: Prepare
+- name: Generate certificates
   hosts: localhost
 
   vars:
@@ -12,6 +12,12 @@
         state: directory
         mode: "0755"
 
+    - name: Install faketime
+      become: true
+      ansible.builtin.package:
+        name: faketime
+      when: expired | default(false) | bool
+
     - name: Generate CA key
       ansible.builtin.command:
         cmd: >-
@@ -22,6 +28,7 @@
     - name: Generate CA cert
       ansible.builtin.command:
         cmd: >-
+          {% if expired | default(false) | bool %}faketime '2 days ago'{% endif %}
           openssl req -x509 -new -nodes -key ca.key -sha256 -days 1 -out ca.crt -subj "/C=BE/ST=Brussels Capital/L=Brussels/O=Hachyderm/OU=pgBackRest/CN=CI CA"
         chdir: "{{ tmpdir }}"
         creates: "{{ tmpdir }}/ca.crt"
@@ -49,6 +56,7 @@
     - name: Generate server certificates
       ansible.builtin.command:
         cmd: >-
+          {% if expired | default(false) | bool %}faketime '2 days ago'{% endif %}
           openssl x509 -req -in {{ server }}.csr -days 1 -CA ca.crt -CAkey ca.key -CAcreateserial -out {{ server }}.crt
         chdir: "{{ tmpdir }}"
         creates: "{{ tmpdir }}/{{ server }}.crt"

@@ -1,0 +1,40 @@
+---
+- name: Create valid TLS certificates
+  ansible.builtin.import_playbook: create_certificates.yml
+
+- name: Install minimal pgBackRest and PostgreSQL
+  hosts: molecule
+  become: true
+  roles:
+    - pgbackrest
+    - postgresql
+  vars:
+    pgbackrest_full_install: false
+
+- name: Finalize pgBackRest configuration
+  hosts: molecule
+  become: true
+  roles:
+    - pgbackrest
+
+- name: Cleanup
+  ansible.builtin.import_playbook: cleanup.yml
+
+- name: Create expired TLS certificates
+  ansible.builtin.import_playbook: create_certificates.yml
+  vars:
+    expired: true
+
+- name: Deploy expired TLS certificates
+  hosts: molecule
+  become: true
+  roles:
+    - pgbackrest
+  vars:
+    pgbackrest_full_install: false
+
+- name: Cleanup
+  ansible.builtin.import_playbook: cleanup.yml
+
+- name: Create valid TLS certificates
+  ansible.builtin.import_playbook: create_certificates.yml

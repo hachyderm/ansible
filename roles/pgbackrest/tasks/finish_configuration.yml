@@ -1,7 +1,4 @@
 ---
-- name: Flush handlers
-  ansible.builtin.meta: flush_handlers
-
 - name: Create and upgrade standalone stanzas
   when: pgbackrest_role == "standalone"
   block:
