@@ -76,7 +76,7 @@ The following variables can be configured for this role:
 
 | Variable | Type | Required | Default | Description (abstract) |
 |----------|------|----------|---------|------------------------|
-| `postgresql_version` | `str` | No | `15` | Version of the PostgreSQL binaries.<br><br>Upgrading this version will deploy a new independent cluster without upgrading one.<br><br>See C(postgresql_upgrade_from_version) for upgrades. |
+| `postgresql_version` | `str` | No | `18` | Version of the PostgreSQL binaries.<br><br>Upgrading this version will deploy a new independent cluster without upgrading one.<br><br>See C(postgresql_upgrade_from_version) for upgrades. |
 | `postgresql_port` | `int` | No | `5432` | The TCP port the server listens on. |
 | `postgresql_cluster_name` | `str` | No | `"main"` | Name of the cluster.<br><br>Useful when multiple clusters are deployed on the same server. |
 | `postgresql_initdb_args` | `str` | No | `"-k"` | Arguments passed to C(initdb) to create a new cluster.<br><br>See L(initdb,https://www.postgresql.org/docs/current/app-initdb.html). |
@@ -122,7 +122,7 @@ See C(postgresql_upgrade_from_version) for upgrades.
 
 - **Type**: `str`
 - **Required**: No
-- **Default**: `15`
+- **Default**: `18`
 
 
 

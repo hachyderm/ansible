@@ -13,7 +13,7 @@ argument_specs:
           - Version of the PostgreSQL binaries.
           - Upgrading this version will deploy a new independent cluster without upgrading one.
           - See C(postgresql_upgrade_from_version) for upgrades.
-        default: 15
+        default: 18
       postgresql_port:
         description:
           - The TCP port the server listens on.
