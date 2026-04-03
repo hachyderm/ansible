@@ -9,8 +9,8 @@
 #
 # - Type: str
 # - Required: No
-# - Default: 15
-postgresql_version: 15
+# - Default: 18
+postgresql_version: 18
 
 # Name of the cluster.
 #
