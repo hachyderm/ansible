@@ -6,13 +6,17 @@ Wants=network-online.target
 
 [Service]
 Type=oneshot
-Restart=on-failure
-RestartSec=600
 User={% if pgbackrest_role in ("server", "both") -%}
 {{ pgbackrest_server_user }}
 {% else -%}
 {{ pgbackrest_user }}
 {% endif %}
+# Prevent start if other backups are running
+{% for other_backup_type in ("full", "diff", "incr") %}
+{% if other_backup_type != backup_type %}
+ExecCondition=/bin/bash -c '/usr/bin/systemctl is-active pgbackrest-{{ other_backup_type }}.service | grep -q "inactive"'
+{% endif %}
+{% endfor %}
 {% if pgbackrest_notification_command is defined %}
 ExecStartPre={{ pgbackrest_notification_command }} pgBackRest '{{ pgbackrest_notification_message_start }}'
 {% endif %}
