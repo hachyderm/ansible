@@ -1,7 +1,22 @@
 ---
+# yamllint disable rule:line-length
 releases:
+
+  1.1.0:
+    changes:
+      minor_changes:
+        - "Add support for Debian 13"
+        - "postgresql - Install PostgreSQL 18 by default"
+      bugfixes:
+        - "pgbackrest - Do not schedule backups at boot"
+        - "pgbackrest - Flush handlers when renewing TLS certificates"
+        - "pgbackrest - Prevent backup when other backup is running"
+      deprecated_features:
+        - "pgbackrest - The pgbackrest_schedules option has been deprecated. Use pgbackrest_schedule_full, pgbackrest_schedule_diff and pgbackrest_schedule_incr instead."
+    release_date: 2026-04-04
+
   1.0.0:
     changes:
       major_changes:
         - Initial release
-    release_date: '2026-01-30'
+    release_date: 2026-01-30
