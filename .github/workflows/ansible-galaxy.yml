@@ -47,8 +47,9 @@ jobs:
           namespace=$(yq -r ".namespace" < galaxy.yml)
           name=$(yq -r ".name" < galaxy.yml)
           version=$(yq -r ".version" < galaxy.yml)
-          if [ "${{ github.ref }}" != "${version}" ] ; then
-            echo "The version of the collection (${version}) is different than the tag (${{ github.ref }})"
+          tag=$(echo ${{ github.ref }} | sed 's,refs/tags/,,g')
+          if [ "${tag}" != "${version}" ] ; then
+            echo "The version of the collection (${version}) is different than the tag (${tag})"
             exit 1
           fi
           ansible-galaxy collection publish ${namespace}-${name}-${version}.tar.gz
