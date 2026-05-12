@@ -17,15 +17,19 @@ env:
   ANSIBLE_GALAXY_SERVER_GALAXY_TIMEOUT: 120
   ANSIBLE_GALAXY_SERVER_LIST: "galaxy"
 
+permissions: {}
+
 jobs:
   ansible-lint:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
 
       - name: Ansible lint
-        uses: ansible/ansible-lint@v25.12.2
+        uses: ansible/ansible-lint@a2bc8b8b13a80802215856c56823d85007d3baf5  # v25.12.2
         with:
           requirements_file: test-requirements.yml
 
