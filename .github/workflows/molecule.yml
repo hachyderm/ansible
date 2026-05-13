@@ -63,7 +63,9 @@ jobs:
           python -m pip install --upgrade pip
           pip install \
             molecule==25.12.0 \
-            ansible-core~=${{ matrix.ansible-version }}.0
+            ansible-core~=${ANSIBLE_VERSION}.0
+        env:
+          ANSIBLE_VERSION: ${{ matrix.ansible-version }}
 
       - name: Install dependencies
         working-directory: ./roles/${{ matrix.role }}

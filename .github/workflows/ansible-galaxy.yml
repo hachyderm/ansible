@@ -51,7 +51,7 @@ jobs:
           namespace=$(yq -r ".namespace" < galaxy.yml)
           name=$(yq -r ".name" < galaxy.yml)
           version=$(yq -r ".version" < galaxy.yml)
-          tag=$(echo ${{ github.ref }} | sed 's,refs/tags/,,g')
+          tag=$(echo ${GITHUB_REF} | sed 's,refs/tags/,,g')
           if [ "${tag}" != "${version}" ] ; then
             echo "The version of the collection (${version}) is different than the tag (${tag})"
             exit 1
