@@ -16,6 +16,8 @@ permissions: {}
 jobs:
   # Validation job runs a strict build to ensure it will fail CI on any mistakes.
   validate:
+    permissions:
+      contents: read
     name: validate
     if: github.event.action != 'closed'
     uses: ansible-community/github-docs-build/.github/workflows/_shared-docs-build-push.yml@f724ea35f2f4f14a18c45ad363ffa5f76eabeec9  # main
@@ -73,6 +75,8 @@ jobs:
   # The build job runs with the most lenient settings to ensure the best chance of getting
   # a rendered docsite that can be looked at.
   build:
+    permissions:
+      contents: read
     needs:
       - validate
       - docsmith
