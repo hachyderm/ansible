@@ -11,7 +11,9 @@ jobs:
       ansible-versions: ${{ steps.list-ansible-versions.outputs.ansible-versions }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
 
       - name: List Ansible versions
         id: list-ansible-versions
@@ -32,7 +34,7 @@ jobs:
         needs.define-versions.outputs.ansible-versions != ''
     steps:
       - name: Perform sanity test with ansible-test
-        uses: ansible-community/ansible-test-gh-action@v1.17.0
+        uses: ansible-community/ansible-test-gh-action@d3a8ec7a59694e25e210fcd44738910149537f0e  # v1.17.0
         with:
           ansible-core-version: stable-${{ matrix.ansible-version }}
           testing-type: sanity

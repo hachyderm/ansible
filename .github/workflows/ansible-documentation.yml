@@ -11,6 +11,8 @@ on:
       - synchronize
       - closed
 
+permissions: {}
+
 jobs:
   # Validation job runs a strict build to ensure it will fail CI on any mistakes.
   validate:
@@ -18,7 +20,7 @@ jobs:
       contents: read
     name: validate
     if: github.event.action != 'closed'
-    uses: ansible-community/github-docs-build/.github/workflows/_shared-docs-build-push.yml@main
+    uses: ansible-community/github-docs-build/.github/workflows/_shared-docs-build-push.yml@f724ea35f2f4f14a18c45ad363ffa5f76eabeec9  # main
     with:
       collection-name: hachyderm.general
       artifact-upload: false
@@ -33,10 +35,12 @@ jobs:
     if: github.event.action != 'closed'
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
 
       - name: Install Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405  # v6
         with:
           python-version: "3.13"
 
@@ -77,7 +81,7 @@ jobs:
       - validate
       - docsmith
     name: build
-    uses: ansible-community/github-docs-build/.github/workflows/_shared-docs-build-pr.yml@main
+    uses: ansible-community/github-docs-build/.github/workflows/_shared-docs-build-pr.yml@f724ea35f2f4f14a18c45ad363ffa5f76eabeec9  # main
     with:
       collection-name: hachyderm.general
       init-project: Hachyderm General Collection
@@ -100,7 +104,7 @@ jobs:
     needs:
       - build
     name: publish PR preview
-    uses: ansible-community/github-docs-build/.github/workflows/_shared-docs-build-publish-gh-pages.yml@main
+    uses: ansible-community/github-docs-build/.github/workflows/_shared-docs-build-publish-gh-pages.yml@f724ea35f2f4f14a18c45ad363ffa5f76eabeec9  # main
     with:
       artifact-name: ${{ needs.build.outputs.artifact-name }}
       action: publish
@@ -118,7 +122,7 @@ jobs:
     name: comment
     steps:
       - name: PR comment
-        uses: ansible-community/github-docs-build/actions/ansible-docs-build-comment@main
+        uses: ansible-community/github-docs-build/actions/ansible-docs-build-comment@f724ea35f2f4f14a18c45ad363ffa5f76eabeec9  # main
         with:
           body-includes: '## Docs Build'
           reactions: heart
@@ -159,7 +163,7 @@ jobs:
       pages: write
       id-token: write
     name: cleanup PR preview
-    uses: ansible-community/github-docs-build/.github/workflows/_shared-docs-build-publish-gh-pages.yml@main
+    uses: ansible-community/github-docs-build/.github/workflows/_shared-docs-build-publish-gh-pages.yml@f724ea35f2f4f14a18c45ad363ffa5f76eabeec9  # main
     with:
       artifact-name: ${{ needs.build.outputs.artifact-name }}
       action: teardown
