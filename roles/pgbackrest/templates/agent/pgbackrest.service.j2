@@ -4,6 +4,7 @@ Description=pgBackRest agent
 After=network.target
 StartLimitIntervalSec=0
 {% if pgbackrest_service_after %}
+Wants={{ pgbackrest_service_after | join(" ") }}
 After={{ pgbackrest_service_after | join(" ") }}
 {% endif %}
 

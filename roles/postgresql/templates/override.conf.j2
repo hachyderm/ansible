@@ -1,3 +1,4 @@
 {{ ansible_managed | comment }}
 [Unit]
+Wants={{ postgresql_service_after | joine(" ") }}
 After={{ postgresql_service_after | join(" ") }}

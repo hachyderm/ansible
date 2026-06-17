@@ -11,5 +11,6 @@ LimitNOFILE={{
 
 {% if pgbouncer_service_after %}
 [Unit]
+Wants={{ pgbouncer_service_after | join(" ") }}
 After={{ pgbouncer_service_after | join(" ") }}
 {% endif %}
