@@ -19,6 +19,8 @@
     - name: Check configuration
       ansible.builtin.command:
         cmd: pgbackrest check
+      become: true
+      become_user: pgbackrest
       changed_when: false
 
     - name: Check full backup service
@@ -53,6 +55,8 @@
       ansible.builtin.command:
         cmd: pgbackrest --stanza=main --output=json info
       register: pgbackrest_info
+      become: true
+      become_user: pgbackrest
       changed_when: false
 
     - name: Verify backup counts
@@ -64,4 +68,6 @@
     - name: Verify repository
       ansible.builtin.command:
         cmd: pgbackrest --stanza=main verify
+      become: true
+      become_user: pgbackrest
       changed_when: false
